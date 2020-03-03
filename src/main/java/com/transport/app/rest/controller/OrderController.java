@@ -19,7 +19,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @CrossOrigin(origins = "*")
+    @CrossOrigin
 //    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/create")
     public OrderDto create(@Valid @RequestBody Order order) {
