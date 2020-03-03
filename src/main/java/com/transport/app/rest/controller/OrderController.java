@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -19,7 +20,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @CrossOrigin
+//    @CrossOrigin
 //    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/create")
     public OrderDto create(@Valid @RequestBody Order order) {
