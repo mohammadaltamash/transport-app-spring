@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -19,7 +20,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @CrossOrigin(origins = "*")
+//    @CrossOrigin(origins = "*")
 //    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/create")
     public OrderDto create(@Valid @RequestBody Order order) {
@@ -43,13 +44,28 @@ public class OrderController {
     }
 
     @GetMapping("/get/{id}")
-    public OrderDto findOrderById(@PathVariable("id") long orderId) {
+    public OrderDto findById(@PathVariable("id") long orderId) {
         return OrderMapper.toOrderDto(orderService.findById(orderId));
     }
 
     @GetMapping("/get")
-    public List<OrderDto> findAllOrders() {
+    public List<OrderDto> findAll() {
         return OrderMapper.toOrderDtos(orderService.findAll());
+    }
+
+    @GetMapping("/get/status/{status}")
+    public List<OrderDto> findAllByOrderStatus(@PathVariable("status") String status) {
+        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatus(status));
+    }
+
+    @GetMapping("/get/statusin/{statuses}")
+    public List<OrderDto> findAllByOrderStatuses(@PathVariable("statuses") String statuses) {
+        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusIn(statuses));
+    }
+
+    @GetMapping("/get/statuscount/{status}")
+    public int countByOrderStatus(@PathVariable("status") String status) {
+        return orderService.countByOrderStatus(status);
     }
 
     @GetMapping("getpage/{page}")

@@ -232,4 +232,25 @@ public class Order {
 //            , nullable = false
     )
     private String brokerEmail;                                                 // Broker email                 required
+
+    @Column(name = "ORDER_STATUS")
+    @Builder.Default
+    private String orderStatus = ORDER_STATUS.NEW.getName();
+    @Column(name = "ORDER_CATEGORY")
+    private String orderCategory;
+
+    public enum ORDER_STATUS {
+        NEW("NEW"), ASKED_TO_BOOK("ASSIGNED"), ACCEPTED("ACCEPTED"), PICKED_UP("PICKED UP"), DELIVERED("DELIVERED");
+        private String name;
+        ORDER_STATUS(String name) {
+            this.name = name;
+        }
+        String getName() {
+            return this.name;
+        }
+    }
+
+    public enum ORDER_CATEGORY {
+        LOGISTICS
+    }
 }

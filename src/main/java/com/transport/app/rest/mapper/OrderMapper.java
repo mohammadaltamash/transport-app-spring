@@ -71,6 +71,9 @@ public class OrderMapper {
                 .brokerLongitude(orderDto.getBrokerLongitude())
                 .shipperPhones(orderDto.getShipperPhones())
                 .brokerEmail(orderDto.getBrokerEmail())
+
+                .orderStatus(orderDto.getOrderStatus())
+                .orderCategory(orderDto.getOrderCategory())
                 .build();
     }
 
@@ -136,6 +139,9 @@ public class OrderMapper {
                 .brokerLongitude(order.getBrokerLongitude())
                 .shipperPhones(order.getShipperPhones())
                 .brokerEmail(order.getBrokerEmail())
+
+                .orderStatus(order.getOrderStatus())
+                .orderCategory(order.getOrderCategory())
                 .build();
     }
 
@@ -188,6 +194,9 @@ public class OrderMapper {
         order.setBrokerLongitude(orderUpdate.getBrokerLongitude() == null ? order.getBrokerLongitude() : orderUpdate.getBrokerLongitude());
         order.setShipperPhones(orderUpdate.getShipperPhones() == null ? order.getShipperPhones() : orderUpdate.getShipperPhones());
         order.setBrokerEmail(orderUpdate.getBrokerEmail() == null ? order.getBrokerEmail() : orderUpdate.getBrokerEmail());
+
+        order.setOrderStatus(orderUpdate.getOrderStatus() == null ? order.getOrderStatus() : orderUpdate.getOrderStatus());
+        order.setOrderCategory(orderUpdate.getOrderCategory() == null ? order.getOrderCategory() : orderUpdate.getOrderCategory());
         return order;
     }
 

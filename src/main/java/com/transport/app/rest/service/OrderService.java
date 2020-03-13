@@ -10,8 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -43,6 +45,20 @@ public class OrderService {
 
     public List<Order> findAll() {
         return orderRepository.findAll();
+    }
+
+    public List<Order> findAllByOrderStatus(String status) {
+        return orderRepository.findAllByOrderStatus(status);
+    }
+
+    public List<Order> findAllByOrderStatusIn(String statuses) {
+        return orderRepository.findAllByOrderStatusIn(Arrays.stream(statuses.split(","))
+                .map(m -> m.trim())
+                .collect(Collectors.toList()));
+    }
+
+    public int countByOrderStatus(String status) {
+        return orderRepository.countByOrderStatus(status);
     }
 
     public List<Order> findAllPaginated(int page) {

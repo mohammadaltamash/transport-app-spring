@@ -5,11 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Positive;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -141,8 +137,6 @@ public class OrderDto {
     //    Broker email                  required
     private String brokerEmail;
 
-
-}
-enum dto {;
-    private interface Id { @Positive Long getId(); }
+    private String orderStatus;
+    private String orderCategory;
 }
