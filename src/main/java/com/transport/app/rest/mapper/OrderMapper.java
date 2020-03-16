@@ -74,6 +74,7 @@ public class OrderMapper {
 
                 .orderStatus(orderDto.getOrderStatus())
                 .orderCategory(orderDto.getOrderCategory())
+                .orderDriver(orderDto.getOrderDriver())
                 .build();
     }
 
@@ -142,6 +143,7 @@ public class OrderMapper {
 
                 .orderStatus(order.getOrderStatus())
                 .orderCategory(order.getOrderCategory())
+                .orderDriver(order.getOrderDriver())
                 .build();
     }
 
@@ -197,6 +199,7 @@ public class OrderMapper {
 
         order.setOrderStatus(orderUpdate.getOrderStatus() == null ? order.getOrderStatus() : orderUpdate.getOrderStatus());
         order.setOrderCategory(orderUpdate.getOrderCategory() == null ? order.getOrderCategory() : orderUpdate.getOrderCategory());
+        order.setOrderDriver(orderUpdate.getOrderDriver() == null ? order.getOrderDriver() : orderUpdate.getOrderDriver());
         return order;
     }
 

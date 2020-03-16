@@ -139,4 +139,5 @@ public class OrderDto {
 
     private String orderStatus;
     private String orderCategory;
+    private String orderDriver;
 }

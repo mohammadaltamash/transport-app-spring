@@ -239,6 +239,9 @@ public class Order {
     @Column(name = "ORDER_CATEGORY")
     private String orderCategory;
 
+    @Column(name = "ORDER_DRIVER")
+    private String orderDriver;
+
     public enum ORDER_STATUS {
         NEW("NEW"), ASKED_TO_BOOK("ASSIGNED"), ACCEPTED("ACCEPTED"), PICKED_UP("PICKED UP"), DELIVERED("DELIVERED");
         private String name;
