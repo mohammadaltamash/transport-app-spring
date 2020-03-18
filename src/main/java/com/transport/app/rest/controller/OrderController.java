@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 1800 * 2 * 24)
+@CrossOrigin
+//        (origins = "*", allowedHeaders = "*", maxAge = 1800 * 2 * 24)
 @RestController
 @RequestMapping("/order")
 public class OrderController {
