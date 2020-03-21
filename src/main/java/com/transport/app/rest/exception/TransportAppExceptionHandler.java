@@ -75,6 +75,17 @@ public class TransportAppExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<CustomErrorResponse> handleAlreadyExistsException(AlreadyExistsException e, WebRequest request) {
+        CustomErrorResponse response = new CustomErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                e.getMessage(),
+                getErrorDetail(e, Collections.singletonMap("id", e.getId()))
+        );
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
     private Map<String, Object> getErrorDetail(Exception e, Map<String, Object> errors) {
         Map<String, Object> errorDetail = new HashMap<>();
         errorDetail.put("exception", e.getClass().getSimpleName());
