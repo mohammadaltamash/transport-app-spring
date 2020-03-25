@@ -14,6 +14,7 @@ public class UserDto {
     private String userName;
     private String password;
     private String resetToken;
+    private String jwtToken;
     private String fullName;
     private String companyName;
     private String address;

@@ -40,7 +40,7 @@ public class OrderController {
 
     @PutMapping("/update")
     public OrderDto update(@RequestBody Order order) {
-        OrderDto orderDto = OrderMapper.toOrderDto(order);
+//        OrderDto orderDto = OrderMapper.toOrderDto(order);
         return OrderMapper.toOrderDto(orderService.update(order));
     }
 

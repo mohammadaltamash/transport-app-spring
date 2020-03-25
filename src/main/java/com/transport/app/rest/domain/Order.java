@@ -242,6 +242,9 @@ public class Order {
     @Column(name = "ORDER_DRIVER")
     private String orderDriver;
 
+    @Column(name = "ASKED_TO_BOOK")
+    private Long askedToBook;
+
     public enum ORDER_STATUS {
         NEW("NEW"), ASKED_TO_BOOK("ASSIGNED"), ACCEPTED("ACCEPTED"), PICKED_UP("PICKED UP"), DELIVERED("DELIVERED");
         private String name;

@@ -13,6 +13,7 @@ public class UserMapper {
                 .userName(userDto.getUserName())
                 .password(userDto.getPassword())
                 .resetToken(userDto.getResetToken())
+                .jwtToken(userDto.getJwtToken())
                 .fullName(userDto.getFullName())
                 .companyName(userDto.getCompanyName())
                 .address(userDto.getAddress())
@@ -31,6 +32,7 @@ public class UserMapper {
                 .userName(user.getUserName())
                 .password(user.getPassword())
                 .resetToken(user.getResetToken())
+                .jwtToken(user.getJwtToken())
                 .fullName(user.getFullName())
                 .companyName(user.getCompanyName())
                 .address(user.getAddress())
@@ -48,6 +50,7 @@ public class UserMapper {
         user.setUserName(userUpdate.getUserName() == null ? user.getUserName() : userUpdate.getUserName());
         user.setPassword(userUpdate.getPassword() == null ? user.getPassword() : userUpdate.getPassword());
         user.setResetToken(userUpdate.getResetToken() == null ? user.getResetToken() : userUpdate.getResetToken());
+        user.setJwtToken(userUpdate.getJwtToken() == null ? user.getJwtToken() : userUpdate.getJwtToken());
         user.setFullName(userUpdate.getFullName() == null ? user.getFullName() : userUpdate.getFullName());
         user.setCompanyName(userUpdate.getCompanyName() == null ? user.getCompanyName() : userUpdate.getCompanyName());
         user.setAddress(userUpdate.getAddress() == null ? user.getAddress() : userUpdate.getAddress());

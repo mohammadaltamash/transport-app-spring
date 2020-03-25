@@ -26,6 +26,8 @@ public class User {
     private String password;
     @Column(name = "RESET_TOKEN")
     private String resetToken;
+    @Transient
+    private String jwtToken;
     @Column(name = "FULL_NAME")
     private String fullName;
     @Column(name = "COMPANY_NAME")

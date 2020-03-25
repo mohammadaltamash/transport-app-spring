@@ -75,6 +75,7 @@ public class OrderMapper {
                 .orderStatus(orderDto.getOrderStatus())
                 .orderCategory(orderDto.getOrderCategory())
                 .orderDriver(orderDto.getOrderDriver())
+                .askedToBook(orderDto.getAskedToBook())
                 .build();
     }
 
@@ -144,6 +145,7 @@ public class OrderMapper {
                 .orderStatus(order.getOrderStatus())
                 .orderCategory(order.getOrderCategory())
                 .orderDriver(order.getOrderDriver())
+                .askedToBook(order.getAskedToBook())
                 .build();
     }
 
@@ -200,6 +202,7 @@ public class OrderMapper {
         order.setOrderStatus(orderUpdate.getOrderStatus() == null ? order.getOrderStatus() : orderUpdate.getOrderStatus());
         order.setOrderCategory(orderUpdate.getOrderCategory() == null ? order.getOrderCategory() : orderUpdate.getOrderCategory());
         order.setOrderDriver(orderUpdate.getOrderDriver() == null ? order.getOrderDriver() : orderUpdate.getOrderDriver());
+        order.setAskedToBook(orderUpdate.getAskedToBook() == null ? order.getAskedToBook() : orderUpdate.getAskedToBook());
         return order;
     }
 
