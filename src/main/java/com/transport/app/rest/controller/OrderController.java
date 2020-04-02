@@ -1,9 +1,13 @@
 package com.transport.app.rest.controller;
 
 import com.transport.app.rest.domain.Order;
+import com.transport.app.rest.domain.User;
+import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.OrderDto;
 import com.transport.app.rest.mapper.OrderMapper;
 import com.transport.app.rest.service.OrderService;
+import com.transport.app.rest.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,15 +20,17 @@ import java.util.List;
 public class OrderController {
 
     private OrderService orderService;
+    private UserService userService;
 
-    OrderController(OrderService orderService) {
+    OrderController(OrderService orderService, UserService userService) {
         this.orderService = orderService;
+        this.userService = userService;
     }
 
 //    @CrossOrigin(origins = "*")
 //    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/create")
-    public OrderDto create(@Valid @RequestBody Order order) {
+    public OrderDto create(@Valid @RequestBody Order order, Authentication authentication) {
 //        OrderDto orderDto = OrderMapper.toOrderDto(order);
         /*Map<String, String> pickupPhones = new HashMap<>();
         pickupPhones.put("Phone 1", "abcd");
@@ -35,6 +41,12 @@ public class OrderController {
 //        map.put("2423424", "Phone 2 notes");
 //        order.getPickupPhones().putAll(map);
 //        deleteAll();
+        String userName = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+        User createdBy = userService.findByEmail(userName);
+        if (createdBy == null) {
+            throw new NotFoundException(User.class, userName);
+        }
+        order.setCreatedBy(createdBy);
         return OrderMapper.toOrderDto(orderService.create(order));
     }
 

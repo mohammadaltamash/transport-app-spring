@@ -76,6 +76,9 @@ public class OrderMapper {
                 .orderCategory(orderDto.getOrderCategory())
                 .orderDriver(orderDto.getOrderDriver())
                 .askedToBook(orderDto.getAskedToBook())
+                .createdBy(orderDto.getCreatedBy())
+                .createdAt(orderDto.getCreatedAt())
+                .updatedAt(orderDto.getUpdatedAt())
                 .build();
     }
 
@@ -146,6 +149,9 @@ public class OrderMapper {
                 .orderCategory(order.getOrderCategory())
                 .orderDriver(order.getOrderDriver())
                 .askedToBook(order.getAskedToBook())
+                .createdBy(order.getCreatedBy())
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
                 .build();
     }
 
@@ -203,6 +209,9 @@ public class OrderMapper {
         order.setOrderCategory(orderUpdate.getOrderCategory() == null ? order.getOrderCategory() : orderUpdate.getOrderCategory());
         order.setOrderDriver(orderUpdate.getOrderDriver() == null ? order.getOrderDriver() : orderUpdate.getOrderDriver());
         order.setAskedToBook(orderUpdate.getAskedToBook() == null ? order.getAskedToBook() : orderUpdate.getAskedToBook());
+        order.setCreatedBy(orderUpdate.getCreatedBy() == null ? order.getCreatedBy() : orderUpdate.getCreatedBy());
+        order.setCreatedAt(orderUpdate.getCreatedAt() == null ? order.getCreatedAt() : orderUpdate.getCreatedAt());
+        order.setUpdatedAt(orderUpdate.getUpdatedAt() == null ? order.getUpdatedAt() : orderUpdate.getUpdatedAt());
         return order;
     }
 

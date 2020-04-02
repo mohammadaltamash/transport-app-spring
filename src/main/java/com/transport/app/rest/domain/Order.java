@@ -2,11 +2,14 @@ package com.transport.app.rest.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -238,12 +241,20 @@ public class Order {
     private String orderStatus = ORDER_STATUS.NEW.getName();
     @Column(name = "ORDER_CATEGORY")
     private String orderCategory;
-
     @Column(name = "ORDER_DRIVER")
     private String orderDriver;
-
     @Column(name = "ASKED_TO_BOOK")
     private Long askedToBook;
+//    @Column(name = "CREATED_BY")
+    @ManyToOne()
+    @JoinColumn(name="CREATED_BY")
+    private User createdBy;
+    @Column(name = "CREATED_AT")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @Column(name = "UPDATED_AT")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public enum ORDER_STATUS {
         NEW("NEW"), ASKED_TO_BOOK("ASSIGNED"), ACCEPTED("ACCEPTED"), PICKED_UP("PICKED UP"), DELIVERED("DELIVERED");

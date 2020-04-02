@@ -1,10 +1,12 @@
 package com.transport.app.rest.mapper;
 
+import com.transport.app.rest.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -141,4 +143,7 @@ public class OrderDto {
     private String orderCategory;
     private String orderDriver;
     private Long askedToBook;
+    private User createdBy;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
