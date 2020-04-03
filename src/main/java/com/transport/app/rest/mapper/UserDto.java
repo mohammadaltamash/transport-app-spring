@@ -1,8 +1,10 @@
 package com.transport.app.rest.mapper;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -24,4 +26,5 @@ public class UserDto {
     private Map<String, String> phones;
     private String email;
     private String type;
+    private List<Long> orders;
 }

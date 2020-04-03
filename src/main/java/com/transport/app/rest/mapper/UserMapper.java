@@ -1,5 +1,6 @@
 package com.transport.app.rest.mapper;
 
+import com.transport.app.rest.domain.Order;
 import com.transport.app.rest.domain.User;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class UserMapper {
                 .phones(userDto.getPhones())
                 .email(userDto.getEmail())
                 .type(userDto.getType())
+//                .orders(OrderMapper.toOrders(userDto.getOrders()))
                 .build();
     }
 
@@ -42,6 +44,7 @@ public class UserMapper {
                 .phones(user.getPhones())
                 .email(user.getEmail())
                 .type(user.getType())
+                .orders(user.getOrders().stream().map(o -> o.getId()).collect(Collectors.toList()))
                 .build();
     }
 
@@ -60,6 +63,7 @@ public class UserMapper {
         user.setPhones(userUpdate.getPhones() == null ? user.getPhones() : userUpdate.getPhones());
         user.setEmail(userUpdate.getEmail() == null ? user.getEmail() : userUpdate.getEmail());
         user.setType(userUpdate.getType() == null ? user.getType() : userUpdate.getType());
+        user.setOrders(userUpdate.getOrders() == null ? user.getOrders() : userUpdate.getOrders());
         return user;
     }
 

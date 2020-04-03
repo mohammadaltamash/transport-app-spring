@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -46,7 +47,13 @@ public class OrderController {
         if (createdBy == null) {
             throw new NotFoundException(User.class, userName);
         }
+//        createdBy.getOrders().add(order);
+//        this.userService.save(createdBy);
         order.setCreatedBy(createdBy);
+        ArrayList<Order> userOrders = new ArrayList<>();
+        userOrders.add(order);
+        createdBy.setOrders(userOrders);
+
         return OrderMapper.toOrderDto(orderService.create(order));
     }
 

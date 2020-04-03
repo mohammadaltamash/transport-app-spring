@@ -246,8 +246,9 @@ public class Order {
     @Column(name = "ASKED_TO_BOOK")
     private Long askedToBook;
 //    @Column(name = "CREATED_BY")
-    @ManyToOne()
-    @JoinColumn(name="CREATED_BY")
+    @ManyToOne
+//            (fetch = FetchType.LAZY)
+    @JoinColumn(name="CREATED_BY_ID")
     private User createdBy;
     @Column(name = "CREATED_AT")
     @CreationTimestamp

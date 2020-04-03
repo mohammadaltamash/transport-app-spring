@@ -1,6 +1,5 @@
 package com.transport.app.rest.mapper;
 
-import com.transport.app.rest.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +42,7 @@ public class OrderDto {
     //    Pickup dates                  required
 //    @Temporal(TemporalType.TIMESTAMP)
     private Map<String, Date> pickupDates;
-//    private Date pickupStartDate;
+    //    private Date pickupStartDate;
 //    private Date pickupEndDate;
     //    Pickup dates restrictions
     private String pickupDatesRestrictions;
@@ -69,7 +68,7 @@ public class OrderDto {
     //    Delivery dates                required
 //    private List<Date> deliveryDates;
     private Map<String, Date> deliveryDates;
-//    private Date deliveryStartDate;
+    //    private Date deliveryStartDate;
 //    private Date deliveryEndDate;
     //    Delivery dates restrictions
     private String deliveryDatesRestrictions;
@@ -143,7 +142,7 @@ public class OrderDto {
     private String orderCategory;
     private String orderDriver;
     private Long askedToBook;
-    private User createdBy;
+    private Long createdById;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

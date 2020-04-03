@@ -76,7 +76,7 @@ public class OrderMapper {
                 .orderCategory(orderDto.getOrderCategory())
                 .orderDriver(orderDto.getOrderDriver())
                 .askedToBook(orderDto.getAskedToBook())
-                .createdBy(orderDto.getCreatedBy())
+//                .createdBy(UserMapper.toUser(orderDto.getCreatedBy()))
                 .createdAt(orderDto.getCreatedAt())
                 .updatedAt(orderDto.getUpdatedAt())
                 .build();
@@ -149,7 +149,7 @@ public class OrderMapper {
                 .orderCategory(order.getOrderCategory())
                 .orderDriver(order.getOrderDriver())
                 .askedToBook(order.getAskedToBook())
-                .createdBy(order.getCreatedBy())
+                .createdById(order.getCreatedBy().getId())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .build();

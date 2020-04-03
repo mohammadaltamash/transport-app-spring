@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -48,6 +50,14 @@ public class User {
     private String email;
     @Column(name = "TYPE")
     private String type;
+//    @Column(name = "ORDERS")
+    @OneToMany
+            (mappedBy = "createdBy",
+            cascade = CascadeType.ALL
+//            orphanRemoval = true
+            )
+//    @JoinColumn(name="CREATED_BY_ID")
+    private List<Order> orders;
 
     public enum Type {
         BROKER, CARRIER, DRIVER
