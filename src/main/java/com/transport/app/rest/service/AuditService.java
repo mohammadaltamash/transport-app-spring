@@ -10,11 +10,11 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class AuditService {
@@ -54,12 +54,13 @@ public class AuditService {
         AuditQuery query = reader.createQuery().forRevisionsOfEntityWithChanges(clazz, true);
         query.add(AuditEntity.property("id").eq(orderId));
         List<Object[]> results = query.getResultList();
-        for (Object[] result : results) {
+//        for (Object[] result : results) {
+        for (int i = 0; i < results.size(); i++) {
             AuditResponse.AuditResponseBuilder response = AuditResponse.builder();
-            Order order = (Order) result[0];
-            CustomRevisionEntity revEntity = (CustomRevisionEntity) result[1];
-            RevisionType revType = (RevisionType) result[2];
-            Set<String> properties = (Set<String>) result[3];
+            Order order = (Order) results.get(i)[0];
+            CustomRevisionEntity revEntity = (CustomRevisionEntity) results.get(i)[1];
+            RevisionType revType = (RevisionType) results.get(i)[2];
+            Set<String> properties = (Set<String>) results.get(i)[3];
 //            clazz.getMethod("getOrderStatus").invoke(order)
             response.revision(revEntity.getId());
             System.out.println("Revision            :" + revEntity.getId());
@@ -72,23 +73,38 @@ public class AuditService {
             System.out.println("Changed properties");
 
             List<AuditResponse.PropertyValue> propertyValues = new ArrayList<>();
+            Order previousRevOrder = null;
+            if (RevisionType.MOD == revType) {
+                previousRevOrder = (Order) results.get(i - 1)[0];
+            }
             for (String property : properties) {
+                if ("updatedAt".equals(property)) {
+                    continue;
+                }
                 AuditResponse.PropertyValue propertyValue = new AuditResponse.PropertyValue();
                 propertyValue.setPropertyName(property);
-                Object[] nameValue = getNameValue(property, order);
-                propertyValue.setValue(nameValue[0]);
-                propertyValue.setFormattedPropertyName((String) nameValue[1]);
-                System.out.println("============ " + property + " : " + nameValue[0] + "    Formatted property: " + nameValue[1]);
+                Object value = getValue(property, order);
+                propertyValue.setValue(value);
+                String formattedName = getFormattedName(property, order);
+                propertyValue.setFormattedPropertyName(formattedName);
+                System.out.println("============ " + property + " : " + value + "    Formatted property: " + formattedName);
+                if (RevisionType.MOD == revType) {
+                    propertyValue.setPreviousValue(getValue(property, previousRevOrder));
+                }
                 propertyValues.add(propertyValue);
             }
 //            System.out.println("Order               :" + order.getId() + "      Order status:         " + order.getOrderStatus());
             response.changedProperties(propertyValues);
             auditResponses.add(response.build());
         }
-//        Object initialValue = null;
-//        for (int i = 1; i < results.size(); i++) {
-//            getAuditRecord(results.get(i), response);
-//        }
+
+        /*for (int i = 0; i < auditResponses.size(); i++) {
+            if (RevisionType.MOD.toString().equals(auditResponses.get(i).getOperation())) {
+                List<AuditResponse.PropertyValue> changedProperties = auditResponses.get(i).getChangedProperties();
+                for (AuditResponse.PropertyValue changedProperty : changedProperties) {
+                }
+            }
+        }*/
         return auditResponses;
     }
 
@@ -117,195 +133,248 @@ public class AuditService {
         System.out.println("Order               :" + order.getId() + "      Order status:         " + order.getOrderStatus());
     }*/
 
-    private static Object[] getNameValue(String fieldName, Order order) {
-        switch(fieldName) {
+    private static Object getValue(String fieldName, Order order) {
+        switch (fieldName) {
             case "id":
-                return new Object[] {order.getId(), "Order #"};
-            //    Broker Order ID               required
-            case "brokerOrderId"://    Broker Order ID               required
-                return new Object[] {order.getBrokerOrderId(), "Broker Order ID"}; //    Broker Order ID               required
-            //    Enclosed trailer
-            case "enclosedTrailer"://    Enclosed trailer
-                return new Object[] {order.getEnclosedTrailer(), "Enclosed Trailer"}; //    Enclosed trailer
-            //    M-22 inspection
+                return order.getId();
+            case "brokerOrderId":
+                return order.getBrokerOrderId();
+            case "enclosedTrailer":
+                return order.getEnclosedTrailer();
             case "m22Inspection":
-                return new Object[] {order.getM22Inspection(), "M-22 Inspection"};
-
-            //    Pickup Contact & Location
-//    Contact name
+                return order.getM22Inspection();
             case "pickupContactName":
-                return new Object[] {order.getPickupContactName(), "Pickup Contact Name"};
-            //    Company name
+                return order.getPickupContactName();
             case "pickupCompanyName":
-                return new Object[] {order.getPickupCompanyName(), "Pickup Company Name"};
-            //    Pickup address                required
+                return order.getPickupCompanyName();
             case "pickupAddress":
-                return new Object[] {order.getPickupAddress(), "Pickup Address"};
-            //    Zip                           required
+                return order.getPickupAddress();
             case "pickupZip":
-                return new Object[] {order.getPickupZip(), "Pickup Zip"};
+                return order.getPickupZip();
             case "pickupLatitude":
-                return new Object[] {order.getPickupLatitude(), "Pickup Latitude"};
+                return order.getPickupLatitude();
             case "pickupLongitude":
-                return new Object[] {order.getPickupLongitude(), "Pickup Longitude"};
-            //    Phone 1 (can be multiple)     required
-            /*case "List<String> pickupPhones, "*/
-//    Phone 1 notes
-            /*case "List<String> pickupPhoneNotes, "*/
+                return order.getPickupLongitude();
             case "pickupPhones":
-                return new Object[] {order.getPickupPhones(), "Pickup Phones"};
-            //    Signature not required
+                return order.getPickupPhones();
             case "pickupSignatureNotRequired":
-                return new Object[] {order.getPickupSignatureNotRequired(), "Pickup Signature Not Required"};
-            //    Pickup dates                  required
-//    @Temporal(TemporalType.TIMESTAMP)
+                return order.getPickupSignatureNotRequired();
             case "pickupDates":
-                return new Object[] {order.getPickupDates(), "Pickup Dates"};
-            //    case "Date pickupStartDate, "
-//    case "Date pickupEndDate, "
-            //    Pickup dates restrictions
+                return order.getPickupDates();
             case "pickupDatesRestrictions":
-                return new Object[] {order.getPickupDatesRestrictions(), "Pickup Dates Restrictions"};
-
-            //    Delivery Contact & Location
-//    Contact name
+                return order.getPickupDatesRestrictions();
             case "deliveryContactName":
-                return new Object[] {order.getDeliveryContactName(), "Delivery Nontact Name"};
-            //    Company name
+                return order.getDeliveryContactName();
             case "deliveryCompanyName":
-                return new Object[] {order.getDeliveryCompanyName(), "Delivery Company Name"};
-            //    Delivery address              required
+                return order.getDeliveryCompanyName();
             case "deliveryAddress":
-                return new Object[] {order.getDeliveryAddress(), "Delivery Address"};
-            //    Zip                           required
+                return order.getDeliveryAddress();
             case "deliveryZip":
-                return new Object[] {order.getDeliveryZip(), "Delivery Zip"};
+                return order.getDeliveryZip();
             case "deliveryLatitude":
-                return new Object[] {order.getDeliveryLatitude(), "Delivery Latitude"};
+                return order.getDeliveryLatitude();
             case "deliveryLongitude":
-                return new Object[] {order.getDeliveryLongitude(), "Delivery Longitude"};
-            //    Phone 1 (can be multiple)     required
-            /*case "List<String> deliveryPhones, "*/
-//    Phone 1 notes
-            /*case "List<String> deliveryPhoneNotes, "*/
+                return order.getDeliveryLongitude();
             case "deliveryPhones":
-                return new Object[] {order.getDeliveryPhones(), "Delivery Phones"};
-            //    Signature not required
+                return order.getDeliveryPhones();
             case "deliverySignatureNotRequired":
-                return new Object[] {order.getDeliverySignatureNotRequired(), "Delivery Signature Not Required"};
-            //    Delivery dates                required
-//    case "List<Date> deliveryDates, "
+                return order.getDeliverySignatureNotRequired();
             case "deliveryDates":
-                return new Object[] {order.getDeliveryDates(), "Delivery Dates"};
-            //    case "Date deliveryStartDate, "
-//    case "Date deliveryEndDate, "
-            //    Delivery dates restrictions
+                return order.getDeliveryDates();
             case "deliveryDatesRestrictions":
-                return new Object[] {order.getDeliveryDatesRestrictions(), "Delivery Dates Restrictions"};
-
-            //    Add New Vehicle
-//    Year
+                return order.getDeliveryDatesRestrictions();
             case "vehicleYear":
-                return new Object[] {order.getVehicleYear(), "Vehicle Year"};
-            //    Make                          required
+                return order.getVehicleYear();
             case "vehicleMake":
-                return new Object[] {order.getVehicleMake(), "Vehicle Make"};
-            //    Model
+                return order.getVehicleMake();
             case "vehicleModel":
-                return new Object[] {order.getVehicleModel(), "Vehicle Model"};
-            //    Autotype
+                return order.getVehicleModel();
             case "vehicleAutoType":
-                return new Object[] {order.getVehicleAutoType(), "Auto Type"};
-            //    Color
+                return order.getVehicleAutoType();
             case "vehicleColor":
-                return new Object[] {order.getVehicleColor(), "Vehicle Color"};
-            //    VIN
+                return order.getVehicleColor();
             case "vehicleVIN":
-                return new Object[] {order.getVehicleVIN(), "Vehicle VIN"};
-            //    LOT number
+                return order.getVehicleVIN();
             case "vehicleLOTNumber":
-                return new Object[] {order.getVehicleLOTNumber(), "Vehicle LOT Number"};
-            //    Buyer ID
+                return order.getVehicleLOTNumber();
             case "vehicleBuyerId":
-                return new Object[] {order.getVehicleBuyerId(), "Vehicle Buyer Id"};
-            //    Inoperable
+                return order.getVehicleBuyerId();
             case "vehicleInoperable":
-                return new Object[] {order.getVehicleInoperable(), "Vehicle Inoperable"};
-
-            //    Dispatch Information
-//    Dispatch Instructions
+                return order.getVehicleInoperable();
             case "dispatchInstructions":
-                return new Object[] {order.getDispatchInstructions(), "Dispatch Instructions"};
-
-            //    Pricing Information
-//    Carrier pay                   required
+                return order.getDispatchInstructions();
             case "carrierPay":
-                return new Object[] {order.getCarrierPay(), "Carrier Pay"};
-            //    Amount on pickup
+                return order.getCarrierPay();
             case "amountOnPickup":
-                return new Object[] {order.getAmountOnPickup(), "Amount On Pickup"};
-            //    Payment on pickup method
+                return order.getAmountOnPickup();
             case "paymentOnPickupMethod":
-                return new Object[] {order.getPaymentOnPickupMethod(), "Payment On Pickup Method"};
-            //    Amount on delivery
+                return order.getPaymentOnPickupMethod();
             case "amountOnDelivery":
-                return new Object[] {order.getAmountOnDelivery(), "Amount On Delivery"};
-            //    Payment on delivery method
+                return order.getAmountOnDelivery();
             case "paymentOnDeliveryMethod":
-                return new Object[] {order.getPaymentOnDeliveryMethod(), "Payment On Delivery Method"};
-            /////////////////////////////////////////////
+                return order.getPaymentOnDeliveryMethod();
             case "paymentTermBusinessDays":
-                return new Object[] {order.getPaymentTermBusinessDays(), "Payment Term Business Days"};
+                return order.getPaymentTermBusinessDays();
             case "paymentMethod":
-                return new Object[] {order.getPaymentMethod(), "Payment Method"};
+                return order.getPaymentMethod();
             case "paymentTermBegins":
-                return new Object[] {order.getPaymentTermBegins(), "Payment Term Begins"};
+                return order.getPaymentTermBegins();
             case "paymentNotes":
-                return new Object[] {order.getPaymentNotes(), "Payment Notes"};
-            /////////////////////////////////////////////
-
-            //    Shipper Information
-//    Broker contact name
+                return order.getPaymentNotes();
             case "brokerContactName":
-                return new Object[] {order.getBrokerContactName(), "Broker Contact Name"};
-            //    Broker company name           required
+                return order.getBrokerContactName();
             case "brokerCompanyName":
-                return new Object[] {order.getBrokerCompanyName(), "Broker Company Name"};
-            //    Broker address                required
+                return order.getBrokerCompanyName();
             case "brokerAddress":
-                return new Object[] {order.getBrokerAddress(), "Broker Address"};
-            //    Zip                           required
+                return order.getBrokerAddress();
             case "brokerZip":
-                return new Object[] {order.getBrokerZip(), "Broker Zip"};
+                return order.getBrokerZip();
             case "brokerLatitude":
-                return new Object[] {order.getBrokerLatitude(), "Broker Latitude"};
+                return order.getBrokerLatitude();
             case "brokerLongitude":
-                return new Object[] {order.getBrokerLongitude(), "Broker Longitude"};
-            //    Phone 1 (can be multiple)     required
-            /*case "List<String> shipperPhones, "*/
-//    Phone 1 notes
-            /*case "List<String> shipperPhoneNotes, "*/
+                return order.getBrokerLongitude();
             case "shipperPhones":
-                return new Object[] {order.getShipperPhones(), "Shipper Phones"};
-            //    Broker email                  required
+                return order.getShipperPhones();
             case "brokerEmail":
-                return new Object[] {order.getBrokerEmail(), "Broker Email"};
-
+                return order.getBrokerEmail();
             case "orderStatus":
-                return new Object[] {order.getOrderStatus(), "Order Status"};
+                return order.getOrderStatus();
             case "orderCategory":
-                return new Object[] {order.getOrderCategory(), "Order Category"};
+                return order.getOrderCategory();
             case "orderDriver":
-                return new Object[] {order.getOrderDriver(), "Order Driver"};
+                return order.getOrderDriver();
             case "askedToBook":
-                return new Object[] {order.getAskedToBook(), "Asked To Book"};
+                return order.getAskedToBook();
             case "createdBy":
-                return new Object[] {order.getCreatedBy(), "Created By"};
+                return order.getCreatedBy();
 //    case "Long updatedById, "
             case "createdAt":
-                return new Object[] {order.getCreatedAt(), "Created At"};
+                return order.getCreatedAt();
             case "updatedAt":
-                return new Object[] {order.getUpdatedAt(), "Updated At"};
+                return order.getUpdatedAt();
+            default:
+                return null;
+        }
+    }
+
+    private static String getFormattedName(String fieldName, Order order) {
+        switch (fieldName) {
+            case "id":
+                return "Order #";
+            case "brokerOrderId":
+                return "Broker Order ID";
+            case "enclosedTrailer":
+                return "Enclosed Trailer";
+            case "m22Inspection":
+                return "M-22 Inspection";
+            case "pickupContactName":
+                return "Pickup Contact Name";
+            case "pickupCompanyName":
+                return "Pickup Company Name";
+            case "pickupAddress":
+                return "Pickup Address";
+            case "pickupZip":
+                return "Pickup Zip";
+            case "pickupLatitude":
+                return "Pickup Latitude";
+            case "pickupLongitude":
+                return "Pickup Longitude";
+            case "pickupPhones":
+                return "Pickup Phones";
+            case "pickupSignatureNotRequired":
+                return "Pickup Signature Not Required";
+            case "pickupDates":
+                return "Pickup Dates";
+            case "pickupDatesRestrictions":
+                return "Pickup Dates Restrictions";
+            case "deliveryContactName":
+                return "Delivery Nontact Name";
+            case "deliveryCompanyName":
+                return "Delivery Company Name";
+            case "deliveryAddress":
+                return "Delivery Address";
+            case "deliveryZip":
+                return "Delivery Zip";
+            case "deliveryLatitude":
+                return "Delivery Latitude";
+            case "deliveryLongitude":
+                return "Delivery Longitude";
+            case "deliveryPhones":
+                return "Delivery Phones";
+            case "deliverySignatureNotRequired":
+                return "Delivery Signature Not Required";
+            case "deliveryDates":
+                return "Delivery Dates";
+            case "deliveryDatesRestrictions":
+                return "Delivery Dates Restrictions";
+            case "vehicleYear":
+                return "Vehicle Year";
+            case "vehicleMake":
+                return "Vehicle Make";
+            case "vehicleModel":
+                return "Vehicle Model";
+            case "vehicleAutoType":
+                return "Auto Type";
+            case "vehicleColor":
+                return "Vehicle Color";
+            case "vehicleVIN":
+                return "Vehicle VIN";
+            case "vehicleLOTNumber":
+                return "Vehicle LOT Number";
+            case "vehicleBuyerId":
+                return "Vehicle Buyer Id";
+            case "vehicleInoperable":
+                return "Vehicle Inoperable";
+            case "dispatchInstructions":
+                return "Dispatch Instructions";
+            case "carrierPay":
+                return "Carrier Pay";
+            case "amountOnPickup":
+                return "Amount On Pickup";
+            case "paymentOnPickupMethod":
+                return "Payment On Pickup Method";
+            case "amountOnDelivery":
+                return "Amount On Delivery";
+            case "paymentOnDeliveryMethod":
+                return "Payment On Delivery Method";
+            case "paymentTermBusinessDays":
+                return "Payment Term Business Days";
+            case "paymentMethod":
+                return "Payment Method";
+            case "paymentTermBegins":
+                return "Payment Term Begins";
+            case "paymentNotes":
+                return "Payment Notes";
+            case "brokerContactName":
+                return "Broker Contact Name";
+            case "brokerCompanyName":
+                return "Broker Company Name";
+            case "brokerAddress":
+                return "Broker Address";
+            case "brokerZip":
+                return "Broker Zip";
+            case "brokerLatitude":
+                return "Broker Latitude";
+            case "brokerLongitude":
+                return "Broker Longitude";
+            case "shipperPhones":
+                return "Shipper Phones";
+            case "brokerEmail":
+                return "Broker Email";
+            case "orderStatus":
+                return "Order Status";
+            case "orderCategory":
+                return "Order Category";
+            case "orderDriver":
+                return "Order Driver";
+            case "askedToBook":
+                return "Asked To Book";
+            case "createdBy":
+                return "Created By";
+            case "createdAt":
+                return "Created At";
+            case "updatedAt":
+                return "Updated At";
             default:
                 return null;
         }
