@@ -47,14 +47,7 @@ public class OrderController {
         if (createdBy == null) {
             throw new NotFoundException(User.class, userName);
         }
-//        createdBy.getOrders().add(order);
-//        this.userService.save(createdBy);
-        order.setCreatedBy(createdBy);
-        ArrayList<Order> userOrders = new ArrayList<>();
-        userOrders.add(order);
-        createdBy.setOrders(userOrders);
-
-        return OrderMapper.toOrderDto(orderService.create(order));
+        return OrderMapper.toOrderDto(orderService.create(order, createdBy));
     }
 
     @PutMapping("/update")

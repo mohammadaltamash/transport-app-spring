@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@Audited(withModifiedFlag = true)
 @Getter
 @Setter
 @Builder
@@ -249,7 +252,13 @@ public class Order {
     @ManyToOne
 //            (fetch = FetchType.LAZY)
     @JoinColumn(name="CREATED_BY_ID")
+    @NotAudited
     private User createdBy;
+//    @ManyToOne
+//    @JoinColumn(name="UPDATED_BY_ID")
+//    @NotAudited
+//    private User updatedBy;
+
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     private LocalDateTime createdAt;

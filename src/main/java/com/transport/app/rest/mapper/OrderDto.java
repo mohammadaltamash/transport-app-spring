@@ -1,5 +1,6 @@
 package com.transport.app.rest.mapper;
 
+import com.transport.app.rest.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -109,13 +110,9 @@ public class OrderDto {
     //    Payment on delivery method
     private String paymentOnDeliveryMethod;
     /////////////////////////////////////////////
-    @Column(name = "PAYMENT_TERM_BUSINESS_DAYS")
     private String paymentTermBusinessDays;
-    @Column(name = "PAYMENT_METHOD")
     private String paymentMethod;
-    @Column(name = "PAYMENT_TERM_BEGINS")
     private String paymentTermBegins;
-    @Column(name = "PAYMENT_NOTES")
     private String paymentNotes;
     /////////////////////////////////////////////
 
@@ -143,6 +140,7 @@ public class OrderDto {
     private String orderDriver;
     private Long askedToBook;
     private Long createdById;
+//    private Long updatedById;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

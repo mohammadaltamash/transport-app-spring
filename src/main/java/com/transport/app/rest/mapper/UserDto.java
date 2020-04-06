@@ -1,5 +1,6 @@
 package com.transport.app.rest.mapper;
 
+import com.transport.app.rest.domain.Activity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,4 +28,5 @@ public class UserDto {
     private String email;
     private String type;
     private List<Long> orders;
+    private List<Long> activities;
 }

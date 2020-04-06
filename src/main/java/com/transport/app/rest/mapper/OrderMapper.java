@@ -150,6 +150,7 @@ public class OrderMapper {
                 .orderDriver(order.getOrderDriver())
                 .askedToBook(order.getAskedToBook())
                 .createdById(order.getCreatedBy().getId())
+//                .updatedById(order.getUpdatedBy().getId())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .build();
