@@ -30,7 +30,7 @@ public class OrderService {
 //        order.setUpdatedBy(createdBy);
         ArrayList<Order> userOrders = new ArrayList<>();
         userOrders.add(order);
-        createdBy.setOrders(userOrders);
+//        createdBy.setOrders(userOrders);
         Order ordr = orderRepository.save(order);
         return orderRepository.save(ordr);
     }

@@ -3,7 +3,10 @@ package com.transport.app.rest.mapper;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.Column;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -26,5 +29,7 @@ public class UserDto {
     private Map<String, String> phones;
     private String email;
     private String type;
-    private List<Long> orders;
+//    private List<Long> orders;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

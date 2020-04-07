@@ -139,7 +139,7 @@ public class OrderDto {
     private String orderCategory;
     private String orderDriver;
     private Long askedToBook;
-    private Long createdById;
+    private UserDto createdBy;
 //    private Long updatedById;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

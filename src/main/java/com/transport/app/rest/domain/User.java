@@ -54,13 +54,13 @@ public class User {
     @Column(name = "TYPE")
     private String type;
 //    @Column(name = "ORDERS")
-    @OneToMany
-            (mappedBy = "createdBy",
-            cascade = CascadeType.ALL
-//            orphanRemoval = true
-            )
-//    @JoinColumn(name="CREATED_BY_ID")
-    private List<Order> orders;
+//    @OneToMany
+//            (mappedBy = "createdBy",
+//            cascade = CascadeType.ALL
+////            orphanRemoval = true
+//            )
+////    @JoinColumn(name="CREATED_BY_ID")
+//    private List<Order> orders;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp

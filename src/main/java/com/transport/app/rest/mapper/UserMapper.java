@@ -25,6 +25,8 @@ public class UserMapper {
                 .email(userDto.getEmail())
                 .type(userDto.getType())
 //                .orders(OrderMapper.toOrders(userDto.getOrders()))
+                .createdAt(userDto.getCreatedAt())
+                .updatedAt(userDto.getUpdatedAt())
                 .build();
     }
 
@@ -44,7 +46,9 @@ public class UserMapper {
                 .phones(user.getPhones())
                 .email(user.getEmail())
                 .type(user.getType())
-                .orders(user.getOrders().stream().map(o -> o.getId()).collect(Collectors.toList()))
+//                .orders(user.getOrders().stream().map(o -> o.getId()).collect(Collectors.toList()))
+                .createdAt(user.getCreatedAt())
+                .updatedAt(user.getUpdatedAt())
                 .build();
     }
 
@@ -63,7 +67,9 @@ public class UserMapper {
         user.setPhones(userUpdate.getPhones() == null ? user.getPhones() : userUpdate.getPhones());
         user.setEmail(userUpdate.getEmail() == null ? user.getEmail() : userUpdate.getEmail());
         user.setType(userUpdate.getType() == null ? user.getType() : userUpdate.getType());
-        user.setOrders(userUpdate.getOrders() == null ? user.getOrders() : userUpdate.getOrders());
+//        user.setOrders(userUpdate.getOrders() == null ? user.getOrders() : userUpdate.getOrders());
+        user.setCreatedAt(userUpdate.getCreatedAt() == null ? user.getCreatedAt() : userUpdate.getCreatedAt());
+        user.setUpdatedAt(userUpdate.getUpdatedAt() == null ? user.getUpdatedAt() : userUpdate.getUpdatedAt());
         return user;
     }
 

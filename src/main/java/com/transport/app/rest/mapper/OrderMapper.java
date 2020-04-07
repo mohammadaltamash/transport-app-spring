@@ -149,7 +149,7 @@ public class OrderMapper {
                 .orderCategory(order.getOrderCategory())
                 .orderDriver(order.getOrderDriver())
                 .askedToBook(order.getAskedToBook())
-                .createdById(order.getCreatedBy().getId())
+                .createdBy(UserMapper.toUserDto(order.getCreatedBy()))
 //                .updatedById(order.getUpdatedBy().getId())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
