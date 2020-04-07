@@ -3,15 +3,12 @@ package com.transport.app.rest.domain;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Entity
 //@Audited
@@ -64,9 +61,6 @@ public class User {
             )
 //    @JoinColumn(name="CREATED_BY_ID")
     private List<Order> orders;
-    @OneToMany(mappedBy = "activityBy", cascade = CascadeType.ALL)
-//    @NotAudited
-    private List<Activity> activities;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp

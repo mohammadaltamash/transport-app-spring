@@ -45,7 +45,6 @@ public class UserMapper {
                 .email(user.getEmail())
                 .type(user.getType())
                 .orders(user.getOrders().stream().map(o -> o.getId()).collect(Collectors.toList()))
-                .activities(user.getActivities().stream().map(a -> a.getId()).collect(Collectors.toList()))
                 .build();
     }
 
