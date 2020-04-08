@@ -3,11 +3,13 @@ package com.transport.app.rest.service;
 import com.transport.app.rest.domain.AuditResponse;
 import com.transport.app.rest.domain.CustomRevisionEntity;
 import com.transport.app.rest.domain.Order;
+import com.transport.app.rest.domain.User;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -21,6 +23,9 @@ public class AuditService {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Autowired
+    private UserService userService;
 
     public void getActivities(Class clazz) {
         AuditReader reader = AuditReaderFactory.get(em);
@@ -68,6 +73,9 @@ public class AuditService {
             System.out.println("Revision Date       :" + revEntity.getRevisionDate());
             response.userName(revEntity.getUserName());
             System.out.println("User                :" + revEntity.getUserName());
+            User user = userService.findByEmail(revEntity.getUserName());
+            response.fullName(user.getFullName());
+            System.out.println("User                :" + user.getFullName());
             response.operation(revType.toString());
             System.out.println("Type                :" + revType);
             System.out.println("Changed properties");

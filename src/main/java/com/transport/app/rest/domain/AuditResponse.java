@@ -16,6 +16,7 @@ public class AuditResponse {
     //    private Integer id;
     private long revision;
     private String userName;
+    private String fullName;
     private String operation;
     private List<PropertyValue> changedProperties;
     private long timestamp;

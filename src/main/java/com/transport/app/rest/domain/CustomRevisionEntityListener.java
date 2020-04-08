@@ -1,6 +1,7 @@
 package com.transport.app.rest.domain;
 
 import com.transport.app.rest.config.authenticationfacade.IAuthenticationFacade;
+import com.transport.app.rest.service.UserService;
 import org.hibernate.envers.RevisionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 

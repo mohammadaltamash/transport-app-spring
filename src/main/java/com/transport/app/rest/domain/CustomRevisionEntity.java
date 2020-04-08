@@ -18,4 +18,5 @@ public class CustomRevisionEntity extends DefaultRevisionEntity {
     private static final long serialVersionUId = 1L;
 
     private String userName;
+    private String fullName;
 }
