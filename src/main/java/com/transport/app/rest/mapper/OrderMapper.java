@@ -24,6 +24,7 @@ public class OrderMapper {
                 .pickupSignatureNotRequired(orderDto.getPickupSignatureNotRequired())
 
                 .pickupDates(orderDto.getPickupDates())
+                .preferredPickupDate(orderDto.getPreferredPickupDate())
 
 //                .pickupStartDate(orderDto.getPickupStartDate())
 //                .pickupEndDate(orderDto.getPickupEndDate())
@@ -38,6 +39,7 @@ public class OrderMapper {
                 .deliverySignatureNotRequired(orderDto.getDeliverySignatureNotRequired())
 
                 .deliveryDates(orderDto.getDeliveryDates())
+                .preferredDeliveryDate(orderDto.getPreferredDeliveryDate())
 
 //                .deliveryStartDate(orderDto.getDeliveryStartDate())
 //                .deliveryEndDate(orderDto.getDeliveryEndDate())
@@ -98,6 +100,7 @@ public class OrderMapper {
                 .pickupSignatureNotRequired(order.getPickupSignatureNotRequired())
 
                 .pickupDates(order.getPickupDates())
+                .preferredPickupDate(order.getPreferredPickupDate())
 //                .pickupStartDate(order.getPickupStartDate())
 //                .pickupEndDate(order.getPickupEndDate())
                 .pickupDatesRestrictions(order.getPickupDatesRestrictions())
@@ -111,6 +114,7 @@ public class OrderMapper {
                 .deliverySignatureNotRequired(order.getDeliverySignatureNotRequired())
 
                 .deliveryDates(order.getDeliveryDates())
+                .preferredDeliveryDate(order.getPreferredDeliveryDate())
 
 //                .deliveryStartDate(order.getDeliveryStartDate())
 //                .deliveryEndDate(order.getDeliveryEndDate())
@@ -168,6 +172,8 @@ public class OrderMapper {
         order.setPickupLongitude(orderUpdate.getPickupLongitude() == null ? order.getPickupLongitude() : orderUpdate.getPickupLongitude());
         order.setPickupPhones(orderUpdate.getPickupPhones() == null ? order.getPickupPhones() : orderUpdate.getPickupPhones());
         order.setPickupSignatureNotRequired(orderUpdate.getPickupSignatureNotRequired() == null ? order.getPickupSignatureNotRequired() : orderUpdate.getPickupSignatureNotRequired());
+        order.setPickupDates(orderUpdate.getPickupDates() == null ? order.getPickupDates() : orderUpdate.getPickupDates());
+        order.setPreferredPickupDate(orderUpdate.getPreferredPickupDate() == null ? order.getPreferredPickupDate() : orderUpdate.getPreferredPickupDate());
 //        order.setPickupStartDate(orderUpdate.getPickupStartDate() == null ? order.getPickupStartDate() : orderUpdate.getPickupStartDate());
 //        order.setPickupEndDate(orderUpdate.getPickupEndDate() == null ? order.getPickupEndDate() : orderUpdate.getPickupEndDate());
         order.setPickupDatesRestrictions(orderUpdate.getPickupDatesRestrictions() == null ? order.getPickupDatesRestrictions() : orderUpdate.getPickupDatesRestrictions());
@@ -179,6 +185,8 @@ public class OrderMapper {
         order.setDeliveryLongitude(orderUpdate.getDeliveryLongitude() == null ? order.getDeliveryLongitude() : orderUpdate.getDeliveryLongitude());
         order.setDeliveryPhones(orderUpdate.getDeliveryPhones() == null ? order.getDeliveryPhones() : orderUpdate.getDeliveryPhones());
         order.setDeliverySignatureNotRequired(orderUpdate.getDeliverySignatureNotRequired() == null ? order.getDeliverySignatureNotRequired() : orderUpdate.getDeliverySignatureNotRequired());
+        order.setDeliveryDates(orderUpdate.getDeliveryDates() == null ? order.getDeliveryDates() : orderUpdate.getDeliveryDates());
+        order.setPreferredDeliveryDate(orderUpdate.getPreferredDeliveryDate() == null ? order.getPreferredDeliveryDate() : orderUpdate.getPreferredDeliveryDate());
 //        order.setDeliveryStartDate(orderUpdate.getDeliveryStartDate() == null ? order.getDeliveryStartDate() : orderUpdate.getDeliveryStartDate());
 //        order.setDeliveryEndDate(orderUpdate.getDeliveryEndDate() == null ? order.getDeliveryEndDate() : orderUpdate.getDeliveryEndDate());
         order.setDeliveryDatesRestrictions(orderUpdate.getDeliveryDatesRestrictions() == null ? order.getDeliveryDatesRestrictions() : orderUpdate.getDeliveryDatesRestrictions());

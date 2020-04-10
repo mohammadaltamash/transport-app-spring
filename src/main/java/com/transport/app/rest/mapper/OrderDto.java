@@ -43,6 +43,7 @@ public class OrderDto {
     //    Pickup dates                  required
 //    @Temporal(TemporalType.TIMESTAMP)
     private Map<String, Date> pickupDates;
+    private Date preferredPickupDate;
     //    private Date pickupStartDate;
 //    private Date pickupEndDate;
     //    Pickup dates restrictions
@@ -69,6 +70,7 @@ public class OrderDto {
     //    Delivery dates                required
 //    private List<Date> deliveryDates;
     private Map<String, Date> deliveryDates;
+    private Date preferredDeliveryDate;
     //    private Date deliveryStartDate;
 //    private Date deliveryEndDate;
     //    Delivery dates restrictions

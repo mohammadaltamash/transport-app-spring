@@ -78,6 +78,7 @@ public class Order {
     @ElementCollection
     @Temporal(TemporalType.DATE)
     private Map<String, Date> pickupDates;                                             // Pickup dates                 required
+    private Date preferredPickupDate;
 //    @Temporal(TemporalType.DATE)
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
 //    private Date pickupStartDate;                                               // Pickup start date            required
@@ -127,7 +128,7 @@ public class Order {
     @ElementCollection
     @Temporal(TemporalType.DATE)
     private Map<String, Date> deliveryDates;                                           // Delivery dates               required
-
+    private Date preferredDeliveryDate;
     //////////////
 
 
