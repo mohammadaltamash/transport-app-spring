@@ -1,6 +1,5 @@
 package com.transport.app.rest.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -8,10 +7,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +75,10 @@ public class Order {
     @ElementCollection
     @Temporal(TemporalType.DATE)
     private Map<String, Date> pickupDates;                                             // Pickup dates                 required
+    @Column(name = "PREFERRED_PICKUP_DATE")
     private Date preferredPickupDate;
+    @Column(name = "COMMITTED_PICKUP_DATE")
+    private Date committedPickupDate;
 //    @Temporal(TemporalType.DATE)
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM-dd-yyyy")
 //    private Date pickupStartDate;                                               // Pickup start date            required
@@ -128,7 +128,10 @@ public class Order {
     @ElementCollection
     @Temporal(TemporalType.DATE)
     private Map<String, Date> deliveryDates;                                           // Delivery dates               required
+    @Column(name = "PREFERRED_DELIVERY_DATE")
     private Date preferredDeliveryDate;
+    @Column(name = "COMMITTED_DELIVERY_DATE")
+    private Date committedDeliveryDate;
     //////////////
 
 
@@ -242,23 +245,30 @@ public class Order {
 
     @Column(name = "ORDER_STATUS")
     @Builder.Default
-    private String orderStatus = ORDER_STATUS.NEW.getName();
+    private String orderStatus = OrderStatus.NEW.getName();
     @Column(name = "ORDER_CATEGORY")
     private String orderCategory;
-    @Column(name = "ORDER_DRIVER")
-    private String orderDriver;
-    @Column(name = "ASKED_TO_BOOK")
-    private Long askedToBook;
-//    @Column(name = "CREATED_BY")
+
     @ManyToOne
 //            (fetch = FetchType.LAZY)
     @JoinColumn(name="CREATED_BY_ID")
     @NotAudited
     private User createdBy;
-//    @ManyToOne
-//    @JoinColumn(name="UPDATED_BY_ID")
+
+    @Column(name = "BOOKING_REQUEST_CARRIERS")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderCarrier> bookingRequestCarriers; // by carriers (to assign order to carrier)
+//    @Column(name = "ASSIGNED_TO_CARRIER")
 //    @NotAudited
-//    private User updatedBy;
+    @ManyToOne
+    @JoinColumn(name="ASSIGNED_TO_CARRIER_ID")
+    private User assignedToCarrier; // By broker to carrier. orderStatus changes to ASSIGNED
+//    @Column(name = "ASSIGNED_TO_DRIVER")
+    @ManyToOne
+    @JoinColumn(name="ASSIGNED_TO_DRIVER_ID")
+    private User assignedToDriver; // By carrier
+    @Column(name = "DISTANCE")
+    private Long distance;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
@@ -266,17 +276,6 @@ public class Order {
     @Column(name = "UPDATED_AT")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    public enum ORDER_STATUS {
-        NEW("NEW"), ASKED_TO_BOOK("ASSIGNED"), ACCEPTED("ACCEPTED"), PICKED_UP("PICKED UP"), DELIVERED("DELIVERED");
-        private String name;
-        ORDER_STATUS(String name) {
-            this.name = name;
-        }
-        String getName() {
-            return this.name;
-        }
-    }
 
     public enum ORDER_CATEGORY {
         LOGISTICS

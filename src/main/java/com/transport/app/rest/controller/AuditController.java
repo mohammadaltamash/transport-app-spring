@@ -1,5 +1,6 @@
 package com.transport.app.rest.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.transport.app.rest.domain.AuditResponse;
 import com.transport.app.rest.service.AuditService;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,8 @@ public class AuditController {
     }
 
     @GetMapping("/get/{class}/{id}")
-    public List<AuditResponse> getActivitiesForId(@PathVariable("class") String clazz, @PathVariable("id") long id) throws ClassNotFoundException {
+    public List<AuditResponse> getActivitiesForId(@PathVariable("class") String clazz, @PathVariable("id") long id)
+            throws ClassNotFoundException, JsonProcessingException {
         return auditService.getAllActivities(Class.forName("com.transport.app.rest.domain." + clazz), id);
     }
 }

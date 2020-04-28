@@ -1,13 +1,16 @@
 package com.transport.app.rest.mapper;
 
+import com.transport.app.rest.domain.OrderCarrier;
 import com.transport.app.rest.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -44,6 +47,7 @@ public class OrderDto {
 //    @Temporal(TemporalType.TIMESTAMP)
     private Map<String, Date> pickupDates;
     private Date preferredPickupDate;
+    private Date committedPickupDate;
     //    private Date pickupStartDate;
 //    private Date pickupEndDate;
     //    Pickup dates restrictions
@@ -71,6 +75,7 @@ public class OrderDto {
 //    private List<Date> deliveryDates;
     private Map<String, Date> deliveryDates;
     private Date preferredDeliveryDate;
+    private Date committedDeliveryDate;
     //    private Date deliveryStartDate;
 //    private Date deliveryEndDate;
     //    Delivery dates restrictions
@@ -139,8 +144,12 @@ public class OrderDto {
 
     private String orderStatus;
     private String orderCategory;
-    private String orderDriver;
-    private Long askedToBook;
+
+    private List<OrderCarrierDto> bookingRequestCarriers; // by carriers (to assign order to carrier)
+    private UserDto assignedToCarrier; // By broker to carrier. orderStatus changes to ASSIGNED
+    private UserDto assignedToDriver; // By carrier
+    private Long distance;
+
     private UserDto createdBy;
 //    private Long updatedById;
     private LocalDateTime createdAt;

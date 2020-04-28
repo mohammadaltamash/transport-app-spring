@@ -13,7 +13,7 @@ import java.util.Map;
 @Builder
 public class AuditResponse {
 
-    //    private Integer id;
+    private Integer id;
     private long revision;
     private String userName;
     private String fullName;

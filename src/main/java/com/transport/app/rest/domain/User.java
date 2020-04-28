@@ -3,6 +3,8 @@ package com.transport.app.rest.domain;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
-//@Audited
+@Audited
 @Getter
 @Setter
 @Builder
@@ -53,14 +55,24 @@ public class User {
     private String email;
     @Column(name = "TYPE")
     private String type;
-//    @Column(name = "ORDERS")
-//    @OneToMany
-//            (mappedBy = "createdBy",
-//            cascade = CascadeType.ALL
-////            orphanRemoval = true
-//            )
-////    @JoinColumn(name="CREATED_BY_ID")
-//    private List<Order> orders;
+    @Column(name = "CREATED_ORDERS")
+    @OneToMany
+            (mappedBy = "createdBy",
+            cascade = CascadeType.ALL
+//            orphanRemoval = true
+            )
+//    @JoinColumn(name="CREATED_BY_ID")
+    private List<Order> createdOrders; // As broker
+
+    @Column(name = "BOOKING_REQUEST_ORDERS")
+    @OneToMany(mappedBy = "carrier", cascade = CascadeType.ALL)
+    private List<OrderCarrier> bookingRequestOrders; // As carrier
+    @Column(name = "ASSIGNED_ORDERS_AS_CARRIER")
+    @OneToMany(mappedBy = "assignedToCarrier", cascade = CascadeType.ALL)
+    private List<Order> assignedOrdersAsCarrier; // As carrier
+    @Column(name = "ASSIGNED_ORDERS_AS_DRIVER")
+    @OneToMany(mappedBy = "assignedToDriver", cascade = CascadeType.ALL)
+    private List<Order> assignedOrdersAsDriver; // As driver
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp

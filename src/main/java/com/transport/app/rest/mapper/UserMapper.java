@@ -1,6 +1,7 @@
 package com.transport.app.rest.mapper;
 
 import com.transport.app.rest.domain.Order;
+import com.transport.app.rest.domain.OrderCarrier;
 import com.transport.app.rest.domain.User;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class UserMapper {
                 .phones(userDto.getPhones())
                 .email(userDto.getEmail())
                 .type(userDto.getType())
+                .bookingRequestOrders(OrderCarrierMapper.toOrderCarriers(userDto.getBookingRequestOrders()))
+                .assignedOrdersAsCarrier(OrderMapper.toOrders(userDto.getAssignedOrdersAsCarrier()))
+                .assignedOrdersAsDriver(OrderMapper.toOrders(userDto.getAssignedOrdersAsDriver()))
 //                .orders(OrderMapper.toOrders(userDto.getOrders()))
                 .createdAt(userDto.getCreatedAt())
                 .updatedAt(userDto.getUpdatedAt())
@@ -31,6 +35,9 @@ public class UserMapper {
     }
 
     public static UserDto toUserDto(User user) {
+        if (user == null) {
+            return null;
+        }
         return UserDto.builder()
                 .id(user.getId())
                 .userName(user.getUserName())
@@ -46,7 +53,11 @@ public class UserMapper {
                 .phones(user.getPhones())
                 .email(user.getEmail())
                 .type(user.getType())
-//                .orders(user.getOrders().stream().map(o -> o.getId()).collect(Collectors.toList()))
+                .createdOrders(user.getCreatedOrders().stream().map(o -> o.getId()).collect(Collectors.toList()))
+//                .orders(OrderMapper.toOrderDtos(user.getOrders()))
+                .bookingRequestOrders(OrderCarrierMapper.toOrderCarrierDtos(user.getBookingRequestOrders()))
+//                .assignedOrdersAsCarrier(OrderMapper.toOrderDtos(user.getAssignedOrdersAsCarrier()))
+//                .assignedOrdersAsDriver(OrderMapper.toOrderDtos(user.getAssignedOrdersAsDriver()))
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();
@@ -67,7 +78,10 @@ public class UserMapper {
         user.setPhones(userUpdate.getPhones() == null ? user.getPhones() : userUpdate.getPhones());
         user.setEmail(userUpdate.getEmail() == null ? user.getEmail() : userUpdate.getEmail());
         user.setType(userUpdate.getType() == null ? user.getType() : userUpdate.getType());
-//        user.setOrders(userUpdate.getOrders() == null ? user.getOrders() : userUpdate.getOrders());
+//        user.setCreatedOrders(userUpdate.getCreatedOrders() == null ? user.getCreatedOrders() : userUpdate.getCreatedOrders());
+        user.setBookingRequestOrders(userUpdate.getBookingRequestOrders() == null ? user.getBookingRequestOrders() : userUpdate.getBookingRequestOrders());
+        user.setAssignedOrdersAsCarrier(userUpdate.getAssignedOrdersAsCarrier() == null ? user.getAssignedOrdersAsCarrier() : userUpdate.getAssignedOrdersAsCarrier());
+        user.setAssignedOrdersAsDriver(userUpdate.getAssignedOrdersAsDriver() == null ? user.getAssignedOrdersAsDriver() : userUpdate.getAssignedOrdersAsDriver());
         user.setCreatedAt(userUpdate.getCreatedAt() == null ? user.getCreatedAt() : userUpdate.getCreatedAt());
         user.setUpdatedAt(userUpdate.getUpdatedAt() == null ? user.getUpdatedAt() : userUpdate.getUpdatedAt());
         return user;

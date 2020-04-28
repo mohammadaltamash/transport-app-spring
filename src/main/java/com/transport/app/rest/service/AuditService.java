@@ -1,9 +1,8 @@
 package com.transport.app.rest.service;
 
-import com.transport.app.rest.domain.AuditResponse;
-import com.transport.app.rest.domain.CustomRevisionEntity;
-import com.transport.app.rest.domain.Order;
-import com.transport.app.rest.domain.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.transport.app.rest.domain.*;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
@@ -12,6 +11,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
@@ -52,12 +52,13 @@ public class AuditService {
         }
     }
 
-    public List<AuditResponse> getAllActivities(Class clazz, long orderId) {
+    public List<AuditResponse> getAllActivities(Class clazz, long orderId) throws JsonProcessingException {
         List<AuditResponse> auditResponses = new ArrayList<>();
 
         AuditReader reader = AuditReaderFactory.get(em);
         AuditQuery query = reader.createQuery().forRevisionsOfEntityWithChanges(clazz, true);
         query.add(AuditEntity.property("id").eq(orderId));
+        query.addOrder(AuditEntity.revisionNumber().desc());
         List<Object[]> results = query.getResultList();
 //        for (Object[] result : results) {
         for (int i = 0; i < results.size(); i++) {
@@ -83,7 +84,8 @@ public class AuditService {
             List<AuditResponse.PropertyValue> propertyValues = new ArrayList<>();
             Order previousRevOrder = null;
             if (RevisionType.MOD == revType) {
-                previousRevOrder = (Order) results.get(i - 1)[0];
+//                previousRevOrder = (Order) results.get(i - 1)[0];
+                previousRevOrder = (Order) results.get(i + 1)[0];
             }
             for (String property : properties) {
                 if ("updatedAt".equals(property)) {
@@ -141,7 +143,7 @@ public class AuditService {
         System.out.println("Order               :" + order.getId() + "      Order status:         " + order.getOrderStatus());
     }*/
 
-    private static Object getValue(String fieldName, Order order) {
+    private static Object getValue(String fieldName, Order order) throws JsonProcessingException {
         switch (fieldName) {
             case "id":
                 return order.getId();
@@ -249,12 +251,23 @@ public class AuditService {
                 return order.getOrderStatus();
             case "orderCategory":
                 return order.getOrderCategory();
-            case "orderDriver":
-                return order.getOrderDriver();
-            case "askedToBook":
-                return order.getAskedToBook();
             case "createdBy":
                 return order.getCreatedBy();
+//            case "bookingRequestCarriers":
+//                return order.getBookingRequestCarriers().size() > 0 ? order.getBookingRequestCarriers()
+//                        .get(order.getBookingRequestCarriers().size() - 1).getStatus() : 0;
+            case "bookingRequestCarriers":
+//                OrderCarrier orderCarrier = order.getBookingRequestCarriers()
+//                        .get(order.getBookingRequestCarriers().size() - 1);
+//                String jsonString = new ObjectMapper().writeValueAsString(orderCarrier);
+                return order.getBookingRequestCarriers().size() > 0 ? new ObjectMapper().writeValueAsString(
+                        order.getBookingRequestCarriers().get(order.getBookingRequestCarriers().size() - 1)) : null;
+            case "assignedToCarrier":
+//                return order.getAssignedToCarrier();
+            return order.getAssignedToCarrier() != null ? order.getAssignedToCarrier().getEmail() : null;
+            case "assignedToDriver":
+//                return order.getAssignedToDriver();
+            return order.getAssignedToDriver() != null ? order.getAssignedToDriver().getEmail() : null;
 //    case "Long updatedById, "
             case "createdAt":
                 return order.getCreatedAt();
@@ -373,12 +386,14 @@ public class AuditService {
                 return "Order Status";
             case "orderCategory":
                 return "Order Category";
-            case "orderDriver":
-                return "Order Driver";
-            case "askedToBook":
-                return "Asked To Book";
             case "createdBy":
                 return "Created By";
+            case "bookingRequestCarriers":
+                return "Booking Request By Carriers";
+            case "assignedToCarrier":
+                return "Assigned To Carrier";
+            case "assignedToDriver":
+                return "Assigned To Driver";
             case "createdAt":
                 return "Created At";
             case "updatedAt":

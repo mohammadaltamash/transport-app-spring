@@ -5,6 +5,7 @@ import com.transport.app.rest.domain.JwtRequest;
 import com.transport.app.rest.domain.JwtResponse;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.exception.AlreadyExistsException;
+import com.transport.app.rest.mapper.UserMapper;
 import com.transport.app.rest.service.JwtUserDetailsService;
 import com.transport.app.rest.service.UserService;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -63,7 +64,7 @@ public class AuthController {
 //        return ResponseEntity.ok(new JwtResponse(token));
         User user = userService.findByEmail(data.getEmail());
         user.setJwtToken(token);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(UserMapper.toUserDto(user));
     }
 
     private void authenticate(String username, String password) throws Exception {

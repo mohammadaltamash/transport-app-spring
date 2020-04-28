@@ -1,11 +1,8 @@
 package com.transport.app.rest.repository;
 
 import com.transport.app.rest.domain.Order;
-import org.springframework.stereotype.Repository;
+import com.transport.app.rest.domain.OrderStatus;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.util.List;
 
 //@Repository
@@ -15,7 +12,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 //    private EntityManager entityManager;
 
     @Override
-    public List<Order> findAllByOrderStatus(Order.ORDER_STATUS orderStatus) {
+    public List<Order> findAllByOrderStatus(OrderStatus orderStatus) {
 //        Query query = entityManager.createNativeQuery()
         return null;
     }

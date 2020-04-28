@@ -1,6 +1,8 @@
 package com.transport.app.rest.mapper;
 
 import com.transport.app.rest.domain.Order;
+import com.transport.app.rest.domain.OrderCarrier;
+import com.transport.app.rest.domain.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,7 @@ public class OrderMapper {
 
                 .pickupDates(orderDto.getPickupDates())
                 .preferredPickupDate(orderDto.getPreferredPickupDate())
+                .committedPickupDate(orderDto.getCommittedPickupDate())
 
 //                .pickupStartDate(orderDto.getPickupStartDate())
 //                .pickupEndDate(orderDto.getPickupEndDate())
@@ -40,6 +43,7 @@ public class OrderMapper {
 
                 .deliveryDates(orderDto.getDeliveryDates())
                 .preferredDeliveryDate(orderDto.getPreferredDeliveryDate())
+                .committedDeliveryDate(orderDto.getCommittedDeliveryDate())
 
 //                .deliveryStartDate(orderDto.getDeliveryStartDate())
 //                .deliveryEndDate(orderDto.getDeliveryEndDate())
@@ -76,15 +80,20 @@ public class OrderMapper {
 
                 .orderStatus(orderDto.getOrderStatus())
                 .orderCategory(orderDto.getOrderCategory())
-                .orderDriver(orderDto.getOrderDriver())
-                .askedToBook(orderDto.getAskedToBook())
+                .bookingRequestCarriers(OrderCarrierMapper.toOrderCarriers(orderDto.getBookingRequestCarriers()))
+//                .assignedToCarrier(UserMapper.toUser(orderDto.getAssignedToCarrier()))
+//                .assignedToDriver(UserMapper.toUser(orderDto.getAssignedToDriver()))
 //                .createdBy(UserMapper.toUser(orderDto.getCreatedBy()))
+                .distance(orderDto.getDistance())
                 .createdAt(orderDto.getCreatedAt())
                 .updatedAt(orderDto.getUpdatedAt())
                 .build();
     }
 
     public static OrderDto toOrderDto(Order order) {
+        if (order == null) {
+            return null;
+        }
         return OrderDto.builder()
                 .id(order.getId())
                 .brokerOrderId(order.getBrokerOrderId())
@@ -101,6 +110,7 @@ public class OrderMapper {
 
                 .pickupDates(order.getPickupDates())
                 .preferredPickupDate(order.getPreferredPickupDate())
+                .committedPickupDate(order.getCommittedPickupDate())
 //                .pickupStartDate(order.getPickupStartDate())
 //                .pickupEndDate(order.getPickupEndDate())
                 .pickupDatesRestrictions(order.getPickupDatesRestrictions())
@@ -115,6 +125,7 @@ public class OrderMapper {
 
                 .deliveryDates(order.getDeliveryDates())
                 .preferredDeliveryDate(order.getPreferredDeliveryDate())
+                .committedDeliveryDate(order.getCommittedDeliveryDate())
 
 //                .deliveryStartDate(order.getDeliveryStartDate())
 //                .deliveryEndDate(order.getDeliveryEndDate())
@@ -151,8 +162,13 @@ public class OrderMapper {
 
                 .orderStatus(order.getOrderStatus())
                 .orderCategory(order.getOrderCategory())
-                .orderDriver(order.getOrderDriver())
-                .askedToBook(order.getAskedToBook())
+                .bookingRequestCarriers(OrderCarrierMapper.toOrderCarrierDtos(order.getBookingRequestCarriers()))
+//                .assignedToCarrierId(order.getAssignedToCarrier() != null ? order.getAssignedToCarrier().getId() : null)
+//                .assignedToDriverId(order.getAssignedToDriver() != null ? order.getAssignedToDriver().getId() : null)
+                .assignedToCarrier(UserMapper.toUserDto(order.getAssignedToCarrier()))
+                .assignedToDriver(UserMapper.toUserDto(order.getAssignedToDriver()))
+                .distance(order.getDistance())
+//                .askedToBook(order.getAskedToBook())
                 .createdBy(UserMapper.toUserDto(order.getCreatedBy()))
 //                .updatedById(order.getUpdatedBy().getId())
                 .createdAt(order.getCreatedAt())
@@ -174,6 +190,7 @@ public class OrderMapper {
         order.setPickupSignatureNotRequired(orderUpdate.getPickupSignatureNotRequired() == null ? order.getPickupSignatureNotRequired() : orderUpdate.getPickupSignatureNotRequired());
         order.setPickupDates(orderUpdate.getPickupDates() == null ? order.getPickupDates() : orderUpdate.getPickupDates());
         order.setPreferredPickupDate(orderUpdate.getPreferredPickupDate() == null ? order.getPreferredPickupDate() : orderUpdate.getPreferredPickupDate());
+        order.setCommittedPickupDate(orderUpdate.getCommittedPickupDate() == null ? order.getCommittedPickupDate() : orderUpdate.getCommittedPickupDate());
 //        order.setPickupStartDate(orderUpdate.getPickupStartDate() == null ? order.getPickupStartDate() : orderUpdate.getPickupStartDate());
 //        order.setPickupEndDate(orderUpdate.getPickupEndDate() == null ? order.getPickupEndDate() : orderUpdate.getPickupEndDate());
         order.setPickupDatesRestrictions(orderUpdate.getPickupDatesRestrictions() == null ? order.getPickupDatesRestrictions() : orderUpdate.getPickupDatesRestrictions());
@@ -187,6 +204,7 @@ public class OrderMapper {
         order.setDeliverySignatureNotRequired(orderUpdate.getDeliverySignatureNotRequired() == null ? order.getDeliverySignatureNotRequired() : orderUpdate.getDeliverySignatureNotRequired());
         order.setDeliveryDates(orderUpdate.getDeliveryDates() == null ? order.getDeliveryDates() : orderUpdate.getDeliveryDates());
         order.setPreferredDeliveryDate(orderUpdate.getPreferredDeliveryDate() == null ? order.getPreferredDeliveryDate() : orderUpdate.getPreferredDeliveryDate());
+        order.setCommittedDeliveryDate(orderUpdate.getCommittedDeliveryDate() == null ? order.getCommittedDeliveryDate() : orderUpdate.getCommittedDeliveryDate());
 //        order.setDeliveryStartDate(orderUpdate.getDeliveryStartDate() == null ? order.getDeliveryStartDate() : orderUpdate.getDeliveryStartDate());
 //        order.setDeliveryEndDate(orderUpdate.getDeliveryEndDate() == null ? order.getDeliveryEndDate() : orderUpdate.getDeliveryEndDate());
         order.setDeliveryDatesRestrictions(orderUpdate.getDeliveryDatesRestrictions() == null ? order.getDeliveryDatesRestrictions() : orderUpdate.getDeliveryDatesRestrictions());
@@ -216,8 +234,11 @@ public class OrderMapper {
 
         order.setOrderStatus(orderUpdate.getOrderStatus() == null ? order.getOrderStatus() : orderUpdate.getOrderStatus());
         order.setOrderCategory(orderUpdate.getOrderCategory() == null ? order.getOrderCategory() : orderUpdate.getOrderCategory());
-        order.setOrderDriver(orderUpdate.getOrderDriver() == null ? order.getOrderDriver() : orderUpdate.getOrderDriver());
-        order.setAskedToBook(orderUpdate.getAskedToBook() == null ? order.getAskedToBook() : orderUpdate.getAskedToBook());
+        order.setBookingRequestCarriers(orderUpdate.getBookingRequestCarriers() == null ? order.getBookingRequestCarriers() : orderUpdate.getBookingRequestCarriers());
+        order.setAssignedToCarrier(orderUpdate.getAssignedToCarrier() == null ? order.getAssignedToCarrier() : orderUpdate.getAssignedToCarrier());
+        order.setAssignedToDriver(orderUpdate.getAssignedToDriver() == null ? order.getAssignedToDriver() : orderUpdate.getAssignedToDriver());
+        order.setDistance(orderUpdate.getDistance() == null ? order.getDistance() : orderUpdate.getDistance());
+//        order.setAskedToBook(orderUpdate.getAskedToBook() == null ? order.getAskedToBook() : orderUpdate.getAskedToBook());
         order.setCreatedBy(orderUpdate.getCreatedBy() == null ? order.getCreatedBy() : orderUpdate.getCreatedBy());
         order.setCreatedAt(orderUpdate.getCreatedAt() == null ? order.getCreatedAt() : orderUpdate.getCreatedAt());
         order.setUpdatedAt(orderUpdate.getUpdatedAt() == null ? order.getUpdatedAt() : orderUpdate.getUpdatedAt());

@@ -1,8 +1,12 @@
 package com.transport.app.rest.controller;
 
+import com.google.maps.errors.ApiException;
 import com.transport.app.rest.domain.Order;
+import com.transport.app.rest.domain.OrderCarrier;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.exception.NotFoundException;
+import com.transport.app.rest.mapper.OrderCarrierDto;
+import com.transport.app.rest.mapper.OrderCarrierMapper;
 import com.transport.app.rest.mapper.OrderDto;
 import com.transport.app.rest.mapper.OrderMapper;
 import com.transport.app.rest.service.OrderService;
@@ -11,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +33,10 @@ public class OrderController {
         this.userService = userService;
     }
 
-//    @CrossOrigin(origins = "*")
+    //    @CrossOrigin(origins = "*")
 //    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/create")
-    public OrderDto create(@Valid @RequestBody Order order, Authentication authentication) {
+    public OrderDto create(@Valid @RequestBody Order order, Authentication authentication) throws InterruptedException, ApiException, IOException {
 //        OrderDto orderDto = OrderMapper.toOrderDto(order);
         /*Map<String, String> pickupPhones = new HashMap<>();
         pickupPhones.put("Phone 1", "abcd");
@@ -51,9 +56,49 @@ public class OrderController {
     }
 
     @PutMapping("/update")
-    public OrderDto update(@RequestBody Order order) {
+//    public OrderDto update(@RequestBody Order order) {
+    public void update(@RequestBody Order order) throws InterruptedException, ApiException, IOException {
 //        OrderDto orderDto = OrderMapper.toOrderDto(order);
-        return OrderMapper.toOrderDto(orderService.update(order));
+//        return OrderMapper.toOrderDto(orderService.update(order));
+        orderService.update(order);
+    }
+
+    /*@PostMapping("/bookingrequest/{orderId}/{email}")
+    public OrderCarrierDto recordBookingRequest(@PathVariable("orderId") Long orderId, @PathVariable("email") String email) {
+        Order order = orderService.findById(orderId);
+        User user = userService.findByEmail(email);
+        return OrderCarrierMapper.toOrderCarrierDto(orderService.recordBookingRequest(order, user));
+    }*/
+
+    @PostMapping("/bookingrequest/{orderId}/{email}")
+    public OrderCarrierDto recordBookingRequest(@Valid @RequestBody OrderCarrier orderCarrier, @PathVariable("orderId") Long orderId, @PathVariable("email") String email) {
+        Order order = orderService.findById(orderId);
+        User user = userService.findByEmail(email);
+        return OrderCarrierMapper.toOrderCarrierDto(orderService.recordBookingRequest(orderCarrier, order, user));
+    }
+
+    @PutMapping("/bookingrequest/book/{orderId}")
+    public void bookOrder(@Valid @RequestBody OrderCarrier orderCarrier, @PathVariable("orderId") Long orderId) {
+        orderService.bookOrder(orderCarrier, orderId);
+    }
+
+    @PutMapping("/bookingrequest/{orderId}/{orderCarrierId}/{acceptOrDecline}")
+    public OrderCarrier acceptOrDecline(@PathVariable("orderId") Long orderId,
+                                        @PathVariable("orderCarrierId") Long orderCarrierId,
+                                        @PathVariable("acceptOrDecline") String acceptOrDecline) {
+        return orderService.acceptOrDecline(orderId, orderCarrierId, acceptOrDecline);
+    }
+
+    @PutMapping("/assigndriver/{driverId}/{orderId}")
+    public Order assignDriver(
+            @PathVariable("driverId") Long driverId,
+            @PathVariable("orderId") Long orderId) {
+        return orderService.assignDriver(driverId, orderId);
+    }
+
+    @GetMapping("/ordercarrier/{id}")
+    public OrderCarrier getOrderCarrier(@PathVariable("orderId") Long id) {
+        return orderService.findOrderCarrierById(id);
     }
 
     @GetMapping("/get/{id}")
@@ -99,5 +144,11 @@ public class OrderController {
     @GetMapping("/count")
     public long count() {
         return orderService.count();
+    }
+
+    ///////////////// Mock
+    @GetMapping("/generate")
+    public void generateOrders() {
+        orderService.generateData();
     }
 }
