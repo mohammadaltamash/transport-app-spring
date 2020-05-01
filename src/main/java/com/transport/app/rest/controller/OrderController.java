@@ -1,16 +1,16 @@
 package com.transport.app.rest.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
 import com.transport.app.rest.domain.Order;
 import com.transport.app.rest.domain.OrderCarrier;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.exception.NotFoundException;
-import com.transport.app.rest.mapper.OrderCarrierDto;
-import com.transport.app.rest.mapper.OrderCarrierMapper;
-import com.transport.app.rest.mapper.OrderDto;
-import com.transport.app.rest.mapper.OrderMapper;
+import com.transport.app.rest.mapper.*;
 import com.transport.app.rest.service.OrderService;
 import com.transport.app.rest.service.UserService;
+import org.aspectj.weaver.ast.Or;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +33,6 @@ public class OrderController {
         this.userService = userService;
     }
 
-    //    @CrossOrigin(origins = "*")
-//    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/create")
     public OrderDto create(@Valid @RequestBody Order order, Authentication authentication) throws InterruptedException, ApiException, IOException {
 //        OrderDto orderDto = OrderMapper.toOrderDto(order);
@@ -116,20 +114,49 @@ public class OrderController {
         return OrderMapper.toOrderDtos(orderService.findAllByOrderStatus(status));
     }
 
-    @GetMapping("/get/statusin/{statuses}")
-    public List<OrderDto> findAllByOrderStatuses(@PathVariable("statuses") String statuses) {
-        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusIn(statuses));
+    @GetMapping("/get/statusin/{statuses}/{page}/{pagesize}")
+    public PagedOrders findAllByOrderStatuses(@PathVariable("statuses") String statuses,
+                                                 @PathVariable("page") int page,
+                                                 @PathVariable("pagesize") Integer pageSize) {
+//        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize));
+        return PagedOrders.builder()
+                .totalItems(orderService.countByOrderStatusIn(statuses))
+                .orders(OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize)))
+                .build();
     }
+
+//    @GetMapping("/get/statusin/{statuses}/{pagesize}")
+//    public List<OrderDto> findAllByOrderStatusesPaginated(@PathVariable("statuses") String statuses) {
+//        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses));
+//    }
 
     @GetMapping("/get/statuscount/{status}")
     public int countByOrderStatus(@PathVariable("status") String status) {
-        return orderService.countByOrderStatus(status);
+        return orderService.countByOrderStatusIn(status);
     }
 
-    @GetMapping("getpage/{page}")
-    public List<OrderDto> findAllPaginated(@PathVariable("page") int page) {
-        return OrderMapper.toOrderDtos(orderService.findAllPaginated(page));
+//    @GetMapping("getpage/{page}/{pagesize}")
+//    public List<OrderDto> findAllPaginated(@PathVariable("page") int page, @PathVariable("pagesize") Integer pageSize) {
+//        return OrderMapper.toOrderDtos(orderService.findAllPaginated(page, pageSize));
+//    }
+//    @GetMapping("getpage/{page}/{pagesize}")
+//    public ResponseEntity<PagedOrders> findAllPaginated(@PathVariable("page") int page, @PathVariable("pagesize") Integer pageSize) {
+//        return ResponseEntity.ok().body(PagedOrders.builder()
+//                .totalItems(orderService.count())
+//                .orders(OrderMapper.toOrderDtos(orderService.findAllPaginated(page, pageSize)))
+//                .build());
+//    }
+    @GetMapping("getpage/{page}/{pagesize}")
+    public PagedOrders findAllPaginated(@PathVariable("page") int page, @PathVariable("pagesize") Integer pageSize) {
+        return PagedOrders.builder()
+                .totalItems(orderService.count())
+                .orders(OrderMapper.toOrderDtos(orderService.findAllPaginated(page, pageSize)))
+                .build();
     }
+//    @GetMapping("getpage/{page}/{pagesize}")
+//    public List<OrderDto> findAllPaginated(@PathVariable("page") int page, @PathVariable("pagesize") Integer pageSize) {
+//        return OrderMapper.toOrderDtos(orderService.findAllPaginated(page, pageSize));
+//    }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") long orderId) {
@@ -144,11 +171,5 @@ public class OrderController {
     @GetMapping("/count")
     public long count() {
         return orderService.count();
-    }
-
-    ///////////////// Mock
-    @GetMapping("/generate")
-    public void generateOrders() {
-        orderService.generateData();
     }
 }

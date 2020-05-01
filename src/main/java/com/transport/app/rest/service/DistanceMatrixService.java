@@ -4,10 +4,7 @@ import com.google.maps.DistanceMatrixApi;
 import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
-import com.google.maps.model.DistanceMatrix;
-import com.google.maps.model.LatLng;
-import com.google.maps.model.TravelMode;
-import com.google.maps.model.Unit;
+import com.google.maps.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -81,34 +78,17 @@ public class DistanceMatrixService {
                 .language("en-US")
                 .await();
 
-        long distApart = result.rows[0].elements[0].distance.inMeters;
-
+        int length = result.rows.length;
+        DistanceMatrixRow row0 = result.rows[0];
+        int elementsLength = row0.elements.length;
+        DistanceMatrixElement elements0 = row0.elements[0];
+//        long distApart = result.rows[0].elements[0].distance.inMeters;
+//        long distApart = elements0.distance.inMeters;
+        long distApart = 0;
+        
+        if (result.rows[0].elements[0] != null && result.rows[0].elements[0].distance != null) {
+            distApart = result.rows[0].elements[0].distance.inMeters;
+        }
         return distApart;
-    }
-
-    public static Pair getLocation(double x0, double y0, int radius) {
-        Random random = new Random();
-
-        // Convert radius from meters to degrees
-        double radiusInDegrees = radius / 111000f;
-
-        double u = random.nextDouble();
-        double v = random.nextDouble();
-        double w = radiusInDegrees * Math.sqrt(u);
-        double t = 2 * Math.PI * v;
-        double x = w * Math.cos(t);
-        double y = w * Math.sin(t);
-
-        // Adjust the x-coordinate for the shrinking of the east-west distances
-        double new_x = x / Math.cos(Math.toRadians(y0));
-
-        double foundLatitude = new_x + x0;
-        double foundLongitude = y + y0;
-        System.out.println(foundLatitude + ", " + foundLongitude );
-        return new Pair<>(foundLatitude, foundLongitude);
-    }
-
-    public static void main(String args[]) throws InterruptedException, ApiException, IOException {
-        Pair pair = getLocation(34.0699334, -84.297443, 10000);
     }
 }
