@@ -5,10 +5,8 @@ import com.transport.app.rest.domain.Order;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.repository.OrderRepository;
 import com.transport.app.rest.repository.UserAuthRepository;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -57,7 +55,7 @@ public class TestData {
 
     public User generateUser(int i) {
         System.out.println(i);
-        Pair pair = getLocation(42.997075, -103.074280, 8000);
+        double[] pair = getLocation(42.997075, -103.074280, 8000);
         return User.builder()
                 .fullName("First" + i + " " + "Second" + i)
                 .userName("username" + i)
@@ -66,16 +64,16 @@ public class TestData {
                 .type(userTypes[i - 1])
                 .companyName("User Company" + i)
                 .phones(new HashMap<String, String>() {{ put("35725345345", "UserPhones note"); }})
-                .latitude((double) pair.getKey())
-                .longitude((double) pair.getValue())
+                .latitude((double) pair[0])
+                .longitude((double) pair[1])
                 .zip("24234")
                 .address("User address " + i)
                 .build();
     }
     public Order generateOrder(int i, long userId) throws InterruptedException, ApiException, IOException {
         System.out.println(i);
-        Pair pickupPair = getLocation(42.997075, -103.074280, 9000);
-        Pair deliveryPair = getLocation(42.997075, -103.074280, 10000);
+        double[] pickupPair = getLocation(42.997075, -103.074280, 9000);
+        double[] deliveryPair = getLocation(42.997075, -103.074280, 10000);
         return Order.builder()
                 .brokerOrderId("BrokerOrderId-" + i)
                 .pickupAddress("PickupAddress-" + i)
@@ -96,18 +94,18 @@ public class TestData {
                 .brokerZip("96445")
                 .shipperPhones(new HashMap<String, String>() {{ put("12382456789", "ShipperPhones note"); }})
                 .brokerEmail("email" + i + "@example.com")
-                .pickupLatitude((double) pickupPair.getKey())
-                .pickupLongitude((double) pickupPair.getValue())
-                .deliveryLatitude((double) deliveryPair.getKey())
-                .deliveryLongitude((double) deliveryPair.getValue())
+                .pickupLatitude((double) pickupPair[0])
+                .pickupLongitude((double) pickupPair[1])
+                .deliveryLatitude((double) deliveryPair[0])
+                .deliveryLongitude((double) deliveryPair[1])
                 .distance(distanceMatrixService.getDriveDist(
-                        (double) pickupPair.getKey(), (double) pickupPair.getValue(),
-                        (double) deliveryPair.getKey(), (double) deliveryPair.getValue()))
+                        (double) pickupPair[0], (double) pickupPair[1],
+                        (double) deliveryPair[0], (double) deliveryPair[1]))
                 .createdBy(userRepository.findById(userId).get())
                 .build();
     }
 
-    public static Pair getLocation(double x0, double y0, int radius) {
+    public static double[] getLocation(double x0, double y0, int radius) {
         Random random = new Random();
 
         // Convert radius from meters to degrees
@@ -126,6 +124,10 @@ public class TestData {
         double foundLatitude = new_x + x0;
         double foundLongitude = y + y0;
 //        System.out.println(foundLatitude + ", " + foundLongitude );
-        return new Pair<>(foundLatitude, foundLongitude);
+//        return new Pair<>(foundLatitude, foundLongitude);
+        double[] latLng = new double[2];
+        latLng[0] = foundLatitude;
+        latLng[1] = foundLongitude;
+        return latLng;
     }
 }
