@@ -2,26 +2,25 @@ package com.transport.app.rest.service;
 
 import com.google.maps.errors.ApiException;
 import com.transport.app.rest.Constants;
-import com.transport.app.rest.domain.Order;
-import com.transport.app.rest.domain.OrderCarrier;
-import com.transport.app.rest.domain.OrderStatus;
-import com.transport.app.rest.domain.User;
+import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.OrderMapper;
+import com.transport.app.rest.mapper.PagedOrders;
 import com.transport.app.rest.repository.OrderCarrierRepository;
 import com.transport.app.rest.repository.OrderRepository;
+import com.transport.app.rest.repository.OrderSpecs;
 import com.transport.app.rest.repository.UserAuthRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +46,7 @@ public class OrderService {
         /*Order order = orderRepository.save(OrderMapper.toOrder(orderDto));
         return OrderMapper.toOrderDto(order);*/
         order.setCreatedBy(createdBy);
+        order.setCreatedByName(createdBy.getFullName());
 //        order.setUpdatedBy(createdBy);
 //        ArrayList<Order> userOrders = new ArrayList<>();
 //        userOrders.add(order);
@@ -130,6 +130,7 @@ public class OrderService {
             order.setOrderStatus(OrderStatus.ACCEPTED.getName());
             User carrier = orderCarrier.getCarrier();
             order.setAssignedToCarrier(carrier);
+            order.setAssignedToCarrierName(carrier.getFullName()); // For search
             orderRepository.save(order);
             orderCarrier.setStatus(OrderStatus.ACCEPTED.getName());
             orderCarrierRepository.save(orderCarrier);
@@ -143,6 +144,7 @@ public class OrderService {
         User driver = userRepository.findById(driverId).orElseThrow(() -> new NotFoundException(User.class, driverId));
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException(Order.class, orderId));
         order.setAssignedToDriver(driver);
+        order.setAssignedToDriverName(driver.getFullName()); // For search
         return orderRepository.save(order);
     }
 
@@ -167,7 +169,7 @@ public class OrderService {
 //                .collect(Collectors.toList()));
 //    }
 
-    public List<Order> findAllByOrderStatusInPaginated(String statuses, int page, Integer pageSize) {
+    public Page<Order> findAllByOrderStatusInPaginated(String statuses, int page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
                 Sort.by(Sort.Direction.DESC, "updatedAt"));
         return orderRepository.findAllByOrderStatusIn(
@@ -176,18 +178,54 @@ public class OrderService {
                         .collect(Collectors.toList()), pageable);
     }
 
+    public Page<Order> searchOrders(String searchKeyword, String searchText, int page, Integer pageSize) {
+        /*SearchKeyword keyword = SearchKeyword.get(searchKeyword);
+        switch(keyword) {
+            case ORDER_ID:
+                return orderRepository.findAllById(Collections.singleton(Long.parseLong(searchText)));
+            case DRIVER:
+                return orderRepository.findByAssignedToDriverNameContainingIgnoreCase(searchText);
+            case MAKE:
+                return orderRepository.findByVehicleMakeContainingIgnoreCase(searchText);
+            case MODEL:
+                return orderRepository.findByVehicleModelContainingIgnoreCase(searchText);
+            default:
+                return null;
+        }*/
+/*        List<Order> orders = new ArrayList<>();
+        if (StringUtils.isNumeric(searchText)) {
+            orders.addAll(orderRepository.findAllById(Collections.singleton(Long.parseLong(searchText))));
+        }
+        orders.addAll(orderRepository.findByAssignedToDriverNameContainingIgnoreCase(searchText));
+        orders.addAll(orderRepository.findByVehicleMakeContainingIgnoreCase(searchText));
+        orders.addAll(orderRepository.findByVehicleModelContainingIgnoreCase(searchText));
+        Collections.sort(orders);
+
+        return orders;*/
+        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
+                Sort.by(Sort.Direction.DESC, "updatedAt"));
+        return orderRepository.findAll(Specification.where(OrderSpecs.textInAllColumns(searchText)), pageable);
+    }
+
+    /*public int searchOrdersCount(String searchKeyword, String searchText) {
+
+//        orderRepository.count(Specification.where(OrderSpecs.textInAllColumns(searchText)));
+
+        return orderRepository.findAll(Specification.where(OrderSpecs.textInAllColumns(searchText)), Pageable.unpaged()).size();
+    }*/
+
     public int countByOrderStatusIn(String statuses) {
         return orderRepository.countByOrderStatusIn(Arrays.stream(statuses.split(","))
                 .map(m -> m.trim())
                 .collect(Collectors.toList()));
     }
 
-    public List<Order> findAllPaginated(int page, Integer pageSize) {
+    public Page<Order> findAllPaginated(int page, Integer pageSize) {
         /*Page<Order> orderPage = orderRepository.findAll(PageRequest.of(page, DemoConstants.PAGE_SIZE));
         return OrderMapper.toOrderDtos(orderPage.toList());*/
-        Page<Order> orderPage = orderRepository.findAll(PageRequest.of(
+        return orderRepository.findAll(PageRequest.of(
                 page, pageSize == null ? Constants.PAGE_SIZE : pageSize, Sort.by(Sort.Direction.DESC, "updatedAt")));
-        return orderPage.toList();
+//        return orderPage.toList();
     }
 
     public void deleteById(Long orderId) {

@@ -10,6 +10,7 @@ import com.transport.app.rest.mapper.*;
 import com.transport.app.rest.service.OrderService;
 import com.transport.app.rest.service.UserService;
 import org.aspectj.weaver.ast.Or;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 //        (origins = "*", allowedHeaders = "*", maxAge = 1800 * 2 * 24)
@@ -116,12 +118,13 @@ public class OrderController {
 
     @GetMapping("/get/statusin/{statuses}/{page}/{pagesize}")
     public PagedOrders findAllByOrderStatuses(@PathVariable("statuses") String statuses,
-                                                 @PathVariable("page") int page,
+                                                 @PathVariable("page") int pageNumber,
                                                  @PathVariable("pagesize") Integer pageSize) {
 //        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize));
+        Page<Order> page = orderService.findAllByOrderStatusInPaginated(statuses, pageNumber, pageSize);
         return PagedOrders.builder()
-                .totalItems(orderService.countByOrderStatusIn(statuses))
-                .orders(OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize)))
+                .totalItems(page.getTotalElements())
+                .orders(OrderMapper.toOrderDtos(page.get().collect(Collectors.toList())))
                 .build();
     }
 
@@ -147,16 +150,31 @@ public class OrderController {
 //                .build());
 //    }
     @GetMapping("getpage/{page}/{pagesize}")
-    public PagedOrders findAllPaginated(@PathVariable("page") int page, @PathVariable("pagesize") Integer pageSize) {
+    public PagedOrders findAllPaginated(@PathVariable("page") int pageNumber, @PathVariable("pagesize") Integer pageSize) {
+        Page<Order> page = orderService.findAllPaginated(pageNumber, pageSize);
         return PagedOrders.builder()
-                .totalItems(orderService.count())
-                .orders(OrderMapper.toOrderDtos(orderService.findAllPaginated(page, pageSize)))
+                .totalItems(page.getTotalElements())
+                .orders(OrderMapper.toOrderDtos(page.get().collect(Collectors.toList())))
                 .build();
     }
 //    @GetMapping("getpage/{page}/{pagesize}")
 //    public List<OrderDto> findAllPaginated(@PathVariable("page") int page, @PathVariable("pagesize") Integer pageSize) {
 //        return OrderMapper.toOrderDtos(orderService.findAllPaginated(page, pageSize));
 //    }
+
+    @GetMapping("search/{searchkeyword}/{searchtext}/{page}/{pagesize}")
+    public PagedOrders searchOrders(@PathVariable("searchkeyword") String searchKeyword,
+                             @PathVariable("searchtext") String searchText,
+                             @PathVariable("page") int pageNumber,
+                             @PathVariable("pagesize") Integer pageSize) {
+//        return PagedOrders.builder()
+//                .totalItems(orderService.searchOrdersCount(searchKeyword, searchText))
+//                .orders(OrderMapper.toOrderDtos(orderService.searchOrders(searchKeyword, searchText, page, pageSize)))
+//                .build();
+        Page<Order> page = orderService.searchOrders(searchKeyword, searchText, pageNumber, pageSize);
+        return PagedOrders.builder().totalItems(page.getTotalElements()).orders(
+                OrderMapper.toOrderDtos(page.get().collect(Collectors.toList()))).build();
+    }
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") long orderId) {

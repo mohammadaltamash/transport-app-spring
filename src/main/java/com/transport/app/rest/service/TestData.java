@@ -72,7 +72,7 @@ public class TestData {
     }
     public Order generateOrder(int i, long userId) throws InterruptedException, ApiException, IOException {
         System.out.println(i);
-        double[] pickupPair = getLocation(42.997075, -103.074280, 9000);
+        double[] pickupPair = getLocation(42.997075, -103.074280, 5000);
         double[] deliveryPair = getLocation(42.997075, -103.074280, 10000);
         return Order.builder()
                 .brokerOrderId("BrokerOrderId-" + i)
@@ -102,6 +102,7 @@ public class TestData {
                         (double) pickupPair[0], (double) pickupPair[1],
                         (double) deliveryPair[0], (double) deliveryPair[1]))
                 .createdBy(userRepository.findById(userId).get())
+                .createdByName(userRepository.findById(userId).get().getFullName()) // For search
                 .build();
     }
 

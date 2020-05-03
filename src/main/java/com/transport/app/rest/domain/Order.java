@@ -21,7 +21,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ORDERS")
-public class Order {
+public class Order implements Comparable<Order> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -254,6 +254,8 @@ public class Order {
     @JoinColumn(name="CREATED_BY_ID")
     @NotAudited
     private User createdBy;
+    @Column(name = "CREATED_BY_NAME")
+    private String createdByName; // For search
 
     @Column(name = "BOOKING_REQUEST_CARRIERS")
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
@@ -263,10 +265,14 @@ public class Order {
     @ManyToOne
     @JoinColumn(name="ASSIGNED_TO_CARRIER_ID")
     private User assignedToCarrier; // By broker to carrier. orderStatus changes to ASSIGNED
+    @Column(name = "ASSIGNED_TO_CARRIER_NAME")
+    private String assignedToCarrierName; // For search
 //    @Column(name = "ASSIGNED_TO_DRIVER")
     @ManyToOne
     @JoinColumn(name="ASSIGNED_TO_DRIVER_ID")
     private User assignedToDriver; // By carrier
+    @Column(name = "ASSIGNED_TO_DRIVER_NAME")
+    private String assignedToDriverName; // For search
     @Column(name = "DISTANCE")
     private Long distance;
 
@@ -276,6 +282,11 @@ public class Order {
     @Column(name = "UPDATED_AT")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Override
+    public int compareTo(Order o) {
+        return updatedAt.compareTo(o.updatedAt);
+    }
 
     public enum ORDER_CATEGORY {
         LOGISTICS
