@@ -27,4 +27,22 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 //    @Query("select o from Order o where id = ?1 or o.brokerOrderId = ?2 or o.assignedToDriverName like ?3 or o.vehicleMake like ?4 or o.vehicleModel like ?5")
 //    List<Order> searchOrders(List<String> orderStatusList, String id, String brokerOrderId, String assignedToDriverName, String);
     Page<Order> findAll(Specification<Order> spec, Pageable pageable);
+
+//    "SELECT id, ( 3959 * acos( cos( radians(YOUR_LATITUDE) ) * cos( radians( YOUR_DB_LAT_FIELD ) ) * cos( radians( YOUR_DB_LNG_FIELD )\n" +
+//            " - radians(YOUR_LONGITUDE) ) + sin( radians(YOUR_LATITUDE) ) * sin( radians( YOUR_DB_LAT_FIELD ) ) ) ) AS distance\n" +
+//            " FROM YOUR_DB_TABLE HAVING distance < 25 ORDER BY distance ASC;"
+//    @Query("select id, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickupLatitude ) ) * cos( radians( pickupLongitude )" +
+//            " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickupLatitude ) ) ) ) AS distanc" +
+//            " FROM Order having distanc < :distance order by distanc asc")
+//    https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.at-query
+//    Example 63
+    @Query(value = "SELECT *, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
+            " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusDistance" +
+            " FROM orders having radiusDistance < :distance ORDER BY radiusDistance ASC",
+            countQuery = "SELECT count(*) from (SELECT ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
+                    " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusDistance" +
+                    " FROM orders having radiusDistance < :distance) as total",
+            nativeQuery = true)
+//    SELECT count(*) from (select * from orders) as total;
+    Page<Order> getInRadius(@Param("refLatitude") double refLatitude, @Param("refLongitude") double refLongitude, @Param("distance") int distance, Pageable pageable);
 }

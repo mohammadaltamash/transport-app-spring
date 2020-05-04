@@ -21,7 +21,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ORDERS")
-public class Order implements Comparable<Order> {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -275,6 +275,8 @@ public class Order implements Comparable<Order> {
     private String assignedToDriverName; // For search
     @Column(name = "DISTANCE")
     private Long distance;
+    @Transient
+    private Long radiusDistance;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp
@@ -282,11 +284,6 @@ public class Order implements Comparable<Order> {
     @Column(name = "UPDATED_AT")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @Override
-    public int compareTo(Order o) {
-        return updatedAt.compareTo(o.updatedAt);
-    }
 
     public enum ORDER_CATEGORY {
         LOGISTICS

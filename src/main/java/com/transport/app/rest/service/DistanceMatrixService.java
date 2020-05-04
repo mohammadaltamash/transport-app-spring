@@ -5,7 +5,15 @@ import com.google.maps.DistanceMatrixApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
+import com.transport.app.rest.Constants;
+import com.transport.app.rest.domain.Order;
+import com.transport.app.rest.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -15,6 +23,9 @@ public class DistanceMatrixService {
 
     @Value("${google.api.key}")
     private String API_KEY;
+
+    @Autowired
+    private OrderRepository orderRepository;
 //	private static final GeoApiContext context = new GeoApiContext().setApiKey(API_KEY);
 //
 //
@@ -89,4 +100,18 @@ public class DistanceMatrixService {
         }
         return distApart;
     }
+
+//    SELECT id, ( 3959 * acos( cos( radians(YOUR_LATITUDE) ) * cos( radians( YOUR_DB_LAT_FIELD ) ) * cos( radians( YOUR_DB_LNG_FIELD )
+//    - radians(YOUR_LONGITUDE) ) + sin( radians(YOUR_LATITUDE) ) * sin( radians( YOUR_DB_LAT_FIELD ) ) ) ) AS distance
+//    FROM YOUR_DB_TABLE HAVING distance < 25 ORDER BY distance ASC;
+//    distance in miles
+    public Page<Order> getCircularDistance(double refLatitude, double refLongitude, int distance, int page, Integer pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize);
+        Page<Order> orders = orderRepository.getInRadius(refLatitude, refLongitude, distance, pageable);
+        System.out.println(orders.getTotalElements());
+        return orders;
+    }
+//    SELECT *, ( 3959 * acos( cos( radians(40.74860) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )
+//    - radians(-73.99040) ) + sin( radians(40.74860) ) * sin( radians( pickup_latitude ) ) ) ) AS distance
+//    FROM orders HAVING distance < 5 ORDER BY distance ASC;
 }

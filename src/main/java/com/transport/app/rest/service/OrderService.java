@@ -170,15 +170,19 @@ public class OrderService {
 //    }
 
     public Page<Order> findAllByOrderStatusInPaginated(String statuses, int page, Integer pageSize) {
+//        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
+//                Sort.by(Sort.Direction.DESC, "updatedAt"));
+//        return orderRepository.findAllByOrderStatusIn(
+//                Arrays.stream(statuses.split(","))
+//                        .map(m -> m.trim())
+//                        .collect(Collectors.toList()), pageable);
+
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
                 Sort.by(Sort.Direction.DESC, "updatedAt"));
-        return orderRepository.findAllByOrderStatusIn(
-                Arrays.stream(statuses.split(","))
-                        .map(m -> m.trim())
-                        .collect(Collectors.toList()), pageable);
+        return orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(statuses)), pageable);
     }
 
-    public Page<Order> searchOrders(String searchKeyword, String searchText, int page, Integer pageSize) {
+    public Page<Order> searchOrders(String statuses, String searchText, int page, Integer pageSize) {
         /*SearchKeyword keyword = SearchKeyword.get(searchKeyword);
         switch(keyword) {
             case ORDER_ID:
@@ -204,7 +208,13 @@ public class OrderService {
         return orders;*/
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
                 Sort.by(Sort.Direction.DESC, "updatedAt"));
-        return orderRepository.findAll(Specification.where(OrderSpecs.textInAllColumns(searchText)), pageable);
+        if (OrderStatus.contains(statuses)) {
+            return orderRepository.findAll(Specification
+                    .where(OrderSpecs.withStatuses(statuses))
+                    .and(OrderSpecs.textInAllColumns(searchText)), pageable);
+        } else {
+            return orderRepository.findAll(Specification.where(OrderSpecs.textInAllColumns(searchText)), pageable);
+        }
     }
 
     /*public int searchOrdersCount(String searchKeyword, String searchText) {
@@ -226,6 +236,10 @@ public class OrderService {
         return orderRepository.findAll(PageRequest.of(
                 page, pageSize == null ? Constants.PAGE_SIZE : pageSize, Sort.by(Sort.Direction.DESC, "updatedAt")));
 //        return orderPage.toList();
+    }
+
+    public Page<Order> getCircularDistance(double refLatitude, double refLongitude, int distance, int page, Integer pageSize) {
+        return distanceMatrixService.getCircularDistance(refLatitude, refLongitude, distance, page, pageSize);
     }
 
     public void deleteById(Long orderId) {

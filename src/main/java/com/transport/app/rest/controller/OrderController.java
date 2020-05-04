@@ -7,6 +7,7 @@ import com.transport.app.rest.domain.OrderCarrier;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.*;
+import com.transport.app.rest.service.DistanceMatrixService;
 import com.transport.app.rest.service.OrderService;
 import com.transport.app.rest.service.UserService;
 import org.aspectj.weaver.ast.Or;
@@ -162,8 +163,8 @@ public class OrderController {
 //        return OrderMapper.toOrderDtos(orderService.findAllPaginated(page, pageSize));
 //    }
 
-    @GetMapping("search/{searchkeyword}/{searchtext}/{page}/{pagesize}")
-    public PagedOrders searchOrders(@PathVariable("searchkeyword") String searchKeyword,
+    @GetMapping("search/{statuses}/{searchtext}/{page}/{pagesize}")
+    public PagedOrders searchOrders(@PathVariable("statuses") String statuses,
                              @PathVariable("searchtext") String searchText,
                              @PathVariable("page") int pageNumber,
                              @PathVariable("pagesize") Integer pageSize) {
@@ -171,7 +172,18 @@ public class OrderController {
 //                .totalItems(orderService.searchOrdersCount(searchKeyword, searchText))
 //                .orders(OrderMapper.toOrderDtos(orderService.searchOrders(searchKeyword, searchText, page, pageSize)))
 //                .build();
-        Page<Order> page = orderService.searchOrders(searchKeyword, searchText, pageNumber, pageSize);
+        Page<Order> page = orderService.searchOrders(statuses, searchText, pageNumber, pageSize);
+        return PagedOrders.builder().totalItems(page.getTotalElements()).orders(
+                OrderMapper.toOrderDtos(page.get().collect(Collectors.toList()))).build();
+    }
+
+    @GetMapping("getinradius/{latitude}/{longitude}/{distance}/{page}/{pagesize}")
+    public PagedOrders getCircularDistance(@PathVariable("latitude") Double latitude,
+                             @PathVariable("longitude") Double longitude,
+                             @PathVariable("distance") int distance, // in miles
+                             @PathVariable("page") int pageNumber,
+                             @PathVariable("pagesize") Integer pageSize) {
+        Page<Order> page = orderService.getCircularDistance(latitude, longitude, distance, pageNumber, pageSize);
         return PagedOrders.builder().totalItems(page.getTotalElements()).orders(
                 OrderMapper.toOrderDtos(page.get().collect(Collectors.toList()))).build();
     }

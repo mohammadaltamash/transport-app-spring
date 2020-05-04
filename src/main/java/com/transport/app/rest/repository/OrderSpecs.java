@@ -7,8 +7,24 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class OrderSpecs {
+
+    public static Specification<Order> withStatuses(String statuses) {
+
+        return new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.in(root.get("orderStatus")).value(
+                        Arrays.stream(statuses.split(","))
+                        .map(m -> m.trim())
+                        .collect(Collectors.toList()
+                ));
+            }
+        };
+    }
 
     public static Specification<Order> textInAllColumns(String text) {
 
