@@ -6,6 +6,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
 import com.transport.app.rest.Constants;
+import com.transport.app.rest.domain.LatitudeLongitude;
 import com.transport.app.rest.domain.Order;
 import com.transport.app.rest.domain.PagedOrders;
 import com.transport.app.rest.mapper.OrderMapper;
@@ -112,29 +113,30 @@ public class DistanceMatrixService {
 //    - radians(YOUR_LONGITUDE) ) + sin( radians(YOUR_LATITUDE) ) * sin( radians( YOUR_DB_LAT_FIELD ) ) ) ) AS distance
 //    FROM YOUR_DB_TABLE HAVING distance < 25 ORDER BY distance ASC;
 //    distance in miles
-    public PagedOrders getCircularDistance(String type, double refLatitude, double refLongitude, int distance, int pageNumber, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize == null ? Constants.PAGE_SIZE : pageSize);
-        Page<Object> page = Page.empty();
-        if ("pickup".equals(type)) {
-            page = orderRepository.getInRadiusOfPickup(refLatitude, refLongitude, distance, pageable);
-        } else if ("delivery".equals(type)) {
-            page = orderRepository.getInRadiusOfDelivery(refLatitude, refLongitude, distance, pageable);
-        }
-        List<Order> orders = new ArrayList<>();
-        for (Object object : page.getContent()) {
-            Order order = orderRepository.findById(((BigInteger) ((Object[]) object)[0]).longValue()).get();
-//            Order order = orderRepository.findById((long) id).get();
-            order.setRadiusPickupDistance((Double) (((Object[]) object)[1]));
-            orders.add(order);
-        }
-//        List<Object> content = orders.getContent();
-//        page.getContent().clear();
-//        page.getContent().addAll(ordrs);
-//        orders.getContent().forEach(o -> {
-//            Order order = orderRepository.findById((Object[])o[0]);
-//        });
-        System.out.println(page.getTotalElements());
-        return PagedOrders.builder().totalItems(page.getTotalElements()).orders(orders).build();
+    public PagedOrders getCircularDistance(String type, List<LatitudeLongitude> list, double refLatitude, double refLongitude, int distance, int pageNumber, Integer pageSize) {
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize == null ? Constants.PAGE_SIZE : pageSize);
+//        Page<Object> page = Page.empty();
+//        if ("pickup".equals(type)) {
+//            page = orderRepository.getInRadiusOfPickup(refLatitude, refLongitude, distance, pageable);
+//        } else if ("delivery".equals(type)) {
+//            page = orderRepository.getInRadiusOfDelivery(refLatitude, refLongitude, distance, pageable);
+//        }
+//        List<Order> orders = new ArrayList<>();
+//        for (Object object : page.getContent()) {
+//            Order order = orderRepository.findById(((BigInteger) ((Object[]) object)[0]).longValue()).get();
+////            Order order = orderRepository.findById((long) id).get();
+//            order.setRadiusPickupDistance((Double) (((Object[]) object)[1]));
+//            orders.add(order);
+//        }
+////        List<Object> content = orders.getContent();
+////        page.getContent().clear();
+////        page.getContent().addAll(ordrs);
+////        orders.getContent().forEach(o -> {
+////            Order order = orderRepository.findById((Object[])o[0]);
+////        });
+//        System.out.println(page.getTotalElements());
+//        return PagedOrders.builder().totalItems(page.getTotalElements()).orders(orders).build();
+        return orderRepository.getInRadiusOfPickup2(type, list, distance, pageNumber, pageSize);
     }
 
     public PagedOrders getCircularDistanceBoth(Double pickupLatitude,

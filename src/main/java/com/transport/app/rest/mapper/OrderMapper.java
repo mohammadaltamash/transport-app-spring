@@ -168,6 +168,8 @@ public class OrderMapper {
                 .assignedToCarrier(UserMapper.toUserDto(order.getAssignedToCarrier()))
                 .assignedToDriver(UserMapper.toUserDto(order.getAssignedToDriver()))
                 .distance(order.getDistance())
+                .radiusPickupDistance(order.getRadiusPickupDistance())
+                .radiusDeliveryDistance(order.getRadiusDeliveryDistance())
 //                .askedToBook(order.getAskedToBook())
                 .createdBy(UserMapper.toUserDto(order.getCreatedBy()))
 //                .updatedById(order.getUpdatedBy().getId())

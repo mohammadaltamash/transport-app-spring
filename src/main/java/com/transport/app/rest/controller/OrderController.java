@@ -1,10 +1,7 @@
 package com.transport.app.rest.controller;
 
 import com.google.maps.errors.ApiException;
-import com.transport.app.rest.domain.Order;
-import com.transport.app.rest.domain.OrderCarrier;
-import com.transport.app.rest.domain.PagedOrders;
-import com.transport.app.rest.domain.User;
+import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.*;
 import com.transport.app.rest.service.OrderService;
@@ -174,13 +171,14 @@ public class OrderController {
     }
 
     @GetMapping("getinradius/{type}/{latitude}/{longitude}/{distance}/{page}/{pagesize}")
-    public PagedOrdersDto getCircularDistance(@PathVariable("type") String type,
+    public PagedOrdersDto getCircularDistance(@RequestBody List<LatitudeLongitude> list,
+                                              @PathVariable("type") String type,
                                               @PathVariable("latitude") Double latitude,
                                               @PathVariable("longitude") Double longitude,
                                               @PathVariable("distance") int distance, // in miles
                                               @PathVariable("page") int page,
                                               @PathVariable("pagesize") Integer pageSize) {
-        PagedOrders pagedOrders = orderService.getCircularDistance(type, latitude, longitude, distance, page, pageSize);
+        PagedOrders pagedOrders = orderService.getCircularDistance(type, list, latitude, longitude, distance, page, pageSize);
         return PagedOrdersMapper.toPagedOrdersDto(pagedOrders);
     }
 

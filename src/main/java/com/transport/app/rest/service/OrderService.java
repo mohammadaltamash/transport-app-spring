@@ -237,8 +237,8 @@ public class OrderService {
 //        return orderPage.toList();
     }
 
-    public PagedOrders getCircularDistance(String type, double refLatitude, double refLongitude, int distance, int page, Integer pageSize) {
-        return distanceMatrixService.getCircularDistance(type, refLatitude, refLongitude, distance, page, pageSize);
+    public PagedOrders getCircularDistance(String type, List<LatitudeLongitude> list, double refLatitude, double refLongitude, int distance, int page, Integer pageSize) {
+        return distanceMatrixService.getCircularDistance(type, list, refLatitude, refLongitude, distance, page, pageSize);
     }
 
     public PagedOrders getCircularDistanceBoth(Double pickupLatitude,
