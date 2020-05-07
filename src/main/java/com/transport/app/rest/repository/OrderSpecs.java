@@ -3,6 +3,7 @@ package com.transport.app.rest.repository;
 import com.transport.app.rest.domain.Order;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;

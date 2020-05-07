@@ -11,8 +11,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-//@JsonRootName("PagedOrders")
-public class PagedOrders {
+public class PagedOrdersDto {
     long totalItems;
     List<OrderDto> orders;
 }

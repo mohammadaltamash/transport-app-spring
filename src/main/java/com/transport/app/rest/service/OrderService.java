@@ -5,12 +5,10 @@ import com.transport.app.rest.Constants;
 import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.OrderMapper;
-import com.transport.app.rest.mapper.PagedOrders;
 import com.transport.app.rest.repository.OrderCarrierRepository;
 import com.transport.app.rest.repository.OrderRepository;
 import com.transport.app.rest.repository.OrderSpecs;
 import com.transport.app.rest.repository.UserAuthRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.*;
@@ -238,8 +237,18 @@ public class OrderService {
 //        return orderPage.toList();
     }
 
-    public Page<Order> getCircularDistance(double refLatitude, double refLongitude, int distance, int page, Integer pageSize) {
-        return distanceMatrixService.getCircularDistance(refLatitude, refLongitude, distance, page, pageSize);
+    public PagedOrders getCircularDistance(String type, double refLatitude, double refLongitude, int distance, int page, Integer pageSize) {
+        return distanceMatrixService.getCircularDistance(type, refLatitude, refLongitude, distance, page, pageSize);
+    }
+
+    public PagedOrders getCircularDistanceBoth(Double pickupLatitude,
+                                               Double pickupLongitude,
+                                               Double deliveryLatitude,
+                                               Double deliveryLongitude, int distance, int page, Integer pageSize) {
+        return distanceMatrixService.getCircularDistanceBoth(pickupLatitude,
+                pickupLongitude,
+                deliveryLatitude,
+                deliveryLongitude, distance, page, pageSize);
     }
 
     public void deleteById(Long orderId) {

@@ -276,7 +276,9 @@ public class Order {
     @Column(name = "DISTANCE")
     private Long distance;
     @Transient
-    private Long radiusDistance;
+    private Double radiusPickupDistance;
+    @Transient
+    private Double radiusDeliveryDistance;
 
     @Column(name = "CREATED_AT")
     @CreationTimestamp

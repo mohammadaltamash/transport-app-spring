@@ -36,13 +36,39 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 //            " FROM Order having distanc < :distance order by distanc asc")
 //    https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods.at-query
 //    Example 63
-    @Query(value = "SELECT *, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
-            " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusDistance" +
-            " FROM orders having radiusDistance < :distance ORDER BY radiusDistance ASC",
+    @Query(value = "SELECT id, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
+            " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusPickupDistance" +
+            " FROM orders having radiusPickupDistance < :distance ORDER BY radiusPickupDistance ASC",
             countQuery = "SELECT count(*) from (SELECT ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
-                    " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusDistance" +
-                    " FROM orders having radiusDistance < :distance) as total",
+                    " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusPickupDistance" +
+                    " FROM orders having radiusPickupDistance < :distance) as total",
             nativeQuery = true)
 //    SELECT count(*) from (select * from orders) as total;
-    Page<Order> getInRadius(@Param("refLatitude") double refLatitude, @Param("refLongitude") double refLongitude, @Param("distance") int distance, Pageable pageable);
+    Page<Object> getInRadiusOfPickup(@Param("refLatitude") double refLatitude, @Param("refLongitude") double refLongitude, @Param("distance") int distance, Pageable pageable);
+
+    @Query(value = "SELECT id, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( delivery_latitude ) ) * cos( radians( delivery_longitude )" +
+            " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( delivery_latitude ) ) ) ) AS radiusDeliveryDistance" +
+            " FROM orders having radiusDeliveryDistance < :distance ORDER BY radiusDeliveryDistance ASC",
+            countQuery = "SELECT count(*) from (SELECT ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( delivery_latitude ) ) * cos( radians( delivery_longitude )" +
+                    " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( delivery_latitude ) ) ) ) AS radiusDeliveryDistance" +
+                    " FROM orders having radiusDeliveryDistance < :distance) as total",
+            nativeQuery = true)
+//    SELECT count(*) from (select * from orders) as total;
+    Page<Object> getInRadiusOfDelivery(@Param("refLatitude") double refLatitude, @Param("refLongitude") double refLongitude, @Param("distance") int distance, Pageable pageable);
+
+    @Query(value = "SELECT id, ( 3959 * acos( cos( radians(:refLatitude1) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
+            " - radians(:refLongitude1) ) + sin( radians(:refLatitude1) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusPickupDistance," +
+            " ( 3959 * acos( cos( radians(:refLatitude2) ) * cos( radians( delivery_latitude ) ) * cos( radians( delivery_longitude )" +
+            " - radians(:refLongitude2) ) + sin( radians(:refLatitude2) ) * sin( radians( delivery_latitude ) ) ) ) AS radiusDeliveryDistance" +
+            " FROM orders having radiusPickupDistance < :distance or radiusDeliveryDistance < :distance ORDER BY radiusPickupDistance, radiusDeliveryDistance ASC",
+            countQuery = "SELECT count(*) from (SELECT ( 3959 * acos( cos( radians(:refLatitude1) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
+                    " - radians(:refLongitude1) ) + sin( radians(:refLatitude1) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusPickupDistance," +
+                    " ( 3959 * acos( cos( radians(:refLatitude2) ) * cos( radians( delivery_latitude ) ) * cos( radians( delivery_longitude )" +
+                    " - radians(:refLongitude2) ) + sin( radians(:refLatitude2) ) * sin( radians( delivery_latitude ) ) ) ) AS radiusDeliveryDistance" +
+                    " FROM orders having radiusPickupDistance < :distance or radiusDeliveryDistance < :distance) as total",
+            nativeQuery = true)
+//    SELECT count(*) from (select * from orders) as total;
+    Page<Object> getInRadiusOfBoth(@Param("refLatitude1") double refLatitude1, @Param("refLongitude1") double refLongitude1,
+                                 @Param("refLatitude2") double refLatitude2, @Param("refLongitude2") double refLongitude2,
+                                 @Param("distance") int distance, Pageable pageable);
 }
