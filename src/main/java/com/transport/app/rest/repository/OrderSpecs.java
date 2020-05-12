@@ -27,6 +27,34 @@ public class OrderSpecs {
         };
     }
 
+    public static Specification<Order> withPickupStates(String states) {
+
+        return new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.in(root.get("pickupAddressState")).value(
+                        Arrays.stream(states.split(","))
+                        .map(m -> m.trim())
+                        .collect(Collectors.toList()
+                ));
+            }
+        };
+    }
+
+    public static Specification<Order> withDeliveryStates(String states) {
+
+        return new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.in(root.get("deliveryAddressState")).value(
+                        Arrays.stream(states.split(","))
+                        .map(m -> m.trim())
+                        .collect(Collectors.toList()
+                ));
+            }
+        };
+    }
+
     public static Specification<Order> textInAllColumns(String text) {
 
         if (!text.contains("%")) {

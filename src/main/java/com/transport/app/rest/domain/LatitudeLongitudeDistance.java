@@ -5,8 +5,9 @@ import org.springframework.stereotype.Service;
 
 @Getter
 @Service
-public class LatitudeLongitude {
+public class LatitudeLongitudeDistance {
 
     private double latitude;
     private double longitude;
+    private int distance;
 }

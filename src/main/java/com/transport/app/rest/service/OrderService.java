@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.*;
@@ -181,6 +180,13 @@ public class OrderService {
         return orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(statuses)), pageable);
     }
 
+    public Page<Order> findAllByStatesInPaginated(String pickupState, String deliveryStates, int page, Integer pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
+                Sort.by(Sort.Direction.DESC, "updatedAt"));
+        return orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(pickupState))
+                .and(OrderSpecs.withDeliveryStates(deliveryStates)), pageable);
+    }
+
     public Page<Order> searchOrders(String statuses, String searchText, int page, Integer pageSize) {
         /*SearchKeyword keyword = SearchKeyword.get(searchKeyword);
         switch(keyword) {
@@ -237,11 +243,11 @@ public class OrderService {
 //        return orderPage.toList();
     }
 
-    public PagedOrders getCircularDistance(String type, List<LatitudeLongitude> list, double refLatitude, double refLongitude, int distance, int page, Integer pageSize) {
-        return distanceMatrixService.getCircularDistance(type, list, refLatitude, refLongitude, distance, page, pageSize);
+    public PagedOrders getCircularDistance(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, int page, Integer pageSize) {
+        return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, page, pageSize);
     }
 
-    public PagedOrders getCircularDistanceBoth(Double pickupLatitude,
+    /*public PagedOrders getCircularDistanceBoth(Double pickupLatitude,
                                                Double pickupLongitude,
                                                Double deliveryLatitude,
                                                Double deliveryLongitude, int distance, int page, Integer pageSize) {
@@ -249,7 +255,7 @@ public class OrderService {
                 pickupLongitude,
                 deliveryLatitude,
                 deliveryLongitude, distance, page, pageSize);
-    }
+    }*/
 
     public void deleteById(Long orderId) {
         Optional<Order> orderOptional = orderRepository.findById(orderId);

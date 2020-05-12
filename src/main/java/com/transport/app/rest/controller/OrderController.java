@@ -1,5 +1,7 @@
 package com.transport.app.rest.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
 import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 //        (origins = "*", allowedHeaders = "*", maxAge = 1800 * 2 * 24)
@@ -122,6 +123,19 @@ public class OrderController {
                 .build();
     }
 
+    @GetMapping("/get/statesin/{pickupstates}/{deliverystates}/{page}/{pagesize}")
+    public PagedOrdersDto findAllByStatesInPaginated(@PathVariable("pickupstates") String pickupStates,
+                                                     @PathVariable("deliverystates") String deliveryStates,
+                                                 @PathVariable("page") int pageNumber,
+                                                 @PathVariable("pagesize") Integer pageSize) {
+//        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize));
+        Page<Order> page = orderService.findAllByStatesInPaginated(pickupStates, deliveryStates, pageNumber, pageSize);
+        return PagedOrdersDto.builder()
+                .totalItems(page.getTotalElements())
+                .orders(OrderMapper.toOrderDtos(page.getContent()))
+                .build();
+    }
+
 //    @GetMapping("/get/statusin/{statuses}/{pagesize}")
 //    public List<OrderDto> findAllByOrderStatusesPaginated(@PathVariable("statuses") String statuses) {
 //        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses));
@@ -170,19 +184,22 @@ public class OrderController {
                 OrderMapper.toOrderDtos(page.getContent())).build();
     }
 
-    @GetMapping("getinradius/{type}/{latitude}/{longitude}/{distance}/{page}/{pagesize}")
-    public PagedOrdersDto getCircularDistance(@RequestBody List<LatitudeLongitude> list,
-                                              @PathVariable("type") String type,
-                                              @PathVariable("latitude") Double latitude,
-                                              @PathVariable("longitude") Double longitude,
-                                              @PathVariable("distance") int distance, // in miles
+    @GetMapping("getinradius/{originstatescsv}/{destinationstatescsv}/{page}/{pagesize}")
+    public PagedOrdersDto getCircularDistance(@RequestParam("refs") String refs,
+                                              @PathVariable("originstatescsv") String originStatesCsv,
+                                              @PathVariable("destinationstatescsv") String destinationStatesCsv,
+//                                              @PathVariable("type") String type,
+//                                              @PathVariable("latitude") Double latitude,
+//                                              @PathVariable("longitude") Double longitude,
+//                                              @PathVariable("distance") int distance, // in miles
                                               @PathVariable("page") int page,
-                                              @PathVariable("pagesize") Integer pageSize) {
-        PagedOrders pagedOrders = orderService.getCircularDistance(type, list, latitude, longitude, distance, page, pageSize);
+                                              @PathVariable("pagesize") Integer pageSize) throws JsonProcessingException {
+        LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs = new ObjectMapper().readValue(refs, LatitudeLongitudeDistanceRefs.class);
+        PagedOrders pagedOrders = orderService.getCircularDistance(latitudeLongitudeDistanceRefs, page, pageSize);
         return PagedOrdersMapper.toPagedOrdersDto(pagedOrders);
     }
 
-    @GetMapping("getinradius/{pickupLatitude}/{pickupLongitude}/{deliveryLatitude}/{deliveryLongitude}/{distance}/{page}/{pagesize}")
+    /*@GetMapping("getinradius/{pickupLatitude}/{pickupLongitude}/{deliveryLatitude}/{deliveryLongitude}/{distance}/{page}/{pagesize}")
     public PagedOrdersDto getCircularDistanceBoth(@PathVariable("pickupLatitude") Double pickupLatitude,
                                                   @PathVariable("pickupLongitude") Double pickupLongitude,
                                                   @PathVariable("deliveryLatitude") Double deliveryLatitude,
@@ -195,7 +212,7 @@ public class OrderController {
                 deliveryLatitude,
                 deliveryLongitude, distance, page, pageSize);
         return PagedOrdersMapper.toPagedOrdersDto(pagedOrders);
-    }
+    }*/
 
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") long orderId) {

@@ -32,6 +32,7 @@ public class OrderDto {
     private String pickupCompanyName;
     //    Pickup address                required
     private String pickupAddress;
+    private String pickupAddressState;
     //    Zip                           required
     private String pickupZip;
     private Double pickupLatitude;
@@ -60,6 +61,7 @@ public class OrderDto {
     private String deliveryCompanyName;
     //    Delivery address              required
     private String deliveryAddress;
+    private String deliveryAddressState;
     //    Zip                           required
     private String deliveryZip;
     private Double deliveryLatitude;

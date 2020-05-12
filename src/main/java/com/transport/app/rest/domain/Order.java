@@ -47,6 +47,8 @@ public class Order {
 //            , nullable = false
     )
     private String pickupAddress;                                               // Pickup address               required
+    @Column(name = "PICKUP_ADDRESS_STATE")
+    private String pickupAddressState;
 //    @NotEmpty(message = "pickupZip is required")
     @Column(name = "PICKUP_ZIP"
 //            , nullable = false
@@ -102,6 +104,8 @@ public class Order {
 //            , nullable = false
     )
     private String deliveryAddress;                                             // Delivery address             required
+    @Column(name = "DELIVERY_ADDRESS_STATE")
+    private String deliveryAddressState;
 //    @NotEmpty(message = "deliveryZip is required")
     @Column(name = "DELIVERY_ZIP"
 //            , nullable = false

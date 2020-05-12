@@ -19,6 +19,7 @@ public class OrderMapper {
                 .pickupContactName(orderDto.getPickupContactName())
                 .pickupCompanyName(orderDto.getPickupCompanyName())
                 .pickupAddress(orderDto.getPickupAddress())
+                .pickupAddressState(orderDto.getPickupAddressState())
                 .pickupZip(orderDto.getPickupZip())
                 .pickupLatitude(orderDto.getPickupLatitude())
                 .pickupLongitude(orderDto.getPickupLongitude())
@@ -35,6 +36,7 @@ public class OrderMapper {
                 .deliveryContactName(orderDto.getDeliveryContactName())
                 .deliveryCompanyName(orderDto.getDeliveryCompanyName())
                 .deliveryAddress(orderDto.getDeliveryAddress())
+                .deliveryAddressState(orderDto.getDeliveryAddressState())
                 .deliveryZip(orderDto.getDeliveryZip())
                 .deliveryLatitude(orderDto.getDeliveryLatitude())
                 .deliveryLongitude(orderDto.getDeliveryLongitude())
@@ -102,6 +104,7 @@ public class OrderMapper {
                 .pickupContactName(order.getPickupContactName())
                 .pickupCompanyName(order.getPickupCompanyName())
                 .pickupAddress(order.getPickupAddress())
+                .pickupAddressState(order.getPickupAddressState())
                 .pickupZip(order.getPickupZip())
                 .pickupLatitude(order.getPickupLatitude())
                 .pickupLongitude(order.getPickupLongitude())
@@ -117,6 +120,7 @@ public class OrderMapper {
                 .deliveryContactName(order.getDeliveryContactName())
                 .deliveryCompanyName(order.getDeliveryCompanyName())
                 .deliveryAddress(order.getDeliveryAddress())
+                .deliveryAddressState(order.getDeliveryAddressState())
                 .deliveryZip(order.getDeliveryZip())
                 .deliveryLatitude(order.getDeliveryLatitude())
                 .deliveryLongitude(order.getDeliveryLongitude())
@@ -185,6 +189,7 @@ public class OrderMapper {
         order.setPickupContactName(orderUpdate.getPickupContactName() == null ? order.getPickupContactName() : orderUpdate.getPickupContactName());
         order.setPickupCompanyName(orderUpdate.getPickupCompanyName() == null ? order.getPickupCompanyName() : orderUpdate.getPickupCompanyName());
         order.setPickupAddress(orderUpdate.getPickupAddress() == null ? order.getPickupAddress() : orderUpdate.getPickupAddress());
+        order.setPickupAddressState(orderUpdate.getPickupAddressState() == null ? order.getPickupAddressState() : orderUpdate.getPickupAddressState());
         order.setPickupZip(orderUpdate.getPickupZip() == null ? order.getPickupZip() : orderUpdate.getPickupZip());
         order.setPickupLatitude(orderUpdate.getPickupLatitude() == null ? order.getPickupLatitude() : orderUpdate.getPickupLatitude());
         order.setPickupLongitude(orderUpdate.getPickupLongitude() == null ? order.getPickupLongitude() : orderUpdate.getPickupLongitude());
@@ -199,6 +204,7 @@ public class OrderMapper {
         order.setDeliveryContactName(orderUpdate.getDeliveryContactName() == null ? order.getDeliveryContactName() : orderUpdate.getDeliveryContactName());
         order.setDeliveryCompanyName(orderUpdate.getDeliveryCompanyName() == null ? order.getDeliveryCompanyName() : orderUpdate.getDeliveryCompanyName());
         order.setDeliveryAddress(orderUpdate.getDeliveryAddress() == null ? order.getDeliveryAddress() : orderUpdate.getDeliveryAddress());
+        order.setDeliveryAddressState(orderUpdate.getDeliveryAddressState() == null ? order.getDeliveryAddressState() : orderUpdate.getDeliveryAddressState());
         order.setDeliveryZip(orderUpdate.getDeliveryZip() == null ? order.getDeliveryZip() : orderUpdate.getDeliveryZip());
         order.setDeliveryLatitude(orderUpdate.getDeliveryLatitude() == null ? order.getDeliveryLatitude() : orderUpdate.getDeliveryLatitude());
         order.setDeliveryLongitude(orderUpdate.getDeliveryLongitude() == null ? order.getDeliveryLongitude() : orderUpdate.getDeliveryLongitude());
