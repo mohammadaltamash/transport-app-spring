@@ -177,7 +177,7 @@ public class OrderService {
 //                        .collect(Collectors.toList()), pageable);
 
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
-                Sort.by(Sort.Direction.DESC, "updatedAt"));
+                Sort.by(Sort.Direction.DESC, "createdAt"));
         return orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(statuses)), pageable);
     }
 
@@ -254,7 +254,7 @@ public class OrderService {
         List<LatitudeLongitudeDistance> deliveryRefLatLongList = latitudeLongitudeDistanceRefs.getDeliveryLatLongs();
         Page<Order> orderPage = Page.empty();
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
-                Sort.by(Sort.Direction.DESC, "updatedAt"));
+                Sort.by(Sort.Direction.DESC, "createdAt"));
         if ((pickupRefLatLongList != null && pickupRefLatLongList.size() > 0 ||
                 deliveryRefLatLongList != null && deliveryRefLatLongList.size() > 0) && (!"null".equals(originStatesCsv) || !"null".equals(destinationStatesCsv))) {
 

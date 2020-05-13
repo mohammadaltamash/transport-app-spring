@@ -163,7 +163,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             appendHavingCondition(commonQuery, "delivery", deliveryRefLatLongList.size(), pickupRefLatLongList.size());
         }
         //////////////////////
-        selectQuery.append(commonQuery.toString()).append(" ORDER BY ");
+        /*selectQuery.append(commonQuery.toString()).append(" ORDER BY ");
         if (!pickupRefLatLongList.isEmpty()) {
             selectQuery.append("radiusPickupDistance1");
         } else if (!deliveryRefLatLongList.isEmpty()) {
@@ -175,7 +175,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         if (!deliveryRefLatLongList.isEmpty()) {
             addOrderBy(selectQuery, "delivery", deliveryRefLatLongList, pickupRefLatLongList.isEmpty() ? true : false);
         }
-        selectQuery.append(" ASC");
+        selectQuery.append(" ASC");*/
         //////////////////////
 
         countQuery.append(commonQuery.toString()).append(") as total");
