@@ -123,18 +123,18 @@ public class OrderController {
                 .build();
     }
 
-    @GetMapping("/get/statesin/{pickupstates}/{deliverystates}/{page}/{pagesize}")
-    public PagedOrdersDto findAllByStatesInPaginated(@PathVariable("pickupstates") String pickupStates,
-                                                     @PathVariable("deliverystates") String deliveryStates,
-                                                 @PathVariable("page") int pageNumber,
-                                                 @PathVariable("pagesize") Integer pageSize) {
-//        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize));
-        Page<Order> page = orderService.findAllByStatesInPaginated(pickupStates, deliveryStates, pageNumber, pageSize);
-        return PagedOrdersDto.builder()
-                .totalItems(page.getTotalElements())
-                .orders(OrderMapper.toOrderDtos(page.getContent()))
-                .build();
-    }
+//    @GetMapping("/get/statesin/{pickupstates}/{deliverystates}/{page}/{pagesize}")
+//    public PagedOrdersDto findAllByStatesInPaginated(@PathVariable("pickupstates") String pickupStates,
+//                                                     @PathVariable("deliverystates") String deliveryStates,
+//                                                 @PathVariable("page") int pageNumber,
+//                                                 @PathVariable("pagesize") Integer pageSize) {
+////        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize));
+//        Page<Order> page = orderService.findAllByStatesInPaginated(pickupStates, deliveryStates, pageNumber, pageSize);
+//        return PagedOrdersDto.builder()
+//                .totalItems(page.getTotalElements())
+//                .orders(OrderMapper.toOrderDtos(page.getContent()))
+//                .build();
+//    }
 
 //    @GetMapping("/get/statusin/{statuses}/{pagesize}")
 //    public List<OrderDto> findAllByOrderStatusesPaginated(@PathVariable("statuses") String statuses) {
@@ -185,7 +185,7 @@ public class OrderController {
     }
 
     @GetMapping("getinradius/{originstatescsv}/{destinationstatescsv}/{page}/{pagesize}")
-    public PagedOrdersDto getCircularDistance(@RequestParam("refs") String refs,
+    public PagedOrdersDto getFilteredOrders(@RequestParam("refs") String refs,
                                               @PathVariable("originstatescsv") String originStatesCsv,
                                               @PathVariable("destinationstatescsv") String destinationStatesCsv,
 //                                              @PathVariable("type") String type,
@@ -195,7 +195,8 @@ public class OrderController {
                                               @PathVariable("page") int page,
                                               @PathVariable("pagesize") Integer pageSize) throws JsonProcessingException {
         LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs = new ObjectMapper().readValue(refs, LatitudeLongitudeDistanceRefs.class);
-        PagedOrders pagedOrders = orderService.getCircularDistance(latitudeLongitudeDistanceRefs, page, pageSize);
+        PagedOrders pagedOrders = orderService.getFilteredOrders(latitudeLongitudeDistanceRefs, originStatesCsv,
+                                                                 destinationStatesCsv, page, pageSize);
         return PagedOrdersMapper.toPagedOrdersDto(pagedOrders);
     }
 

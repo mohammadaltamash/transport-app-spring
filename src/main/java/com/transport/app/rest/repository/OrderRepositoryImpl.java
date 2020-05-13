@@ -112,7 +112,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }*/
 
     @Override
-    public PagedOrders getInRadiusOfPickup2(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, int page, Integer pageSize) {
+    public PagedOrders getInRadiusOfPickup2(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String inQuery, int page, Integer pageSize) {
 //        "SELECT id, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
 //                " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusPickupDistance" +
 //                " FROM orders having radiusPickupDistance < :distance ORDER BY radiusPickupDistance ASC";
@@ -152,7 +152,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         }
 
 //      (or origin) and (or destination)
-        commonQuery.append(" FROM orders having");
+        commonQuery.append(String.format(" FROM orders %s having", inQuery != null ? inQuery : ""));
         if (!pickupRefLatLongList.isEmpty()) {
             appendHavingCondition(commonQuery, "pickup", pickupRefLatLongList.size(), 0);
             if (!deliveryRefLatLongList.isEmpty()) {

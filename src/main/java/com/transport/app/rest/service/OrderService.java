@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.*;
@@ -243,8 +244,58 @@ public class OrderService {
 //        return orderPage.toList();
     }
 
-    public PagedOrders getCircularDistance(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, int page, Integer pageSize) {
-        return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, page, pageSize);
+//    public PagedOrders getCircularDistance(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, int page, Integer pageSize) {
+//        return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, page, pageSize);
+//    }
+
+    public PagedOrders getFilteredOrders(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String originStatesCsv,
+                                         String destinationStatesCsv, int page, Integer pageSize) {
+        List<LatitudeLongitudeDistance> pickupRefLatLongList = latitudeLongitudeDistanceRefs.getPickupLatLongs();
+        List<LatitudeLongitudeDistance> deliveryRefLatLongList = latitudeLongitudeDistanceRefs.getDeliveryLatLongs();
+        Page<Order> orderPage = Page.empty();
+        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
+                Sort.by(Sort.Direction.DESC, "updatedAt"));
+        if ((pickupRefLatLongList != null && pickupRefLatLongList.size() > 0 ||
+                deliveryRefLatLongList != null && deliveryRefLatLongList.size() > 0) && (!"null".equals(originStatesCsv) || !"null".equals(destinationStatesCsv))) {
+
+            List<String> originStates = Collections.EMPTY_LIST;
+            List<String> destinationStates = Collections.EMPTY_LIST;
+            if (!"null".equals(originStatesCsv)) {
+                originStates = Arrays.stream(originStatesCsv.split(","))
+                                                                  .map(m -> m.trim())
+                                                                  .collect(Collectors.toList());
+            }
+            if (!"null".equals(destinationStatesCsv)) {
+                destinationStates = Arrays.stream(destinationStatesCsv.split(","))
+                                                                  .map(m -> m.trim())
+                                                                  .collect(Collectors.toList());
+            }
+            String inQuery;
+            if (!originStates.isEmpty() && !destinationStates.isEmpty()) {
+                inQuery = String.format("where pickup_address_state in (%s)", "'" + String.join("', '", originStates.toArray(new String[0])) + "'")
+                            + String.format(" and delivery_address_state in (%s)", "'" + String.join("', '", destinationStates.toArray(new String[0])) + "'");
+            } else if (!originStates.isEmpty()) {
+                inQuery = String.format("where pickup_address_state in (%s)", "'" + String.join("', '", originStates.toArray(new String[0])) + "'");
+            } else {
+                inQuery = String.format("where delivery_address_state in (%s)", "'" + String.join("', '", destinationStates.toArray(new String[0])) + "'");
+            }
+            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, inQuery, page, pageSize);
+        } else if ((pickupRefLatLongList != null && pickupRefLatLongList.size() > 0) ||
+                (deliveryRefLatLongList != null && deliveryRefLatLongList.size() > 0)) {
+            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, null, page, pageSize);
+        } else {
+            if (!"null".equals(originStatesCsv) && !"null".equals(destinationStatesCsv)) {
+                orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv))
+                        .and(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
+            } else if (!"null".equals(originStatesCsv)) {
+                orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv)), pageable);
+            } else if (!"null".equals(destinationStatesCsv)) {
+                orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
+            }
+        }
+
+        return PagedOrders.builder().totalItems(orderPage.getTotalElements()).orders(orderPage.getContent()).build();
+//        return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, page, pageSize);
     }
 
     /*public PagedOrders getCircularDistanceBoth(Double pickupLatitude,
