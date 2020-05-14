@@ -1,27 +1,40 @@
 package com.transport.app.rest.service;
 
 import com.google.maps.errors.ApiException;
+import com.transport.app.rest.config.authenticationfacade.IAuthenticationFacade;
+import com.transport.app.rest.domain.CityZipLatLong;
 import com.transport.app.rest.domain.Order;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.repository.OrderRepository;
 import com.transport.app.rest.repository.UserAuthRepository;
+import de.siegmar.fastcsv.reader.CsvParser;
+import de.siegmar.fastcsv.reader.CsvReader;
+import de.siegmar.fastcsv.reader.CsvRow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.IntStream;
 
 @Service
 public class TestData {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
     private UserAuthRepository userRepository;
     @Autowired
     private DistanceMatrixService distanceMatrixService;
+
+    @Autowired
+    private IAuthenticationFacade authenticationFacade;
 
     ///////////// Mock
     List<User> users = new ArrayList<>();
@@ -32,22 +45,61 @@ public class TestData {
             users.add(generateUser(i));
         });
         users = userRepository.saveAll(users);
-        IntStream.range(1, 801).forEach(i -> {
-            try {
-                orders.add(generateOrder(i, users.get(0).getId()));
-            } catch (InterruptedException e) {
-            } catch (ApiException e) {
-            } catch (IOException e) {
+
+        File file = new File("src/main/resources/static/orders-generate.csv");
+        CsvReader csvReader = new CsvReader();
+        csvReader.setContainsHeader(true);
+
+        String userName = ((org.springframework.security.core.userdetails.User) authenticationFacade.getAuthentication().getPrincipal()).getUsername();
+        User createdBy = userRepository.findByEmail(userName);
+
+        List<CityZipLatLong> list = new ArrayList<>();
+        try (CsvParser csvParser = csvReader.parse(file, StandardCharsets.UTF_8)) {
+            CsvRow row;
+            int count = 0;
+            while ((row = csvParser.nextRow()) != null) {
+                System.out.println(++count);
+                Order.OrderBuilder builder = Order.builder()
+                        .pickupAddress(row.getField(0))
+                        .pickupAddressState(row.getField(1))
+                        .pickupZip(row.getField(2))
+                        .pickupLatitude(Double.parseDouble(row.getField(3)))
+                        .pickupLongitude(Double.parseDouble(row.getField(4)))
+                        .deliveryAddress(row.getField(5))
+                        .deliveryAddressState(row.getField(6))
+                        .deliveryZip(row.getField(7))
+                        .deliveryLatitude(Double.parseDouble(row.getField(8)))
+                        .deliveryLongitude(Double.parseDouble(row.getField(9)))
+                        .distance(Long.parseLong(row.getField(10)));
+
+                orders.add(generateOrder(builder, Long.parseLong(row.getField(10)), count, createdBy));
             }
-        });
-        IntStream.range(801, 1001).forEach(i -> {
-            try {
-                orders.add(generateOrder(i, users.get(1).getId()));
-            } catch (InterruptedException e) {
-            } catch (ApiException e) {
-            } catch (IOException e) {
-            }
-        });
+        } catch (IOException e) {
+            logger.warn(e.getMessage());
+        } catch (InterruptedException e) {
+            logger.warn(e.getMessage());
+        } catch (ApiException e) {
+            logger.warn(e.getMessage());
+        }
+//        cityZipLatLongRepository.saveAll(list);
+
+
+//        IntStream.range(1, 101).forEach(i -> {
+//            try {
+//                orders.add(generateOrder(i, users.get(0).getId()));
+//            } catch (InterruptedException e) {
+//            } catch (ApiException e) {
+//            } catch (IOException e) {
+//            }
+//        });
+//        IntStream.range(101, 201).forEach(i -> {
+//            try {
+//                orders.add(generateOrder(i, users.get(1).getId()));
+//            } catch (InterruptedException e) {
+//            } catch (ApiException e) {
+//            } catch (IOException e) {
+//            }
+//        });
         orderRepository.saveAll(orders);
     }
 
@@ -70,22 +122,32 @@ public class TestData {
                 .address("User address " + i)
                 .build();
     }
-    public Order generateOrder(int i, long userId) throws InterruptedException, ApiException, IOException {
+    public Order generateOrder(Order.OrderBuilder builder, long distance, int i, User user) throws InterruptedException, ApiException, IOException {
         System.out.println(i);
         double[] pickupPair = getLocation(42.997075, -103.074280, 5000);
         double[] deliveryPair = getLocation(42.997075, -103.074280, 10000);
-        return Order.builder()
+//        long distance = distanceMatrixService.getDriveDist(
+//                pickupPair[0], pickupPair[1],
+//                deliveryPair[0], deliveryPair[1]);
+        Random r = new Random();
+        double carrierPay = 100D + (5000D - 100D) * r.nextDouble();
+        double amountOnPickup = carrierPay / 4;
+        double amountOnDelivery = carrierPay - amountOnPickup;
+        return builder
                 .brokerOrderId("BrokerOrderId-" + i)
-                .pickupAddress("PickupAddress-" + i)
-                .pickupZip("12345")
+//                .pickupAddress("PickupAddress-" + i)
+//                .pickupZip("12345")
                 .pickupPhones(new HashMap<String, String>() {{ put("12833456789", "PickupPhones note"); }})
                 .pickupDates(new HashMap<String, Date>() {{ put("begin", new Date()); put("end", new Date()); }})
-                .deliveryAddress("DeliveryAddress-" + i)
-                .deliveryZip("65835")
+//                .deliveryAddress("DeliveryAddress-" + i)
+//                .deliveryZip("65835")
                 .deliveryPhones(new HashMap<String, String>() {{ put("35725345345", "DeliveryPhones note"); }})
                 .deliveryDates(new HashMap<String, Date>() {{ put("begin", new Date()); put("end", new Date()); }})
                 .vehicleMake("VehicleMake-" + i)
-                .carrierPay(1000d + i)
+                .carrierPay(carrierPay)
+                .amountOnPickup(amountOnPickup)
+                .amountOnDelivery(amountOnDelivery)
+                .perMile(carrierPay / (distance * 0.00062137))
                 .paymentTermBusinessDays("PaymentTermBusinessDays-" + i)
                 .paymentMethod("PaymentMethod-" + i)
                 .paymentTermBegins("PaymentTermBegins-" + i)
@@ -93,16 +155,14 @@ public class TestData {
                 .brokerAddress("BrokerAddress-" + i)
                 .brokerZip("96445")
                 .shipperPhones(new HashMap<String, String>() {{ put("12382456789", "ShipperPhones note"); }})
-                .brokerEmail("email" + i + "@example.com")
-                .pickupLatitude((double) pickupPair[0])
-                .pickupLongitude((double) pickupPair[1])
-                .deliveryLatitude((double) deliveryPair[0])
-                .deliveryLongitude((double) deliveryPair[1])
-                .distance(distanceMatrixService.getDriveDist(
-                        (double) pickupPair[0], (double) pickupPair[1],
-                        (double) deliveryPair[0], (double) deliveryPair[1]))
-                .createdBy(userRepository.findById(userId).get())
-                .createdByName(userRepository.findById(userId).get().getFullName()) // For search
+                .brokerEmail(user.getEmail())
+//                .pickupLatitude((double) pickupPair[0])
+//                .pickupLongitude((double) pickupPair[1])
+//                .deliveryLatitude((double) deliveryPair[0])
+//                .deliveryLongitude((double) deliveryPair[1])
+//                .distance(distance) // meters
+                .createdBy(user)
+                .createdByName(user.getFullName()) // For search
                 .build();
     }
 

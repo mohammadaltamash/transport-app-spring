@@ -112,7 +112,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }*/
 
     @Override
-    public PagedOrders getInRadiusOfPickup2(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String inQuery, int page, Integer pageSize) {
+    public PagedOrders getInRadius(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String inQuery, String orderQuery, int page, Integer pageSize) {
 //        "SELECT id, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
 //                " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusPickupDistance" +
 //                " FROM orders having radiusPickupDistance < :distance ORDER BY radiusPickupDistance ASC";
@@ -163,19 +163,20 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             appendHavingCondition(commonQuery, "delivery", deliveryRefLatLongList.size(), pickupRefLatLongList.size());
         }
         //////////////////////
-        /*selectQuery.append(commonQuery.toString()).append(" ORDER BY ");
-        if (!pickupRefLatLongList.isEmpty()) {
-            selectQuery.append("radiusPickupDistance1");
-        } else if (!deliveryRefLatLongList.isEmpty()) {
-            selectQuery.append("radiusDeliveryDistance1");
-        }
-        if (!pickupRefLatLongList.isEmpty()) {
-            addOrderBy(selectQuery, "pickup", pickupRefLatLongList, true);
-        }
-        if (!deliveryRefLatLongList.isEmpty()) {
-            addOrderBy(selectQuery, "delivery", deliveryRefLatLongList, pickupRefLatLongList.isEmpty() ? true : false);
-        }
-        selectQuery.append(" ASC");*/
+//        selectQuery.append(commonQuery.toString()).append(" ORDER BY ");
+//        if (!pickupRefLatLongList.isEmpty()) {
+//            selectQuery.append("radiusPickupDistance1");
+//        } else if (!deliveryRefLatLongList.isEmpty()) {
+//            selectQuery.append("radiusDeliveryDistance1");
+//        }
+//        if (!pickupRefLatLongList.isEmpty()) {
+//            addOrderBy(selectQuery, "pickup", pickupRefLatLongList, true);
+//        }
+//        if (!deliveryRefLatLongList.isEmpty()) {
+//            addOrderBy(selectQuery, "delivery", deliveryRefLatLongList, pickupRefLatLongList.isEmpty() ? true : false);
+//        }
+//        selectQuery.append(" ASC");
+        selectQuery.append(orderQuery);
         //////////////////////
 
         countQuery.append(commonQuery.toString()).append(") as total");

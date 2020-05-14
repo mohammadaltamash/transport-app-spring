@@ -151,6 +151,7 @@ public class OrderDto {
     private UserDto assignedToCarrier; // By broker to carrier. orderStatus changes to ASSIGNED
     private UserDto assignedToDriver; // By carrier
     private Long distance;
+    private Double perMile;
     private Double radiusPickupDistance;
     private Double radiusDeliveryDistance;
 

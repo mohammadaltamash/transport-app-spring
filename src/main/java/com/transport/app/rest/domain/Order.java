@@ -279,6 +279,8 @@ public class Order {
     private String assignedToDriverName; // For search
     @Column(name = "DISTANCE")
     private Long distance;
+    @Column(name = "PER_MILE")
+    private Double perMile;
     @Transient
     private Double radiusPickupDistance;
     @Transient

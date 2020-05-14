@@ -52,6 +52,8 @@ public class OrderService {
 //        createdBy.setOrders(userOrders);
         long distance = distanceMatrixService.getDriveDist(order.getPickupLatitude(), order.getPickupLongitude(), order.getDeliveryLatitude(), order.getDeliveryLongitude());
         order.setDistance(distance);
+        double perMile = order.getCarrierPay() / (distance * 0.00062137);
+        order.setPerMile(perMile);
         Order ordr = orderRepository.save(order);
         return ordr;
     }
@@ -64,6 +66,8 @@ public class OrderService {
         if (order.getPickupZip() != null || order.getDeliveryZip() != null) {
             long distance = distanceMatrixService.getDriveDist(order.getPickupLatitude(), order.getPickupLongitude(), order.getDeliveryLatitude(), order.getDeliveryLongitude());
             order.setDistance(distance);
+            double perMile = order.getCarrierPay() / (distance * 0.00062137);
+            order.setPerMile(perMile);
         }
         return orderRepository.save(OrderMapper.toUpdatedOrder(o, order));
     }
@@ -168,16 +172,18 @@ public class OrderService {
 //                .collect(Collectors.toList()));
 //    }
 
-    public Page<Order> findAllByOrderStatusInPaginated(String statuses, int page, Integer pageSize) {
+    public Page<Order> findAllByOrderStatusInPaginated(String statuses, int page, Integer pageSize, Pageable pageable) {
 //        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
 //                Sort.by(Sort.Direction.DESC, "updatedAt"));
 //        return orderRepository.findAllByOrderStatusIn(
 //                Arrays.stream(statuses.split(","))
 //                        .map(m -> m.trim())
 //                        .collect(Collectors.toList()), pageable);
-
-        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
-                Sort.by(Sort.Direction.DESC, "createdAt"));
+//        Sort sortBy = Sort.by(Sort.Direction.DESC, primarySort == null ? "updatedAt" : primarySort);
+//        if (secondarySort != null) {
+//            sortBy.and(Sort.by(Sort.Direction.DESC, secondarySort));
+//        }
+//        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize, sortBy);
         return orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(statuses)), pageable);
     }
 
@@ -249,12 +255,25 @@ public class OrderService {
 //    }
 
     public PagedOrders getFilteredOrders(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String originStatesCsv,
-                                         String destinationStatesCsv, int page, Integer pageSize) {
+                                         String destinationStatesCsv, String primarySort, String secondarySort,
+                                         int page, Integer pageSize) {
         List<LatitudeLongitudeDistance> pickupRefLatLongList = latitudeLongitudeDistanceRefs.getPickupLatLongs();
         List<LatitudeLongitudeDistance> deliveryRefLatLongList = latitudeLongitudeDistanceRefs.getDeliveryLatLongs();
         Page<Order> orderPage = Page.empty();
-        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
-                Sort.by(Sort.Direction.DESC, "createdAt"));
+        Pageable pageable = null;
+        String orderQuery = null;
+        if (primarySort != null && secondarySort != null) {
+            pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
+                    Sort.by(Sort.Direction.DESC, primarySort).and(Sort.by(Sort.Direction.DESC, secondarySort)));
+            orderQuery = String.format(" order by (%s) DESC, (%s) DESC", primarySort, secondarySort);
+        } else if (primarySort != null) {
+            pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize, Sort.by(Sort.Direction.DESC, primarySort));
+            orderQuery = String.format(" order by (%s) DESC", primarySort);
+        } else {
+            pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
+                    Sort.by(Sort.Direction.DESC, "createdAt"));
+            orderQuery = String.format(" order by (%s) DESC", "createdAt");
+        }
         if ((pickupRefLatLongList != null && pickupRefLatLongList.size() > 0 ||
                 deliveryRefLatLongList != null && deliveryRefLatLongList.size() > 0) && (!"null".equals(originStatesCsv) || !"null".equals(destinationStatesCsv))) {
 
@@ -279,19 +298,20 @@ public class OrderService {
             } else {
                 inQuery = String.format("where delivery_address_state in (%s)", "'" + String.join("', '", destinationStates.toArray(new String[0])) + "'");
             }
-            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, inQuery, page, pageSize);
+            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, inQuery, orderQuery, page, pageSize);
         } else if ((pickupRefLatLongList != null && pickupRefLatLongList.size() > 0) ||
                 (deliveryRefLatLongList != null && deliveryRefLatLongList.size() > 0)) {
-            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, null, page, pageSize);
+            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, null, orderQuery, page, pageSize);
+        } else if (!"null".equals(originStatesCsv) && !"null".equals(destinationStatesCsv)) {
+            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv))
+                    .and(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
+        } else if (!"null".equals(originStatesCsv)) {
+            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv)), pageable);
+        } else if (!"null".equals(destinationStatesCsv)) {
+
+            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
         } else {
-            if (!"null".equals(originStatesCsv) && !"null".equals(destinationStatesCsv)) {
-                orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv))
-                        .and(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
-            } else if (!"null".equals(originStatesCsv)) {
-                orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv)), pageable);
-            } else if (!"null".equals(destinationStatesCsv)) {
-                orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
-            }
+            orderPage = findAllByOrderStatusInPaginated(OrderStatus.NEW.getName(), page, pageSize, pageable);
         }
 
         return PagedOrders.builder().totalItems(orderPage.getTotalElements()).orders(orderPage.getContent()).build();

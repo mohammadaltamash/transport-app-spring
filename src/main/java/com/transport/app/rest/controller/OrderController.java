@@ -3,12 +3,16 @@ package com.transport.app.rest.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
+import com.transport.app.rest.Constants;
 import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.*;
 import com.transport.app.rest.service.OrderService;
 import com.transport.app.rest.service.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -111,12 +115,21 @@ public class OrderController {
         return OrderMapper.toOrderDtos(orderService.findAllByOrderStatus(status));
     }
 
-    @GetMapping("/get/statusin/{statuses}/{page}/{pagesize}")
+    @GetMapping("/get/statusin/{statuses}/{primarysort}/{secondarysort}/{page}/{pagesize}")
     public PagedOrdersDto findAllByOrderStatuses(@PathVariable("statuses") String statuses,
+                                                 @PathVariable("primarysort") String primarySort,
+                                                 @PathVariable("secondarysort") String secondarySort,
                                                  @PathVariable("page") int pageNumber,
                                                  @PathVariable("pagesize") Integer pageSize) {
 //        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize));
-        Page<Order> page = orderService.findAllByOrderStatusInPaginated(statuses, pageNumber, pageSize);
+        primarySort = primarySort.equals("null") ? null : primarySort;
+        secondarySort = secondarySort.equals("null") ? null : secondarySort;
+        Sort sortBy = Sort.by(Sort.Direction.DESC, primarySort == null ? "updatedAt" : primarySort);
+        if (secondarySort != null) {
+            sortBy.and(Sort.by(Sort.Direction.DESC, secondarySort));
+        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize == null ? Constants.PAGE_SIZE : pageSize, sortBy);
+        Page<Order> page = orderService.findAllByOrderStatusInPaginated(statuses, pageNumber, pageSize, pageable);
         return PagedOrdersDto.builder()
                 .totalItems(page.getTotalElements())
                 .orders(OrderMapper.toOrderDtos(page.getContent()))
@@ -184,19 +197,23 @@ public class OrderController {
                 OrderMapper.toOrderDtos(page.getContent())).build();
     }
 
-    @GetMapping("getinradius/{originstatescsv}/{destinationstatescsv}/{page}/{pagesize}")
+    @GetMapping("getfilteredorders/{originstatescsv}/{destinationstatescsv}/{primarysort}/{secondarysort}/{page}/{pagesize}")
     public PagedOrdersDto getFilteredOrders(@RequestParam("refs") String refs,
-                                              @PathVariable("originstatescsv") String originStatesCsv,
-                                              @PathVariable("destinationstatescsv") String destinationStatesCsv,
-//                                              @PathVariable("type") String type,
-//                                              @PathVariable("latitude") Double latitude,
-//                                              @PathVariable("longitude") Double longitude,
-//                                              @PathVariable("distance") int distance, // in miles
-                                              @PathVariable("page") int page,
-                                              @PathVariable("pagesize") Integer pageSize) throws JsonProcessingException {
+                                            @PathVariable("originstatescsv") String originStatesCsv,
+                                            @PathVariable("destinationstatescsv") String destinationStatesCsv,
+                                            @PathVariable("primarysort") String primarySort,
+                                            @PathVariable("secondarysort") String secondarySort,
+//                                          @PathVariable("type") String type,
+//                                          @PathVariable("latitude") Double latitude,
+//                                          @PathVariable("longitude") Double longitude,
+//                                          @PathVariable("distance") int distance, // in miles
+                                            @PathVariable("page") int page,
+                                            @PathVariable("pagesize") Integer pageSize) throws JsonProcessingException {
         LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs = new ObjectMapper().readValue(refs, LatitudeLongitudeDistanceRefs.class);
-        PagedOrders pagedOrders = orderService.getFilteredOrders(latitudeLongitudeDistanceRefs, originStatesCsv,
-                                                                 destinationStatesCsv, page, pageSize);
+        primarySort = primarySort.equals("null") ? null : primarySort;
+        secondarySort = secondarySort.equals("null") ? null : secondarySort;
+        PagedOrders pagedOrders = orderService.getFilteredOrders(latitudeLongitudeDistanceRefs, originStatesCsv, destinationStatesCsv,
+                                                                 primarySort, secondarySort,page, pageSize);
         return PagedOrdersMapper.toPagedOrdersDto(pagedOrders);
     }
 

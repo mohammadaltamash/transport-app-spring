@@ -87,6 +87,7 @@ public class OrderMapper {
 //                .assignedToDriver(UserMapper.toUser(orderDto.getAssignedToDriver()))
 //                .createdBy(UserMapper.toUser(orderDto.getCreatedBy()))
                 .distance(orderDto.getDistance())
+                .perMile(orderDto.getPerMile())
                 .createdAt(orderDto.getCreatedAt())
                 .updatedAt(orderDto.getUpdatedAt())
                 .build();
@@ -172,6 +173,7 @@ public class OrderMapper {
                 .assignedToCarrier(UserMapper.toUserDto(order.getAssignedToCarrier()))
                 .assignedToDriver(UserMapper.toUserDto(order.getAssignedToDriver()))
                 .distance(order.getDistance())
+                .perMile(order.getPerMile())
                 .radiusPickupDistance(order.getRadiusPickupDistance())
                 .radiusDeliveryDistance(order.getRadiusDeliveryDistance())
 //                .askedToBook(order.getAskedToBook())
@@ -246,6 +248,7 @@ public class OrderMapper {
         order.setAssignedToCarrier(orderUpdate.getAssignedToCarrier() == null ? order.getAssignedToCarrier() : orderUpdate.getAssignedToCarrier());
         order.setAssignedToDriver(orderUpdate.getAssignedToDriver() == null ? order.getAssignedToDriver() : orderUpdate.getAssignedToDriver());
         order.setDistance(orderUpdate.getDistance() == null ? order.getDistance() : orderUpdate.getDistance());
+        order.setPerMile(orderUpdate.getPerMile() == null ? order.getPerMile() : orderUpdate.getPerMile());
 //        order.setAskedToBook(orderUpdate.getAskedToBook() == null ? order.getAskedToBook() : orderUpdate.getAskedToBook());
         order.setCreatedBy(orderUpdate.getCreatedBy() == null ? order.getCreatedBy() : orderUpdate.getCreatedBy());
         order.setCreatedAt(orderUpdate.getCreatedAt() == null ? order.getCreatedAt() : orderUpdate.getCreatedAt());
