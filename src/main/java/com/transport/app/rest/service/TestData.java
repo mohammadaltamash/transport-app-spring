@@ -156,6 +156,7 @@ public class TestData {
                 .brokerZip("96445")
                 .shipperPhones(new HashMap<String, String>() {{ put("12382456789", "ShipperPhones note"); }})
                 .brokerEmail(user.getEmail())
+                .vehicleInoperable(false)
 //                .pickupLatitude((double) pickupPair[0])
 //                .pickupLongitude((double) pickupPair[1])
 //                .deliveryLatitude((double) deliveryPair[0])

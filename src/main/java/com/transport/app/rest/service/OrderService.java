@@ -4,6 +4,7 @@ import com.google.maps.errors.ApiException;
 import com.transport.app.rest.Constants;
 import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
+import com.transport.app.rest.mapper.DBFieldsMapper;
 import com.transport.app.rest.mapper.OrderMapper;
 import com.transport.app.rest.repository.OrderCarrierRepository;
 import com.transport.app.rest.repository.OrderRepository;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OrderService {
@@ -256,23 +258,46 @@ public class OrderService {
 
     public PagedOrders getFilteredOrders(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String originStatesCsv,
                                          String destinationStatesCsv, String primarySort, String secondarySort,
+                                         Map<String, Object> fieldEqualTo, Map<String, String> fieldGreaterThanEqualTo,
                                          int page, Integer pageSize) {
         List<LatitudeLongitudeDistance> pickupRefLatLongList = latitudeLongitudeDistanceRefs.getPickupLatLongs();
         List<LatitudeLongitudeDistance> deliveryRefLatLongList = latitudeLongitudeDistanceRefs.getDeliveryLatLongs();
         Page<Order> orderPage = Page.empty();
         Pageable pageable = null;
-        String orderQuery = null;
+        String orderClause = null;
+        StringBuilder whereClauseBuilder = new StringBuilder("where order_status = 'NEW'");
+//        List<Integer> value = fieldEqualTo.entrySet().stream().filter(entry -> "vehicleInoperable".equals(entry.getKey())).map(m -> {
+//            if ("true".equals(m.getValue())) {
+//                return 1;
+//            } else {
+//                return 0;
+//            }
+//        }).collect(Collectors.toList());
+//        for (Map.Entry<String, String> entry : fieldEqualTo.entrySet()) {
+//            if ("vehicleInoperable".equals(entry.getKey())) {
+//                if ("true".equals(entry.getValue())) {
+//
+//                }
+//            }
+//        }
+        for (Map.Entry<String, Object> entry : fieldEqualTo.entrySet()) {
+            whereClauseBuilder.append(" and " + DBFieldsMapper.getDBField(entry.getKey()) + " = " + "'" + entry.getValue() + "'");
+        }
+        for (Map.Entry<String, String> entry : fieldGreaterThanEqualTo.entrySet()) {
+            whereClauseBuilder.append(" and " + DBFieldsMapper.getDBField(entry.getKey()) + " >= " + "'" + entry.getValue() + "'");
+        }
+        String whereClause = whereClauseBuilder.toString();
         if (primarySort != null && secondarySort != null) {
             pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
                     Sort.by(Sort.Direction.DESC, primarySort).and(Sort.by(Sort.Direction.DESC, secondarySort)));
-            orderQuery = String.format(" order by (%s) DESC, (%s) DESC", primarySort, secondarySort);
+            orderClause = String.format(" order by %s DESC, (%s) DESC", DBFieldsMapper.getDBField(primarySort), DBFieldsMapper.getDBField(secondarySort));
         } else if (primarySort != null) {
             pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize, Sort.by(Sort.Direction.DESC, primarySort));
-            orderQuery = String.format(" order by (%s) DESC", primarySort);
+            orderClause = String.format(" order by %s DESC", DBFieldsMapper.getDBField(primarySort));
         } else {
             pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
                     Sort.by(Sort.Direction.DESC, "createdAt"));
-            orderQuery = String.format(" order by (%s) DESC", "createdAt");
+            orderClause = String.format(" order by %s DESC", "created_at");
         }
         if ((pickupRefLatLongList != null && pickupRefLatLongList.size() > 0 ||
                 deliveryRefLatLongList != null && deliveryRefLatLongList.size() > 0) && (!"null".equals(originStatesCsv) || !"null".equals(destinationStatesCsv))) {
@@ -289,29 +314,45 @@ public class OrderService {
                                                                   .map(m -> m.trim())
                                                                   .collect(Collectors.toList());
             }
-            String inQuery;
+            String inClause;
             if (!originStates.isEmpty() && !destinationStates.isEmpty()) {
-                inQuery = String.format("where pickup_address_state in (%s)", "'" + String.join("', '", originStates.toArray(new String[0])) + "'")
+                inClause = String.format(" and pickup_address_state in (%s)", "'" + String.join("', '", originStates.toArray(new String[0])) + "'")
                             + String.format(" and delivery_address_state in (%s)", "'" + String.join("', '", destinationStates.toArray(new String[0])) + "'");
             } else if (!originStates.isEmpty()) {
-                inQuery = String.format("where pickup_address_state in (%s)", "'" + String.join("', '", originStates.toArray(new String[0])) + "'");
+                inClause = String.format(" and pickup_address_state in (%s)", "'" + String.join("', '", originStates.toArray(new String[0])) + "'");
             } else {
-                inQuery = String.format("where delivery_address_state in (%s)", "'" + String.join("', '", destinationStates.toArray(new String[0])) + "'");
+                inClause = String.format(" and delivery_address_state in (%s)", "'" + String.join("', '", destinationStates.toArray(new String[0])) + "'");
             }
-            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, inQuery, orderQuery, page, pageSize);
+            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, whereClause, inClause, orderClause, page, pageSize);
         } else if ((pickupRefLatLongList != null && pickupRefLatLongList.size() > 0) ||
                 (deliveryRefLatLongList != null && deliveryRefLatLongList.size() > 0)) {
-            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, null, orderQuery, page, pageSize);
+            return distanceMatrixService.getCircularDistance(latitudeLongitudeDistanceRefs, whereClause, null, orderClause, page, pageSize);
         } else if (!"null".equals(originStatesCsv) && !"null".equals(destinationStatesCsv)) {
-            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv))
-                    .and(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
+            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(OrderStatus.NEW.getName())
+                                                                .and(OrderSpecs.withPickupStates(originStatesCsv))
+                                                                .and(OrderSpecs.withDeliveryStates(destinationStatesCsv))
+                                                                .and(OrderSpecs.fieldEqualTo(fieldEqualTo))
+                                                                .and(OrderSpecs.fieldGreaterThanEqualTo(fieldGreaterThanEqualTo))),
+                                                                    pageable);
         } else if (!"null".equals(originStatesCsv)) {
-            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(originStatesCsv)), pageable);
+            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(OrderStatus.NEW.getName())
+                                                                .and(OrderSpecs.withPickupStates(originStatesCsv))
+                                                                .and(OrderSpecs.fieldEqualTo(fieldEqualTo))
+                                                                .and(OrderSpecs.fieldGreaterThanEqualTo(fieldGreaterThanEqualTo))),
+                                                                    pageable);
         } else if (!"null".equals(destinationStatesCsv)) {
 
-            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withDeliveryStates(destinationStatesCsv)), pageable);
+            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(OrderStatus.NEW.getName())
+                                                                .and(OrderSpecs.withDeliveryStates(destinationStatesCsv))
+                                                                .and(OrderSpecs.fieldEqualTo(fieldEqualTo))
+                                                                .and(OrderSpecs.fieldGreaterThanEqualTo(fieldGreaterThanEqualTo))),
+                                                                    pageable);
         } else {
-            orderPage = findAllByOrderStatusInPaginated(OrderStatus.NEW.getName(), page, pageSize, pageable);
+//            orderPage = findAllByOrderStatusInPaginated(OrderStatus.NEW.getName(), page, pageSize, pageable);
+            orderPage = orderRepository.findAll(Specification.where(OrderSpecs.withStatuses(OrderStatus.NEW.getName())
+                                                                .and(OrderSpecs.fieldEqualTo(fieldEqualTo))
+                                                                .and(OrderSpecs.fieldGreaterThanEqualTo(fieldGreaterThanEqualTo))),
+                                                                    pageable);
         }
 
         return PagedOrders.builder().totalItems(orderPage.getTotalElements()).orders(orderPage.getContent()).build();

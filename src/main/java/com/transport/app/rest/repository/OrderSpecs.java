@@ -8,7 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.Arrays;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class OrderSpecs {
@@ -51,6 +51,36 @@ public class OrderSpecs {
                         .map(m -> m.trim())
                         .collect(Collectors.toList()
                 ));
+            }
+        };
+    }
+
+    public static Specification<Order> fieldEqualTo(Map<String, Object> map) {
+
+        return new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+
+                List<Predicate> predicates = new ArrayList<>();
+                for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                }
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            }
+        };
+    }
+
+    public static Specification<Order> fieldGreaterThanEqualTo(Map<String, String> map) {
+
+        return new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+
+                List<Predicate> predicates = new ArrayList<>();
+                for (Map.Entry<String, String> entry : map.entrySet()) {
+                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(entry.getKey()), entry.getValue()));
+                }
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             }
         };
     }

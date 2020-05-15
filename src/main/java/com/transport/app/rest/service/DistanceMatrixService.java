@@ -101,7 +101,7 @@ public class DistanceMatrixService {
 //    - radians(YOUR_LONGITUDE) ) + sin( radians(YOUR_LATITUDE) ) * sin( radians( YOUR_DB_LAT_FIELD ) ) ) ) AS distance
 //    FROM YOUR_DB_TABLE HAVING distance < 25 ORDER BY distance ASC;
 //    distance in miles
-    public PagedOrders getCircularDistance(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String inQuery, String orderQuery, int pageNumber, Integer pageSize) {
+    public PagedOrders getCircularDistance(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String whereClause, String inClause, String orderClause, int pageNumber, Integer pageSize) {
 //        Pageable pageable = PageRequest.of(pageNumber, pageSize == null ? Constants.PAGE_SIZE : pageSize);
 //        Page<Object> page = Page.empty();
 //        if ("pickup".equals(type)) {
@@ -124,7 +124,7 @@ public class DistanceMatrixService {
 ////        });
 //        System.out.println(page.getTotalElements());
 //        return PagedOrders.builder().totalItems(page.getTotalElements()).orders(orders).build();
-        return orderRepository.getInRadius(latitudeLongitudeDistanceRefs, inQuery, orderQuery, pageNumber, pageSize);
+        return orderRepository.getInRadius(latitudeLongitudeDistanceRefs, whereClause, inClause, orderClause, pageNumber, pageSize);
     }
 
     /*public PagedOrders getCircularDistanceBoth(Double pickupLatitude,

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin
 //        (origins = "*", allowedHeaders = "*", maxAge = 1800 * 2 * 24)
@@ -199,6 +200,8 @@ public class OrderController {
 
     @GetMapping("getfilteredorders/{originstatescsv}/{destinationstatescsv}/{primarysort}/{secondarysort}/{page}/{pagesize}")
     public PagedOrdersDto getFilteredOrders(@RequestParam("refs") String refs,
+                                            @RequestParam("fieldequalto") String fieldEqualTo,
+                                            @RequestParam("fieldgreaterthanequalto") String fieldGreaterThanEqualTo,
                                             @PathVariable("originstatescsv") String originStatesCsv,
                                             @PathVariable("destinationstatescsv") String destinationStatesCsv,
                                             @PathVariable("primarysort") String primarySort,
@@ -210,10 +213,14 @@ public class OrderController {
                                             @PathVariable("page") int page,
                                             @PathVariable("pagesize") Integer pageSize) throws JsonProcessingException {
         LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs = new ObjectMapper().readValue(refs, LatitudeLongitudeDistanceRefs.class);
+        Map<String, Object> fieldEqualToMap = new ObjectMapper().readValue(fieldEqualTo, Map.class);
+        Map<String, String> fieldGreaterThanEqualToMap = new ObjectMapper().readValue(fieldGreaterThanEqualTo, Map.class);
         primarySort = primarySort.equals("null") ? null : primarySort;
         secondarySort = secondarySort.equals("null") ? null : secondarySort;
         PagedOrders pagedOrders = orderService.getFilteredOrders(latitudeLongitudeDistanceRefs, originStatesCsv, destinationStatesCsv,
-                                                                 primarySort, secondarySort,page, pageSize);
+                                                                 primarySort, secondarySort,
+                                                                 fieldEqualToMap, fieldGreaterThanEqualToMap,
+                                                                 page, pageSize);
         return PagedOrdersMapper.toPagedOrdersDto(pagedOrders);
     }
 

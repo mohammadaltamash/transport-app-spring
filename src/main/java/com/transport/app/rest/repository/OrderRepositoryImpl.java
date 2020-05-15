@@ -112,7 +112,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
     }*/
 
     @Override
-    public PagedOrders getInRadius(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String inQuery, String orderQuery, int page, Integer pageSize) {
+    public PagedOrders getInRadius(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String whereClause, String inClause, String orderClause, int page, Integer pageSize) {
 //        "SELECT id, ( 3959 * acos( cos( radians(:refLatitude) ) * cos( radians( pickup_latitude ) ) * cos( radians( pickup_longitude )" +
 //                " - radians(:refLongitude) ) + sin( radians(:refLatitude) ) * sin( radians( pickup_latitude ) ) ) ) AS radiusPickupDistance" +
 //                " FROM orders having radiusPickupDistance < :distance ORDER BY radiusPickupDistance ASC";
@@ -152,7 +152,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
         }
 
 //      (or origin) and (or destination)
-        commonQuery.append(String.format(" FROM orders %s having", inQuery != null ? inQuery : ""));
+        commonQuery.append(String.format(" FROM orders %s%s having", whereClause, inClause != null ? inClause : ""));
         if (!pickupRefLatLongList.isEmpty()) {
             appendHavingCondition(commonQuery, "pickup", pickupRefLatLongList.size(), 0);
             if (!deliveryRefLatLongList.isEmpty()) {
@@ -163,6 +163,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
             appendHavingCondition(commonQuery, "delivery", deliveryRefLatLongList.size(), pickupRefLatLongList.size());
         }
         //////////////////////
+        selectQuery.append(commonQuery.toString());
 //        selectQuery.append(commonQuery.toString()).append(" ORDER BY ");
 //        if (!pickupRefLatLongList.isEmpty()) {
 //            selectQuery.append("radiusPickupDistance1");
@@ -176,7 +177,7 @@ public class OrderRepositoryImpl implements OrderRepositoryCustom {
 //            addOrderBy(selectQuery, "delivery", deliveryRefLatLongList, pickupRefLatLongList.isEmpty() ? true : false);
 //        }
 //        selectQuery.append(" ASC");
-        selectQuery.append(orderQuery);
+        selectQuery.append(orderClause);
         //////////////////////
 
         countQuery.append(commonQuery.toString()).append(") as total");

@@ -7,5 +7,5 @@ import java.util.List;
 //@Repository
 public interface OrderRepositoryCustom {
     List<Order> findAllByOrderStatus(OrderStatus orderStatus);
-    PagedOrders getInRadius(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String inQuery, String orderQuery, int page, Integer pageSize);
+    PagedOrders getInRadius(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String whereClause, String inClause, String orderClause, int page, Integer pageSize);
 }
