@@ -25,12 +25,12 @@ public class Application implements CommandLineRunner {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-//	@Autowired
-//	private OrderRepository orderRepository;
-//	@Autowired
-//	private OrderService orderService;
-//	@Autowired
-//	private CityZipLatLongRepository cityZipLatLongRepository;
+	@Autowired
+	private OrderRepository orderRepository;
+	@Autowired
+	private OrderService orderService;
+	@Autowired
+	private CityZipLatLongRepository cityZipLatLongRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -39,32 +39,32 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-//		if (cityZipLatLongRepository.count() != 43191) {
-//			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude.csv");
-//			CsvReader csvReader = new CsvReader();
-//			csvReader.setContainsHeader(true);
-//
-//			List<CityZipLatLong> list = new ArrayList<>();
-//			try (CsvParser csvParser = csvReader.parse(file, StandardCharsets.UTF_8)) {
-//				CsvRow row;
-//				while ((row = csvParser.nextRow()) != null) {
-//					System.out.println("Read line: " + row);
-//					System.out.println("First column of line: " + row.getField(0));
-//
-//					list.add(CityZipLatLong.builder()
-//							.zip(row.getField(0))
-//							.city(row.getField(1))
-//							.state(row.getField(2))
-//							.latitude(Double.parseDouble(row.getField(3)))
-//							.longitude(Double.parseDouble(row.getField(4)))
-//							.timezone(Integer.parseInt(row.getField(5)))
-//							.geopoint(row.getField(7)).build());
-//				}
-//			} catch (IOException e) {
-//				logger.warn(e.getMessage());
-//			}
-//			cityZipLatLongRepository.saveAll(list);
-//		}
+		if (cityZipLatLongRepository.count() != 43191) {
+			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude.csv");
+			CsvReader csvReader = new CsvReader();
+			csvReader.setContainsHeader(true);
+
+			List<CityZipLatLong> list = new ArrayList<>();
+			try (CsvParser csvParser = csvReader.parse(file, StandardCharsets.UTF_8)) {
+				CsvRow row;
+				while ((row = csvParser.nextRow()) != null) {
+					System.out.println("Read line: " + row);
+					System.out.println("First column of line: " + row.getField(0));
+
+					list.add(CityZipLatLong.builder()
+							.zip(row.getField(0))
+							.city(row.getField(1))
+							.state(row.getField(2))
+							.latitude(Double.parseDouble(row.getField(3)))
+							.longitude(Double.parseDouble(row.getField(4)))
+							.timezone(Integer.parseInt(row.getField(5)))
+							.geopoint(row.getField(7)).build());
+				}
+			} catch (IOException e) {
+				logger.warn(e.getMessage());
+			}
+			cityZipLatLongRepository.saveAll(list);
+		}
 		/*orderService.findById(12l);
 
 		Order order = Order.builder()
