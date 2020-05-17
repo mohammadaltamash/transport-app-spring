@@ -150,6 +150,7 @@ public class OrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException(Order.class, orderId));
         order.setAssignedToDriver(driver);
         order.setAssignedToDriverName(driver.getFullName()); // For search
+        order.setOrderStatus(OrderStatus.ASSIGNED.getName());
         return orderRepository.save(order);
     }
 
@@ -176,12 +177,12 @@ public class OrderService {
 
     public Page<Order> findAllByOrderStatusInPaginated(String statuses, int page, Integer pageSize, Pageable pageable) {
 //        Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
-//                Sort.by(Sort.Direction.DESC, "updatedAt"));
+//                Sort.by(Sort.Direction.DESC, "createdAt"));
 //        return orderRepository.findAllByOrderStatusIn(
 //                Arrays.stream(statuses.split(","))
 //                        .map(m -> m.trim())
 //                        .collect(Collectors.toList()), pageable);
-//        Sort sortBy = Sort.by(Sort.Direction.DESC, primarySort == null ? "updatedAt" : primarySort);
+//        Sort sortBy = Sort.by(Sort.Direction.DESC, primarySort == null ? "createdAt" : primarySort);
 //        if (secondarySort != null) {
 //            sortBy.and(Sort.by(Sort.Direction.DESC, secondarySort));
 //        }
@@ -191,7 +192,7 @@ public class OrderService {
 
     public Page<Order> findAllByStatesInPaginated(String pickupState, String deliveryStates, int page, Integer pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
-                Sort.by(Sort.Direction.DESC, "updatedAt"));
+                Sort.by(Sort.Direction.DESC, "createdAt"));
         return orderRepository.findAll(Specification.where(OrderSpecs.withPickupStates(pickupState))
                 .and(OrderSpecs.withDeliveryStates(deliveryStates)), pageable);
     }
@@ -221,7 +222,7 @@ public class OrderService {
 
         return orders;*/
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
-                Sort.by(Sort.Direction.DESC, "updatedAt"));
+                Sort.by(Sort.Direction.DESC, "createdAt"));
         if (OrderStatus.contains(statuses)) {
             return orderRepository.findAll(Specification
                     .where(OrderSpecs.withStatuses(statuses))
@@ -248,7 +249,7 @@ public class OrderService {
         /*Page<Order> orderPage = orderRepository.findAll(PageRequest.of(page, DemoConstants.PAGE_SIZE));
         return OrderMapper.toOrderDtos(orderPage.toList());*/
         return orderRepository.findAll(PageRequest.of(
-                page, pageSize == null ? Constants.PAGE_SIZE : pageSize, Sort.by(Sort.Direction.DESC, "updatedAt")));
+                page, pageSize == null ? Constants.PAGE_SIZE : pageSize, Sort.by(Sort.Direction.DESC, "createdAt")));
 //        return orderPage.toList();
     }
 
