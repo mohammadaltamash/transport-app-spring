@@ -25,12 +25,12 @@ public class Application implements CommandLineRunner {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private OrderRepository orderRepository;
-	@Autowired
-	private OrderService orderService;
-	@Autowired
-	private CityZipLatLongRepository cityZipLatLongRepository;
+//	@Autowired
+//	private OrderRepository orderRepository;
+//	@Autowired
+//	private OrderService orderService;
+//	@Autowired
+//	private CityZipLatLongRepository cityZipLatLongRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

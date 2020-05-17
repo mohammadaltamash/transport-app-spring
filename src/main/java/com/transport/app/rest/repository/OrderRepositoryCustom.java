@@ -1,11 +1,10 @@
 package com.transport.app.rest.repository;
 
 import com.transport.app.rest.domain.*;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+//@Repository
 public interface OrderRepositoryCustom {
     List<Order> findAllByOrderStatus(OrderStatus orderStatus);
     PagedOrders getInRadius(LatitudeLongitudeDistanceRefs latitudeLongitudeDistanceRefs, String whereClause, String inClause, String orderClause, int page, Integer pageSize);

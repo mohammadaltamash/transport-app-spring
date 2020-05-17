@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 public class OrderRepositoryImpl implements OrderRepositoryCustom {
 
-    @PersistenceContext
+    @Autowired
     private EntityManager em;
 
     @Autowired
