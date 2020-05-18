@@ -6,7 +6,7 @@ import com.transport.app.rest.domain.CityZipLatLong;
 import com.transport.app.rest.domain.Order;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.repository.OrderRepository;
-import com.transport.app.rest.repository.UserAuthRepository;
+import com.transport.app.rest.repository.UserRepository;
 import de.siegmar.fastcsv.reader.CsvParser;
 import de.siegmar.fastcsv.reader.CsvReader;
 import de.siegmar.fastcsv.reader.CsvRow;
@@ -29,7 +29,7 @@ public class TestData {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
-    private UserAuthRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private DistanceMatrixService distanceMatrixService;
 

@@ -9,7 +9,7 @@ import com.transport.app.rest.mapper.OrderMapper;
 import com.transport.app.rest.repository.OrderCarrierRepository;
 import com.transport.app.rest.repository.OrderRepository;
 import com.transport.app.rest.repository.OrderSpecs;
-import com.transport.app.rest.repository.UserAuthRepository;
+import com.transport.app.rest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,12 +17,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OrderService {
@@ -30,7 +28,7 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
-    private UserAuthRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private OrderCarrierRepository orderCarrierRepository;
 

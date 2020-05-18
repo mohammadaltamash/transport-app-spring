@@ -125,7 +125,7 @@ public class OrderController {
 //        return OrderMapper.toOrderDtos(orderService.findAllByOrderStatusInPaginated(statuses, page, pageSize));
         primarySort = primarySort.equals("null") ? null : primarySort;
         secondarySort = secondarySort.equals("null") ? null : secondarySort;
-        Sort sortBy = Sort.by(Sort.Direction.DESC, primarySort == null ? "updatedAt" : primarySort);
+        Sort sortBy = Sort.by(Sort.Direction.DESC, primarySort == null ? "createdAt" : primarySort);
         if (secondarySort != null) {
             sortBy.and(Sort.by(Sort.Direction.DESC, secondarySort));
         }
