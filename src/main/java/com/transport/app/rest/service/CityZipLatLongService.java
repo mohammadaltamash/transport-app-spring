@@ -30,7 +30,7 @@ public class CityZipLatLongService {
 
     public Integer add() {
         int count = 0;
-        if (repository.count() != 43191) {
+//        if (repository.count() != 43191) {
             File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude.csv");
             CsvReader csvReader = new CsvReader();
             csvReader.setContainsHeader(true);
@@ -55,7 +55,7 @@ public class CityZipLatLongService {
                 logger.warn(e.getMessage());
             }
             count = repository.saveAll(list).size();
-        }
+//        }
         return count;
     }
 }

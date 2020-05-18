@@ -38,10 +38,10 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/*")
-    public String getUser(Authentication authentication) {
-        return "Authenticated as " + ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
-    }
+//    @RequestMapping("/*")
+//    public String getUser(Authentication authentication) {
+//        return "Authenticated as " + ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+//    }
 
     @PostMapping("/register")
     public Boolean register(@RequestBody User user) {
