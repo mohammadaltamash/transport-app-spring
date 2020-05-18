@@ -5,10 +5,7 @@ import com.transport.app.rest.service.CityZipLatLongService;
 import com.transport.app.rest.service.TestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,5 +18,10 @@ public class CityZipLatLongController {
     @GetMapping("/location/{text}")
     public List<CityZipLatLong> findByZipOrCityLike(@PathVariable("text") String text) {
         return service.findByZipOrCityLike(text);
+    }
+
+    @PostMapping("/addlocations")
+    public Integer add(@PathVariable("text") String text) {
+        return service.add();
     }
 }
