@@ -26,6 +26,28 @@ import java.util.stream.IntStream;
 public class TestData {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private String[] paymentTermBusinessDays = {
+            "Immediately",
+            "2 business days (Quick Pay)",
+            "5 business days",
+            "10 business days",
+            "15 business days",
+            "30 business days"
+    };
+    private String[] paymentMethod = {
+            "Cash",
+            "Certified Funds",
+            "ACH (direct deposit)",
+            "Company Check",
+            "Wire Transfer",
+            "Comchek"
+    };
+    private String[] paymentTermBegins = {
+            "Pickup",
+            "Delivery",
+            "Receiving a uShip code",
+            "Receiving a signed BOL"
+    };
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -137,24 +159,24 @@ public class TestData {
                 .brokerOrderId("BrokerOrderId-" + i)
 //                .pickupAddress("PickupAddress-" + i)
 //                .pickupZip("12345")
-                .pickupPhones(new HashMap<String, String>() {{ put("12833456789", "PickupPhones note"); }})
+                .pickupPhones(new HashMap<String, String>() {{ put(String.valueOf(11111111111l + (long)(Math.random() * ((99999999999l - 11111111111l) + 1))), "PickupPhones note"); }})
                 .pickupDates(new HashMap<String, Date>() {{ put("begin", new Date()); put("end", new Date()); }})
 //                .deliveryAddress("DeliveryAddress-" + i)
 //                .deliveryZip("65835")
-                .deliveryPhones(new HashMap<String, String>() {{ put("35725345345", "DeliveryPhones note"); }})
+                .deliveryPhones(new HashMap<String, String>() {{ put(String.valueOf(11111111111l + (long)(Math.random() * ((99999999999l - 11111111111l) + 1))), "DeliveryPhones note"); }})
                 .deliveryDates(new HashMap<String, Date>() {{ put("begin", new Date()); put("end", new Date()); }})
                 .vehicleMake("VehicleMake-" + i)
                 .carrierPay(carrierPay)
                 .amountOnPickup(amountOnPickup)
                 .amountOnDelivery(amountOnDelivery)
                 .perMile(carrierPay / (distance * 0.00062137))
-                .paymentTermBusinessDays("PaymentTermBusinessDays-" + i)
-                .paymentMethod("PaymentMethod-" + i)
-                .paymentTermBegins("PaymentTermBegins-" + i)
-                .brokerCompanyName("BrokerCompanyName-" + i)
-                .brokerAddress("BrokerAddress-" + i)
+                .paymentTermBusinessDays(paymentTermBusinessDays[0 + r.nextInt(5 - 0 + 1)])
+                .paymentMethod(paymentMethod[0 + r.nextInt(5 - 0 + 1)])
+                .paymentTermBegins(paymentTermBegins[0 + r.nextInt(3 - 0 + 1)])
+                .brokerCompanyName("Broker Company Name")
+                .brokerAddress("Broker Address")
                 .brokerZip("96445")
-                .shipperPhones(new HashMap<String, String>() {{ put("12382456789", "ShipperPhones note"); }})
+                .shipperPhones(new HashMap<String, String>() {{ put(String.valueOf(11111111111l + (long)(Math.random() * ((99999999999l - 11111111111l) + 1))), "ShipperPhones note"); }})
                 .brokerEmail(user.getEmail())
                 .vehicleInoperable(false)
 //                .pickupLatitude((double) pickupPair[0])
