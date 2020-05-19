@@ -45,11 +45,12 @@ public class Application implements CommandLineRunner {
 			csvReader.setContainsHeader(true);
 
 			List<CityZipLatLong> list = new ArrayList<>();
+			long count = 0;
 			try (CsvParser csvParser = csvReader.parse(file, StandardCharsets.UTF_8)) {
 				CsvRow row;
 				while ((row = csvParser.nextRow()) != null) {
-					System.out.println("Read line: " + row);
-					System.out.println("First column of line: " + row.getField(0));
+					System.out.println("Reading line: " + ++count);
+//					System.out.println("First column of line: " + row.getField(0));
 
 					list.add(CityZipLatLong.builder()
 							.zip(row.getField(0))
