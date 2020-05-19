@@ -28,6 +28,18 @@ public class CityZipLatLongService {
         return repository.findByZipContainsOrCityContainsIgnoreCase(text, text);
     }
 
+    public long getCount() {
+        return repository.count();
+    }
+
+    public CityZipLatLong getFirst() {
+        return repository.findAll().get(0);
+    }
+
+    public CityZipLatLong getLast() {
+        return repository.findAll().get((int) (repository.count() - 1));
+    }
+
     public Integer add() {
         int count = 0;
 //        if (repository.count() != 43191) {

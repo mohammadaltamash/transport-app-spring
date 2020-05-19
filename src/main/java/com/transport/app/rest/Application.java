@@ -41,7 +41,7 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-		if (runCount == 0) {
+		/*if (runCount == 0) {
 			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude1.csv");
 			CsvReader csvReader = new CsvReader();
 			csvReader.setContainsHeader(true);
@@ -68,7 +68,7 @@ public class Application implements CommandLineRunner {
 			}
 			cityZipLatLongRepository.saveAll(list);
 			runCount++;
-		}
+		}*/
 		/*orderService.findById(12l);
 
 		Order order = Order.builder()
