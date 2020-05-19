@@ -41,10 +41,10 @@ public class TestData {
     public void generateData() {
 //        List<User> users = new ArrayList<>();
         List<Order> orders = new ArrayList<>();
-        IntStream.range(1, 6).forEach(i -> {
-            users.add(generateUser(i));
-        });
-        users = userRepository.saveAll(users);
+//        IntStream.range(1, 6).forEach(i -> {
+//            users.add(generateUser(i));
+//        });
+//        users = userRepository.saveAll(users);
 
         File file = new File("src/main/resources/static/orders-generate.csv");
         CsvReader csvReader = new CsvReader();
