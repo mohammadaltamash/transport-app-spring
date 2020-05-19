@@ -25,6 +25,8 @@ public class Application implements CommandLineRunner {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	private volatile int runCount = 0;
+
 	@Autowired
 	private OrderRepository orderRepository;
 	@Autowired
@@ -39,7 +41,7 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-		if (cityZipLatLongRepository.count() == 0) {
+		if (runCount == 0) {
 			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude.csv");
 			CsvReader csvReader = new CsvReader();
 			csvReader.setContainsHeader(true);
@@ -65,6 +67,7 @@ public class Application implements CommandLineRunner {
 				logger.warn(e.getMessage());
 			}
 			cityZipLatLongRepository.saveAll(list);
+			runCount++;
 		}
 		/*orderService.findById(12l);
 
