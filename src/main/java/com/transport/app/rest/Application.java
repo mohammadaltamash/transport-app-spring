@@ -39,7 +39,7 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-//		if (cityZipLatLongRepository.count() != 0) {
+//		if (cityZipLatLongRepository.count() == 0) {
 //			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude.csv");
 //			CsvReader csvReader = new CsvReader();
 //			csvReader.setContainsHeader(true);
