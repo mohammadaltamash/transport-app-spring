@@ -42,7 +42,7 @@ public class Application implements CommandLineRunner {
 	public void run(String... args) {
 
 		if (runCount == 0) {
-			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude3.csv");
+			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude1.csv");
 			CsvReader csvReader = new CsvReader();
 			csvReader.setContainsHeader(true);
 
