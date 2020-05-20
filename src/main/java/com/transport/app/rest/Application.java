@@ -41,34 +41,34 @@ public class Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 
-//		if (runCount == 0) {
-//			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude2.csv");
-//			CsvReader csvReader = new CsvReader();
-//			csvReader.setContainsHeader(true);
-//
-//			List<CityZipLatLong> list = new ArrayList<>();
-//			long count = 0;
-//			try (CsvParser csvParser = csvReader.parse(file, StandardCharsets.UTF_8)) {
-//				CsvRow row;
-//				while ((row = csvParser.nextRow()) != null) {
-//					System.out.println("Reading line: " + ++count);
-////					System.out.println("First column of line: " + row.getField(0));
-//
-//					list.add(CityZipLatLong.builder()
-//							.zip(row.getField(0))
-//							.city(row.getField(1))
-//							.state(row.getField(2))
-//							.latitude(Double.parseDouble(row.getField(3)))
-//							.longitude(Double.parseDouble(row.getField(4)))
-//							.timezone(Integer.parseInt(row.getField(5)))
-//							.geopoint(row.getField(7)).build());
-//				}
-//			} catch (IOException e) {
-//				logger.warn(e.getMessage());
-//			}
-//			cityZipLatLongRepository.saveAll(list);
-//			runCount++;
-//		}
+		if (runCount == 0) {
+			File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude1.csv");
+			CsvReader csvReader = new CsvReader();
+			csvReader.setContainsHeader(true);
+
+			List<CityZipLatLong> list = new ArrayList<>();
+			long count = 0;
+			try (CsvParser csvParser = csvReader.parse(file, StandardCharsets.UTF_8)) {
+				CsvRow row;
+				while ((row = csvParser.nextRow()) != null) {
+					System.out.println("Reading line: " + ++count);
+//					System.out.println("First column of line: " + row.getField(0));
+
+					list.add(CityZipLatLong.builder()
+							.zip(row.getField(0))
+							.city(row.getField(1))
+							.state(row.getField(2))
+							.latitude(Double.parseDouble(row.getField(3)))
+							.longitude(Double.parseDouble(row.getField(4)))
+							.timezone(Integer.parseInt(row.getField(5)))
+							.geopoint(row.getField(7)).build());
+				}
+			} catch (IOException e) {
+				logger.warn(e.getMessage());
+			}
+			cityZipLatLongRepository.saveAll(list);
+			runCount++;
+		}
 		/*orderService.findById(12l);
 
 		Order order = Order.builder()
