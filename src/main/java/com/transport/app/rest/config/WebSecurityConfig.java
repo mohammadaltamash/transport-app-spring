@@ -65,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeRequests()
-                .antMatchers("/register", "/login", "/forgot", "/reset").permitAll()
+                .antMatchers("/register", "/login", "/forgot", "/reset", "/ws/websocket").permitAll()
 //                .antMatchers("/convertein/v1/login").permitAll()
 //                .antMatchers("/convertein/v1/register").permitAll()
 //                .antMatchers("/convertein/v1/forgot").permitAll()
