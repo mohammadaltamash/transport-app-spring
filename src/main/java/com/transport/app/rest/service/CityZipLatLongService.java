@@ -40,10 +40,10 @@ public class CityZipLatLongService {
         return repository.findAll().get((int) (repository.count() - 1));
     }
 
-    public Integer add() {
+    public Integer add(String filename) {
         int count = 0;
 //        if (repository.count() != 43191) {
-            File file = new File("src/main/resources/static/us-zip-code-latitude-and-longitude.csv");
+            File file = new File(filename);
             CsvReader csvReader = new CsvReader();
             csvReader.setContainsHeader(true);
 

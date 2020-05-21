@@ -34,7 +34,7 @@ public class CityZipLatLongController {
     }
 
     @PostMapping("/addlocations")
-    public Integer add(@PathVariable("text") String text) {
-        return service.add();
+    public Integer add(@RequestParam("filename") String fileName) {
+        return service.add(fileName);
     }
 }

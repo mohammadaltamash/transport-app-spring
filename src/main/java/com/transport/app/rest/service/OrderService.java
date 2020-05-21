@@ -50,10 +50,10 @@ public class OrderService {
 //        ArrayList<Order> userOrders = new ArrayList<>();
 //        userOrders.add(order);
 //        createdBy.setOrders(userOrders);
-        long distance = distanceMatrixService.getDriveDist(order.getPickupLatitude(), order.getPickupLongitude(), order.getDeliveryLatitude(), order.getDeliveryLongitude());
-        order.setDistance(distance);
-        double perMile = order.getCarrierPay() / (distance * 0.00062137);
-        order.setPerMile(perMile);
+//        long distance = distanceMatrixService.getDriveDist(order.getPickupLatitude(), order.getPickupLongitude(), order.getDeliveryLatitude(), order.getDeliveryLongitude());
+//        order.setDistance(distance);
+//        double perMile = order.getCarrierPay() / (distance * 0.00062137);
+//        order.setPerMile(perMile);
         Order ordr = orderRepository.save(order);
         return ordr;
     }
@@ -149,7 +149,7 @@ public class OrderService {
         order.setAssignedToDriver(driver);
         order.setAssignedToDriverName(driver.getFullName()); // For search
         order.setOrderStatus(OrderStatus.ASSIGNED.getName());
-        return orderRepository.save(order);
+        return orderRepository.saveAndFlush(order);
     }
 
     public Order findById(Long orderId) {

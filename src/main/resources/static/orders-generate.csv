@@ -1,0 +1,26 @@
+pickup_address,pickup_address_state,pickup_zip,pickup_latitude,pickup_longitude,delivery_address,delivery_address_state,delivery_zip,delivery_latitude,delivery_longitude,distance
+"10-14 37th Ave, Long Island City, NY 11101, USA",New York,11101,40.759658,-73.941322,"900 N Columbia St, Covington, LA 70433, USA",Louisiana,70433,30.4835602,-90.0959102,2070448
+"725 5th Ave, New York, NY 10022, USA",New York,10022,40.7624284,-73.973794,"2500 Pedrick Rd, Tallahassee, FL 32317, USA",Florida,32317,30.4446398,-84.1762122,1757380
+"14500 Midway Rd, Farmers Branch, TX 75244, USA",Texas,75244,32.9496859,-96.8380845,"2430 Pine Forest Dr, Colonial Heights, VA 23834, USA",Virginia,23834,37.2900248,-77.4056375,2095996
+"24708 W Durkee Rd, Channahon, IL 60410, USA",Illinois,60410,41.409966,-88.210233,"697 Grand St, Brooklyn, NY 11211, USA",New York,11211,40.7116948,-73.9447006,1339212
+"3 Brewster Rd, Newark, NJ 07114, USA",New Jersey,7114,40.6895314,-74.1744624,"3037 S Delaware Ave, Philadelphia, PA 19148, USA",Pennsylvania,19148,39.9098797,-75.1379057,138456
+"3020 Franklin Terrace STE #6, Johnson City, TN 37604, USA",Tennessee,37604,36.3528845,-82.4006335,"374 Stockholm St, Brooklyn, NY 11237, USA",New York,11237,40.7041907,-73.9174616,1029363
+"539 Tennessee St, Vallejo, CA 94590, USA",California,94590,38.1096562,-122.2534689,"San Antonio, TX 78209, USA",Texas,78209,29.4672294,-98.4669949,2795563
+"3245 Simpson Stuart Rd, Dallas, TX 75241, USA",Texas,75241,32.6720913,-96.76699,"5 Gott Ave, Rockport, MA 01966, USA",Massachusetts,1966,42.6869157,-70.6315548,2906386
+"140 N Higgins Ave #103, Missoula, MT 59802, USA",Montana,59802,46.8708865,-113.9943665,"3141 Chestnut St, Philadelphia, PA 19104, USA",Pennsylvania,19104,39.9566127,-75.1899441,3775122
+"2012 Woodall Rodgers Fwy, Dallas, TX 75201, USA",Texas,75201,32.789413,-96.8016106,"65 Worth St, South Hackensack, NJ 07606, USA",New Jersey,7606,40.870818,-74.0504326,2501581
+"7992 Broadway, Merrillville, IN 46410, USA",Indiana,46410,41.472955,-87.336429,"3800 W Lake St, Melrose Park, IL 60160, USA",Illinois,60160,41.8962754,-87.8802899,92188
+"10251 Calabash Ave, Fontana, CA 92335, USA",California,92335,34.066206,-117.5011066,"1111 Intermodal Pkwy, Fort Worth, TX 76177, USA",Texas,76177,32.9898753,-97.3479143,2216334
+"Detroit, MI 48242, USA",Michigan,48242,42.2161722,-83.3553842,"2114 N 45th St, Seattle, WA 98103, USA",Washington,98103,47.6615004,-122.3329231,3753579
+"807 Broadway St NE, Minneapolis, MN 55413, USA",Minnesota,55413,44.9990774,-93.2508702,"4810 SW 9th St, Des Moines, IA 50315, USA",Iowa,50315,41.5402607,-93.6263358,405226
+"707 Neshaminy Mall, Bensalem, PA 19020, USA",Pennsylvania,19020,40.1387936,-74.9553502,"8476 GA-85, Jonesboro, GA 30238, USA",Georgia,30238,33.5498568,-84.4135575,1305281
+"7110 Lincoln Ave, Lincolnwood, IL 60712, USA",Illinois,60712,42.0101104,-87.7378023,"1558 Brentwood Rd #3239, Bay Shore, NY 11706, USA",New York,11706,40.7572851,-73.2455856,1369228
+"705 N Shady Retreat Rd, Doylestown, PA 18901, USA",Pennsylvania,18901,40.3187969,-75.1410287,"195 Centre St, Brooklyn, NY 11231, USA",New York,11231,40.6738258,-73.9992895,135668
+"21385 Epicerie Plaza, Sterling, VA 20164, USA",Virginia,20164,39.0243424,-77.3953146,"7000 NE Airport Way, Portland, OR 97218, USA",Oregon,97218,45.5897694,-122.5950942,4485979
+"1007 Valencia St, San Francisco, CA 94110, USA",California,94110,37.7567752,-122.4209593,"345 McFarland Pkwy, Alpharetta, GA 30004, USA",Georgia,30004,34.1355496,-84.2405248,4029784
+"2002 S Wentworth Ave #103, Chicago, IL 60616, USA",Illinois,60616,41.8551556,-87.6319889,"4701 Beryl Rd, Raleigh, NC 27606, USA",North Carolina,27606,35.7941625,-78.7047116,1296490
+"32 Henry St, Teterboro, NJ 07608, USA",New Jersey,7608,40.8659185,-74.0587998,"35600 Warren Rd, Westland, MI 48185, USA",Michigan,48185,42.339344,-83.3930377,977482
+"835 W Dundee Rd, Wheeling, IL 60090, USA",Illinois,60090,42.1382538,-87.937602,"7601 Telegraph Rd, Montebello, CA 90640, USA",California,90640,33.9783653,-118.1260037,3248498
+"1408 N St Mary's St, San Antonio, TX 78215, USA",Texas,78215,29.4369522,-98.4841275,"1081 Indianwood Rd, Lake Orion, MI 48362, USA",Michigan,48362,42.7881692,-83.2674525,2431060
+"1890 500 W, Salt Lake City, UT 84115, USA",Utah,84115,40.7290497,-111.906808,"1111 W Forsyth St, Jacksonville, FL 32204, USA",Florida,32204,30.3300413,-81.6729584,3565242
+"150 55th St, Brooklyn, NY 11220, USA",New York,11220,40.6467233,-74.0208955,"3955 Montgomery Rd, Cincinnati, OH 45212, USA",Ohio,45212,39.1513766,-84.463398,1045882

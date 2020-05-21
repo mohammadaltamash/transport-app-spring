@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
@@ -65,7 +66,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .formLogin().disable()
                 .authorizeRequests()
-                .antMatchers("/register", "/login", "/forgot", "/reset", "/ws/websocket").permitAll()
+                .antMatchers("/register", "/login", "/forgot", "/reset",
+                        "/ws/**", "/index.html", "/webjars/**", "/js/**"
+//                        "/topic/message", "/message"
+                ).permitAll()
 //                .antMatchers("/convertein/v1/login").permitAll()
 //                .antMatchers("/convertein/v1/register").permitAll()
 //                .antMatchers("/convertein/v1/forgot").permitAll()

@@ -90,10 +90,10 @@ public class OrderController {
     }
 
     @PutMapping("/assigndriver/{driverId}/{orderId}")
-    public Order assignDriver(
+    public OrderDto assignDriver(
             @PathVariable("driverId") Long driverId,
             @PathVariable("orderId") Long orderId) {
-        return orderService.assignDriver(driverId, orderId);
+        return OrderMapper.toOrderDto(orderService.assignDriver(driverId, orderId));
     }
 
     @GetMapping("/ordercarrier/{id}")
