@@ -83,6 +83,7 @@ public class OrderMapper {
                 .orderStatus(orderDto.getOrderStatus())
                 .orderCategory(orderDto.getOrderCategory())
                 .bookingRequestCarriers(OrderCarrierMapper.toOrderCarriers(orderDto.getBookingRequestCarriers()))
+                .bookedCarriers(OrderCarrierMapper.toOrderCarriers(orderDto.getBookedCarriers()))
 //                .assignedToCarrier(UserMapper.toUser(orderDto.getAssignedToCarrier()))
 //                .assignedToDriver(UserMapper.toUser(orderDto.getAssignedToDriver()))
 //                .createdBy(UserMapper.toUser(orderDto.getCreatedBy()))
@@ -168,6 +169,7 @@ public class OrderMapper {
                 .orderStatus(order.getOrderStatus())
                 .orderCategory(order.getOrderCategory())
                 .bookingRequestCarriers(OrderCarrierMapper.toOrderCarrierDtos(order.getBookingRequestCarriers()))
+                .bookedCarriers(OrderCarrierMapper.toOrderCarrierDtos(order.getBookedCarriers()))
 //                .assignedToCarrierId(order.getAssignedToCarrier() != null ? order.getAssignedToCarrier().getId() : null)
 //                .assignedToDriverId(order.getAssignedToDriver() != null ? order.getAssignedToDriver().getId() : null)
                 .assignedToCarrier(UserMapper.toUserDto(order.getAssignedToCarrier()))
@@ -245,6 +247,7 @@ public class OrderMapper {
         order.setOrderStatus(orderUpdate.getOrderStatus() == null ? order.getOrderStatus() : orderUpdate.getOrderStatus());
         order.setOrderCategory(orderUpdate.getOrderCategory() == null ? order.getOrderCategory() : orderUpdate.getOrderCategory());
         order.setBookingRequestCarriers(orderUpdate.getBookingRequestCarriers() == null ? order.getBookingRequestCarriers() : orderUpdate.getBookingRequestCarriers());
+        order.setBookedCarriers(orderUpdate.getBookedCarriers() == null ? order.getBookedCarriers() : orderUpdate.getBookedCarriers());
         order.setAssignedToCarrier(orderUpdate.getAssignedToCarrier() == null ? order.getAssignedToCarrier() : orderUpdate.getAssignedToCarrier());
         order.setAssignedToDriver(orderUpdate.getAssignedToDriver() == null ? order.getAssignedToDriver() : orderUpdate.getAssignedToDriver());
         order.setDistance(orderUpdate.getDistance() == null ? order.getDistance() : orderUpdate.getDistance());

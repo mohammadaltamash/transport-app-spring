@@ -85,6 +85,17 @@ public class OrderSpecs {
         };
     }
 
+    public static Specification<Order> currentDateEqualTo(String field) {
+
+        return new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+
+                return criteriaBuilder.equal(root.get(field), criteriaBuilder.currentDate());
+            }
+        };
+    }
+
     public static Specification<Order> textInAllColumns(String text) {
 
         if (!text.contains("%")) {

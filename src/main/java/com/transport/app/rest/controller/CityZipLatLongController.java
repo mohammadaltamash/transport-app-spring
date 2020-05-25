@@ -37,4 +37,9 @@ public class CityZipLatLongController {
     public Integer add(@RequestParam("filename") String fileName) {
         return service.add(fileName);
     }
+
+    @PostMapping("/deletelocations")
+    public void delete() {
+        service.delete();
+    }
 }

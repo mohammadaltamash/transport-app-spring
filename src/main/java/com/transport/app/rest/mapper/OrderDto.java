@@ -148,6 +148,7 @@ public class OrderDto {
     private String orderCategory;
 
     private List<OrderCarrierDto> bookingRequestCarriers; // by carriers (to assign order to carrier)
+    private List<OrderCarrierDto> bookedCarriers;
     private UserDto assignedToCarrier; // By broker to carrier. orderStatus changes to ASSIGNED
     private UserDto assignedToDriver; // By carrier
     private Long distance;

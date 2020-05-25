@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -47,6 +49,42 @@ public class TestData {
             "Delivery",
             "Receiving a uShip code",
             "Receiving a signed BOL"
+    };
+    private String[] autoTypes = {
+            "Sedan",
+            "Mini-van",
+            "Motorcycle",
+            "Pickup",
+            "Suv",
+            "Van",
+    };
+    private Map<String, String[]> makesAndModels = new LinkedHashMap<String, String[]>() {
+        {
+            put("BMW", new String[]{"X3", "X4", "X5", "X6", "X7"});
+            put("Mercedes - Benz", new String[]{"C-Class", "GLE-Class", "GLS-Class"});
+            put("Dodge", new String[]{"Durango"});
+            put("Jeep", new String[]{"Cherokee", "Gladiator", "Grand Cherokee", "Grand Cherokee", "Wrangler"});
+            put("Ram", new String[]{"1500", "1500 Classic"});
+            put("Ford", new String[]{"Bronco", "Escape", "Expedition", "Expedition MAX", "Explorer", "F-150", "Mustang", "Ranger", "Super Duty", "Transit"});
+            put("Lincoln", new String[]{"Aviator", "Continental", "Corsair", "Navigator"});
+            put("Buick", new String[]{"Enclave"});
+            put("Cadillac", new String[]{"CT4", "CT5", "CT6", "Escalade", "Escalade ESV", "XT4", "XT5", "XT6"});
+            put("Chevrolet", new String[]{"Bolt", "Camaro", "Colorado", "Corvette", "Express", "Malibu", "Silverado", "Sonic", "Suburban", "Tahoe", "Traverse"});
+            put("GMC", new String[]{"Acadia", "Canyon", "Savana", "Sierra", "Yukon", "Yukon XL"});
+            put("Acura", new String[]{"ILX", "MDX", "NSX", "RDX", "TLX"});
+            put("Honda", new String[]{"Accord", "Civic", "CR-V", "Insight", "Odyssey", "Passport", "Pilot", "Ridgeline"});
+            put("Hyundai", new String[]{"Elantra", "Santa Fe", "Sonata"});
+            put("Kia", new String[]{"Optima", "Sorento", "Telluride"});
+            put("Infiniti", new String[]{"QX60"});
+            put("Nissan", new String[]{"Altima", "Frontier", "Leaf", "Maxima", "Murano", "NV", "Pathfinder", "Rogue", "Titan"});
+            put("Rivian", new String[]{"R1S", "R1T"});
+            put("Subaru", new String[]{"Ascent", "Impreza", "Legacy", "Outback"});
+            put("Tesla", new String[]{"Model 3", "Model S", "Model X"});
+            put("Lexus", new String[]{"ES"});
+            put("Toyota", new String[]{"Avalon", "Camry", "Corolla", "Highlander", "Sequoia", "Sienna", "Tacoma", "Tundra"});
+            put("Volkswagen", new String[]{"Atlas", "Passat"});
+            put("Volvo", new String[]{"S60"});
+        }
     };
     @Autowired
     private OrderRepository orderRepository;
@@ -152,9 +190,17 @@ public class TestData {
 //                pickupPair[0], pickupPair[1],
 //                deliveryPair[0], deliveryPair[1]);
         Random r = new Random();
-        double carrierPay = 100D + (5000D - 100D) * r.nextDouble();
+        double carrierPay = new BigDecimal(100D + (5000D - 100D) * r.nextDouble()).setScale(2, RoundingMode.HALF_UP).doubleValue();
         double amountOnPickup = carrierPay / 4;
         double amountOnDelivery = carrierPay - amountOnPickup;
+
+        int firstIndex = 0 + r.nextInt(23 - 0 + 1);
+        String[] models = makesAndModels.get((makesAndModels.keySet().toArray())[firstIndex]);
+        int secondIndex = 0 + r.nextInt((models.length - 1) - 0 + 1);
+
+        String make = (String) (makesAndModels.keySet().toArray())[firstIndex];
+        String model = models[secondIndex];
+        System.out.println(models[secondIndex]);
         return builder
                 .brokerOrderId("BrokerOrderId-" + i)
 //                .pickupAddress("PickupAddress-" + i)
@@ -179,6 +225,9 @@ public class TestData {
                 .shipperPhones(new HashMap<String, String>() {{ put(String.valueOf(11111111111l + (long)(Math.random() * ((99999999999l - 11111111111l) + 1))), "ShipperPhones note"); }})
                 .brokerEmail(user.getEmail())
                 .vehicleInoperable(false)
+                .vehicleAutoType(autoTypes[0 + r.nextInt(5 - 0 + 1)])
+                .vehicleMake(make)
+                .vehicleModel(model)
 //                .pickupLatitude((double) pickupPair[0])
 //                .pickupLongitude((double) pickupPair[1])
 //                .deliveryLatitude((double) deliveryPair[0])
@@ -213,5 +262,44 @@ public class TestData {
         latLng[0] = foundLatitude;
         latLng[1] = foundLongitude;
         return latLng;
+    }
+    private static Map<String, String[]> getMakesModels() {
+        return new LinkedHashMap<String, String[]>() {
+            {
+                put("BMW", new String[]{"X3", "X4", "X5", "X6", "X7"});
+                put("Mercedes - Benz", new String[]{"C-Class", "GLE-Class", "GLS-Class"});
+                put("Dodge", new String[]{"Durango"});
+                put("Jeep", new String[]{"Cherokee", "Gladiator", "Grand Cherokee", "Grand Cherokee", "Wrangler"});
+                put("Ram", new String[]{"1500", "1500 Classic"});
+                put("Ford", new String[]{"Bronco", "Escape", "Expedition", "Expedition MAX", "Explorer", "F-150", "Mustang", "Ranger", "Super Duty", "Transit"});
+                put("Lincoln", new String[]{"Aviator", "Continental", "Corsair", "Navigator"});
+                put("Buick", new String[]{"Enclave"});
+                put("Cadillac", new String[]{"CT4", "CT5", "CT6", "Escalade", "Escalade ESV", "XT4", "XT5", "XT6"});
+                put("Chevrolet", new String[]{"Bolt", "Camaro", "Colorado", "Corvette", "Express", "Malibu", "Silverado", "Sonic", "Suburban", "Tahoe", "Traverse"});
+                put("GMC", new String[]{"Acadia", "Canyon", "Savana", "Sierra", "Yukon", "Yukon XL"});
+                put("Acura", new String[]{"ILX", "MDX", "NSX", "RDX", "TLX"});
+                put("Honda", new String[]{"Accord", "Civic", "CR-V", "Insight", "Odyssey", "Passport", "Pilot", "Ridgeline"});
+                put("Hyundai", new String[]{"Elantra", "Santa Fe", "Sonata"});
+                put("Kia", new String[]{"Optima", "Sorento", "Telluride"});
+                put("Infiniti", new String[]{"QX60"});
+                put("Nissan", new String[]{"Altima", "Frontier", "Leaf", "Maxima", "Murano", "NV", "Pathfinder", "Rogue", "Titan"});
+                put("Rivian", new String[]{"R1S", "R1T"});
+                put("Subaru", new String[]{"Ascent", "Impreza", "Legacy", "Outback"});
+                put("Tesla", new String[]{"Model 3", "Model S", "Model X"});
+                put("Lexus", new String[]{"ES"});
+                put("Toyota", new String[]{"Avalon", "Camry", "Corolla", "Highlander", "Sequoia", "Sienna", "Tacoma", "Tundra"});
+                put("Volkswagen", new String[]{"Atlas", "Passat"});
+                put("Volvo", new String[]{"S60"});
+            }
+        };
+    }
+    public static void main(String[] args) {
+        Map<String, String[]> map = getMakesModels();
+        Random r = new Random();
+        int firstIndex = 0 + r.nextInt(23 - 0 + 1);
+        String[] item = map.get((map.keySet().toArray())[firstIndex]);
+        int secondIndex = 0 + r.nextInt((item.length - 1) - 0 + 1);
+        System.out.println((map.keySet().toArray())[firstIndex]);
+        System.out.println(item[secondIndex]);
     }
 }

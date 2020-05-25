@@ -5,11 +5,13 @@ import com.transport.app.rest.Constants;
 import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.DBFieldsMapper;
+import com.transport.app.rest.mapper.OrderCarrierMapper;
 import com.transport.app.rest.mapper.OrderMapper;
 import com.transport.app.rest.repository.OrderCarrierRepository;
 import com.transport.app.rest.repository.OrderRepository;
 import com.transport.app.rest.repository.OrderSpecs;
 import com.transport.app.rest.repository.UserRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,10 +52,10 @@ public class OrderService {
 //        ArrayList<Order> userOrders = new ArrayList<>();
 //        userOrders.add(order);
 //        createdBy.setOrders(userOrders);
-//        long distance = distanceMatrixService.getDriveDist(order.getPickupLatitude(), order.getPickupLongitude(), order.getDeliveryLatitude(), order.getDeliveryLongitude());
-//        order.setDistance(distance);
-//        double perMile = order.getCarrierPay() / (distance * 0.00062137);
-//        order.setPerMile(perMile);
+        long distance = distanceMatrixService.getDriveDist(order.getPickupLatitude(), order.getPickupLongitude(), order.getDeliveryLatitude(), order.getDeliveryLongitude());
+        order.setDistance(distance);
+        double perMile = order.getCarrierPay() / (distance * 0.00062137);
+        order.setPerMile(perMile);
         Order ordr = orderRepository.save(order);
         return ordr;
     }
@@ -99,12 +101,23 @@ public class OrderService {
         return orderCarrierRepository.save(orderCarrier);
     }
 
-    public void bookOrder(OrderCarrier orderCarrier, Long orderId) {
+    public void bookOrder(OrderCarrier orderCarrier, Long orderId, Long carrierId) {
 //        Order order = findById(orderId);
 //        order.setOrderStatus(OrderStatus.BOOKED.getName());
 //        orderRepository.save(order);
         orderCarrier.setStatus(OrderStatus.BOOKED.getName());
         updateOrderCarrier(orderCarrier);
+        // This is for auditing booking for the order
+        /*OrderCarrier bookedOrderCarrier = new OrderCarrier();
+        bookedOrderCarrier.setStatus(OrderStatus.BOOKED.getName());
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException(Order.class, orderId));
+        bookedOrderCarrier.setOrder(order);
+        User carrier = userRepository.findById(carrierId).orElseThrow(() -> new NotFoundException(User.class, carrierId));
+        bookedOrderCarrier.setCarrier(carrier);
+//        orderCarrierRepository.save(bookedOrderCarrier);
+//        order.getBookedCarriers().add(bookedOrderCarrier);
+//        orderRepository.saveAndFlush(order);
+        orderCarrierRepository.save(bookedOrderCarrier);*/
     }
 
     private void updateOrderCarrier(OrderCarrier orderCarrier) {
@@ -123,13 +136,15 @@ public class OrderService {
     public OrderCarrier acceptOrDecline(Long orderId, Long orderCarrierId, String acceptOrDecline) {
 //        Order order = findById(orderId);
         OrderCarrier orderCarrier = orderCarrierRepository.findById(orderCarrierId).orElseThrow(() -> new NotFoundException(OrderCarrier.class, orderCarrierId));
+        Order order = findById(orderId);
         if (OrderStatus.DECLINED.getName().equals(acceptOrDecline)) {
 //            order.setOrderStatus(OrderStatus.NEW.getName());
 //            orderRepository.save(order);
             orderCarrier.setStatus(OrderStatus.DECLINED.getName());
+//            Hibernate.initialize(order.getBookedCarriers());
             orderCarrierRepository.save(orderCarrier);
         } else if (OrderStatus.ACCEPTED.getName().equals(acceptOrDecline)) {
-            Order order = findById(orderId);
+//            Order order = findById(orderId);
             order.setOrderStatus(OrderStatus.ACCEPTED.getName());
             User carrier = orderCarrier.getCarrier();
             order.setAssignedToCarrier(carrier);
@@ -386,5 +401,9 @@ public class OrderService {
 
     public OrderCarrier findOrderCarrierById(Long orderCarrierId) {
         return orderCarrierRepository.findById(orderCarrierId).orElseThrow(() -> new NotFoundException(OrderCarrier.class, orderCarrierId));
+    }
+
+    public List<Order> getTodaysOrders(String field) {
+        return orderRepository.findAll(Specification.where(OrderSpecs.currentDateEqualTo(field)));
     }
 }

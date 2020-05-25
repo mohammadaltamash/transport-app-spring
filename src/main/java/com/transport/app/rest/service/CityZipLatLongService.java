@@ -70,4 +70,8 @@ public class CityZipLatLongService {
 //        }
         return count;
     }
+
+    public void delete() {
+        repository.deleteAll();
+    }
 }

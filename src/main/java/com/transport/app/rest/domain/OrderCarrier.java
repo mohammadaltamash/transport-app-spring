@@ -31,6 +31,10 @@ public class OrderCarrier {
     @JsonIgnore
     private Order order;
     @ManyToOne
+    @JoinColumn(name="BOOKED_ORDER_ID")
+    @JsonIgnore
+    private Order bookedOrder;
+    @ManyToOne
     @JoinColumn(name="CARRIER_ID")
     @JsonIgnore
     private User carrier;

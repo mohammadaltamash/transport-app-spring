@@ -264,8 +264,13 @@ public class Order {
     @Column(name = "BOOKING_REQUEST_CARRIERS")
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderCarrier> bookingRequestCarriers; // by carriers (to assign order to carrier)
+
+    @Column(name = "BOOKED_CARRIERS")
+    @OneToMany(mappedBy = "bookedOrder", cascade = CascadeType.ALL)
+    private List<OrderCarrier> bookedCarriers; // by broker (mainly for auditing)
+
 //    @Column(name = "ASSIGNED_TO_CARRIER")
-//    @NotAudited
+    @NotAudited
     @ManyToOne
     @JoinColumn(name="ASSIGNED_TO_CARRIER_ID")
     private User assignedToCarrier; // By broker to carrier. orderStatus changes to ASSIGNED

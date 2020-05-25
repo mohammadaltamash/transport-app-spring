@@ -3,6 +3,8 @@ package com.transport.app.rest.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.transport.app.rest.domain.*;
+import com.transport.app.rest.mapper.OrderCarrierMapper;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
@@ -260,14 +262,31 @@ public class AuditService {
 //                OrderCarrier orderCarrier = order.getBookingRequestCarriers()
 //                        .get(order.getBookingRequestCarriers().size() - 1);
 //                String jsonString = new ObjectMapper().writeValueAsString(orderCarrier);
-                return order.getBookingRequestCarriers().size() > 0 ? new ObjectMapper().writeValueAsString(
-                        order.getBookingRequestCarriers().get(order.getBookingRequestCarriers().size() - 1)) : null;
-            case "assignedToCarrier":
+                OrderCarrier oc = null;
+                if (order.getBookingRequestCarriers().size() > 0) {
+                    oc = (order.getBookingRequestCarriers().get(order.getBookingRequestCarriers().size() - 1));
+//                    Hibernate.initialize(oc.getCarrier());
+//                    Long id = (order.getBookingRequestCarriers().get(order.getBookingRequestCarriers().size() - 1)).getCarrier().getId();
+////                    Hibernate.initialize((order.getBookingRequestCarriers().get(order.getBookingRequestCarriers().size() - 1)).getCarrier());
+//                    (order.getBookingRequestCarriers().get(order.getBookingRequestCarriers().size() - 1)).getCarrier().setId(id);
+                }
+                /*return order.getBookingRequestCarriers().size() > 0 ? new ObjectMapper().writeValueAsString(
+                        order.getBookingRequestCarriers().get(order.getBookingRequestCarriers().size() - 1).getId()) : null;*/
+                return new ObjectMapper().writeValueAsString(OrderCarrierMapper.toOrderCarrierDto(oc));
+            /*case "assignedToCarrier":
 //                return order.getAssignedToCarrier();
-            return order.getAssignedToCarrier() != null ? order.getAssignedToCarrier().getEmail() : null;
+                return order.getAssignedToCarrier() != null ?
+                    order.getAssignedToCarrier().getFullName() + "|" + order.getAssignedToCarrier().getEmail()
+                    : null;*/
+            case "bookedCarriers":
+                return order.getBookedCarriers().size() > 0 ? new ObjectMapper().writeValueAsString(
+                        order.getBookedCarriers().get(order.getBookedCarriers().size() - 1)) : null;
             case "assignedToDriver":
 //                return order.getAssignedToDriver();
-            return order.getAssignedToDriver() != null ? order.getAssignedToDriver().getEmail() : null;
+                return order.getAssignedToDriver() != null ?
+                    order.getAssignedToDriver().getFullName() != null && !"".equals(order.getAssignedToDriver().getFullName()) ?
+                            order.getAssignedToDriver().getFullName() : order.getAssignedToDriver().getEmail()
+                    : null;
 //    case "Long updatedById, "
             case "createdAt":
                 return order.getCreatedAt();
@@ -390,8 +409,10 @@ public class AuditService {
                 return "Created By";
             case "bookingRequestCarriers":
                 return "Booking Request By Carriers";
-            case "assignedToCarrier":
-                return "Assigned To Carrier";
+            case "bookedCarriers":
+                return "Offered by broker";
+//            case "assignedToCarrier":
+//                return "Assigned To Carrier";
             case "assignedToDriver":
                 return "Assigned To Driver";
             case "createdAt":

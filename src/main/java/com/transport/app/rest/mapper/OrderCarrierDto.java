@@ -22,7 +22,10 @@ public class OrderCarrierDto {
 
     private Long id;
     private Long orderId;
+    private Long bookedOrderId;
     private Long carrierId;
+    private String carrierFullName;
+    private String carrierEmail;
     private String status;
     private Double carrierPay;
     private String daysToPay;

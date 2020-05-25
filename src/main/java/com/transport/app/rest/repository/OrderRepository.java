@@ -65,4 +65,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderReposi
     Page<Object> getInRadiusOfBoth(@Param("refLatitude1") double refLatitude1, @Param("refLongitude1") double refLongitude1,
                                  @Param("refLatitude2") double refLatitude2, @Param("refLongitude2") double refLongitude2,
                                  @Param("distance") int distance, Pageable pageable);*/
+
+    List<Order> findAll(Specification<Order> spec);
 }

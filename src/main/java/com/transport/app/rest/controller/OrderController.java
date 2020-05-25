@@ -63,6 +63,11 @@ public class OrderController {
         orderService.update(order);
     }
 
+    @GetMapping("/todays/{field}")
+    public List<OrderDto> getTodaysOrders(@PathVariable("field") String field) {
+        return OrderMapper.toOrderDtos(orderService.getTodaysOrders(field));
+    }
+
     /*@PostMapping("/bookingrequest/{orderId}/{email}")
     public OrderCarrierDto recordBookingRequest(@PathVariable("orderId") Long orderId, @PathVariable("email") String email) {
         Order order = orderService.findById(orderId);
@@ -77,9 +82,9 @@ public class OrderController {
         return OrderCarrierMapper.toOrderCarrierDto(orderService.recordBookingRequest(orderCarrier, order, user));
     }
 
-    @PutMapping("/bookingrequest/book/{orderId}")
-    public void bookOrder(@Valid @RequestBody OrderCarrier orderCarrier, @PathVariable("orderId") Long orderId) {
-        orderService.bookOrder(orderCarrier, orderId);
+    @PutMapping("/bookingrequest/book/{orderId}/{carrierId}")
+    public void bookOrder(@RequestBody OrderCarrier orderCarrier, @PathVariable("orderId") Long orderId, @PathVariable("carrierId") Long carrierId) {
+        orderService.bookOrder(orderCarrier, orderId, carrierId);
     }
 
     @PutMapping("/bookingrequest/{orderId}/{orderCarrierId}/{acceptOrDecline}")
