@@ -83,8 +83,8 @@ public class OrderController {
     }
 
     @PutMapping("/bookingrequest/book/{orderId}/{carrierId}")
-    public void bookOrder(@RequestBody OrderCarrier orderCarrier, @PathVariable("orderId") Long orderId, @PathVariable("carrierId") Long carrierId) {
-        orderService.bookOrder(orderCarrier, orderId, carrierId);
+    public OrderCarrierDto bookOrder(@RequestBody OrderCarrier orderCarrier, @PathVariable("orderId") Long orderId, @PathVariable("carrierId") Long carrierId) {
+        return OrderCarrierMapper.toOrderCarrierDto(orderService.bookOrder(orderCarrier, orderId, carrierId));
     }
 
     @PutMapping("/bookingrequest/{orderId}/{orderCarrierId}/{acceptOrDecline}")

@@ -101,12 +101,12 @@ public class OrderService {
         return orderCarrierRepository.save(orderCarrier);
     }
 
-    public void bookOrder(OrderCarrier orderCarrier, Long orderId, Long carrierId) {
+    public OrderCarrier bookOrder(OrderCarrier orderCarrier, Long orderId, Long carrierId) {
 //        Order order = findById(orderId);
 //        order.setOrderStatus(OrderStatus.BOOKED.getName());
 //        orderRepository.save(order);
         orderCarrier.setStatus(OrderStatus.BOOKED.getName());
-        updateOrderCarrier(orderCarrier);
+        return updateOrderCarrier(orderCarrier);
         // This is for auditing booking for the order
         /*OrderCarrier bookedOrderCarrier = new OrderCarrier();
         bookedOrderCarrier.setStatus(OrderStatus.BOOKED.getName());
@@ -120,7 +120,7 @@ public class OrderService {
         orderCarrierRepository.save(bookedOrderCarrier);*/
     }
 
-    private void updateOrderCarrier(OrderCarrier orderCarrier) {
+    private OrderCarrier updateOrderCarrier(OrderCarrier orderCarrier) {
         OrderCarrier oc = orderCarrierRepository.findById(orderCarrier.getId()).orElseThrow(() -> new NotFoundException(OrderCarrier.class, orderCarrier.getId()));
         oc.setStatus(orderCarrier.getStatus());
         oc.setCarrierPay(orderCarrier.getCarrierPay());
@@ -130,7 +130,7 @@ public class OrderService {
         oc.setCommittedDeliveryDate(orderCarrier.getCommittedDeliveryDate());
         oc.setOfferReason(orderCarrier.getOfferReason());
         oc.setOfferValidity(orderCarrier.getOfferValidity());
-        orderCarrierRepository.save(oc);
+        return orderCarrierRepository.saveAndFlush(oc);
     }
 
     public OrderCarrier acceptOrDecline(Long orderId, Long orderCarrierId, String acceptOrDecline) {
