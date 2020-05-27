@@ -133,6 +133,7 @@ public class TestData {
                         .distance(Long.parseLong(row.getField(10)));
 
 //                orders.add(generateOrder(builder, Long.parseLong(row.getField(10)), count, createdBy));
+                Thread.sleep(1000);
                 orderRepository.save(generateOrder(builder, Long.parseLong(row.getField(10)), count, createdBy));
             }
         } catch (IOException e) {
