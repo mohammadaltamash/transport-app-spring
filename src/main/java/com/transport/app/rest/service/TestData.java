@@ -132,7 +132,8 @@ public class TestData {
                         .deliveryLongitude(Double.parseDouble(row.getField(9)))
                         .distance(Long.parseLong(row.getField(10)));
 
-                orders.add(generateOrder(builder, Long.parseLong(row.getField(10)), count, createdBy));
+//                orders.add(generateOrder(builder, Long.parseLong(row.getField(10)), count, createdBy));
+                orderRepository.save(generateOrder(builder, Long.parseLong(row.getField(10)), count, createdBy));
             }
         } catch (IOException e) {
             logger.warn(e.getMessage());
