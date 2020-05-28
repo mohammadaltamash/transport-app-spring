@@ -162,7 +162,7 @@ public class TestData {
 //            } catch (IOException e) {
 //            }
 //        });
-        orderRepository.saveAll(orders);
+//        orderRepository.saveAll(orders);
     }
 
     private String[] userTypes = new String[]{"BROKER", "BROKER", "CARRIER", "CARRIER", "DRIVER", "DRIVER"};
