@@ -107,6 +107,13 @@ public class OrderService {
 //        orderRepository.save(order);
         orderCarrier.setStatus(OrderStatus.BOOKED.getName());
         return updateOrderCarrier(orderCarrier);
+
+//        OrderCarrier oc = updateOrderCarrier(orderCarrier);
+//        Order order = findById(orderId);
+//        order.getBookedCarriers().add(oc);
+//        orderRepository.save(order);
+//        return updateOrderCarrier(oc);
+
         // This is for auditing booking for the order
         /*OrderCarrier bookedOrderCarrier = new OrderCarrier();
         bookedOrderCarrier.setStatus(OrderStatus.BOOKED.getName());
@@ -130,6 +137,7 @@ public class OrderService {
         oc.setCommittedDeliveryDate(orderCarrier.getCommittedDeliveryDate());
         oc.setOfferReason(orderCarrier.getOfferReason());
         oc.setOfferValidity(orderCarrier.getOfferValidity());
+        oc.setTermsAndConditions(orderCarrier.getTermsAndConditions());
         return orderCarrierRepository.saveAndFlush(oc);
     }
 

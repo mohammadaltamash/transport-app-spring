@@ -56,6 +56,9 @@ public class OrderCarrier {
     @Column(name = "OFFER_VALIDITY")
     private String offerValidity;
 
+    @Column(name = "TERMS_AND_CONDITIONS", columnDefinition = "LONGTEXT")
+    private String termsAndConditions;
+
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -99,6 +99,7 @@ public class TestData {
     ///////////// Mock
     List<User> users = new ArrayList<>();
     public void generateData() {
+        orderRepository.deleteAll();
 //        List<User> users = new ArrayList<>();
         List<Order> orders = new ArrayList<>();
 //        IntStream.range(1, 6).forEach(i -> {

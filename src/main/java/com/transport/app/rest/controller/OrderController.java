@@ -102,7 +102,7 @@ public class OrderController {
     }
 
     @GetMapping("/ordercarrier/{id}")
-    public OrderCarrier getOrderCarrier(@PathVariable("orderId") Long id) {
+    public OrderCarrier getOrderCarrier(@PathVariable("id") Long id) {
         return orderService.findOrderCarrierById(id);
     }
 

@@ -156,6 +156,8 @@ public class OrderDto {
     private Double radiusPickupDistance;
     private Double radiusDeliveryDistance;
 
+    private String termsAndConditions;
+
     private UserDto createdBy;
 //    private Long updatedById;
     private LocalDateTime createdAt;

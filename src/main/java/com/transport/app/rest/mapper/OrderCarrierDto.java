@@ -34,6 +34,7 @@ public class OrderCarrierDto {
     private Date committedDeliveryDate;
     private String offerReason;
     private String offerValidity;
+    private String termsAndConditions;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

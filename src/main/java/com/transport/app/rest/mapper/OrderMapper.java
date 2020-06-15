@@ -89,6 +89,11 @@ public class OrderMapper {
 //                .createdBy(UserMapper.toUser(orderDto.getCreatedBy()))
                 .distance(orderDto.getDistance())
                 .perMile(orderDto.getPerMile())
+                .radiusPickupDistance(orderDto.getRadiusPickupDistance())
+                .radiusDeliveryDistance(orderDto.getRadiusDeliveryDistance())
+
+                .termsAndConditions(orderDto.getTermsAndConditions())
+
                 .createdAt(orderDto.getCreatedAt())
                 .updatedAt(orderDto.getUpdatedAt())
                 .build();
@@ -178,6 +183,9 @@ public class OrderMapper {
                 .perMile(order.getPerMile())
                 .radiusPickupDistance(order.getRadiusPickupDistance())
                 .radiusDeliveryDistance(order.getRadiusDeliveryDistance())
+
+                .termsAndConditions(order.getTermsAndConditions())
+
 //                .askedToBook(order.getAskedToBook())
                 .createdBy(UserMapper.toUserDto(order.getCreatedBy()))
 //                .updatedById(order.getUpdatedBy().getId())
@@ -252,6 +260,9 @@ public class OrderMapper {
         order.setAssignedToDriver(orderUpdate.getAssignedToDriver() == null ? order.getAssignedToDriver() : orderUpdate.getAssignedToDriver());
         order.setDistance(orderUpdate.getDistance() == null ? order.getDistance() : orderUpdate.getDistance());
         order.setPerMile(orderUpdate.getPerMile() == null ? order.getPerMile() : orderUpdate.getPerMile());
+        order.setRadiusPickupDistance(orderUpdate.getRadiusPickupDistance() == null ? order.getRadiusPickupDistance() : orderUpdate.getRadiusPickupDistance());
+        order.setRadiusDeliveryDistance(orderUpdate.getRadiusDeliveryDistance() == null ? order.getRadiusDeliveryDistance() : orderUpdate.getRadiusDeliveryDistance());
+        order.setTermsAndConditions(orderUpdate.getTermsAndConditions() == null ? order.getTermsAndConditions() : orderUpdate.getTermsAndConditions());
 //        order.setAskedToBook(orderUpdate.getAskedToBook() == null ? order.getAskedToBook() : orderUpdate.getAskedToBook());
         order.setCreatedBy(orderUpdate.getCreatedBy() == null ? order.getCreatedBy() : orderUpdate.getCreatedBy());
         order.setCreatedAt(orderUpdate.getCreatedAt() == null ? order.getCreatedAt() : orderUpdate.getCreatedAt());

@@ -21,6 +21,7 @@ public class OrderCarrierMapper {
                 .committedDeliveryDate(orderCarrierDto.getCommittedDeliveryDate())
                 .offerReason(orderCarrierDto.getOfferReason())
                 .offerValidity(orderCarrierDto.getOfferValidity())
+                .termsAndConditions(orderCarrierDto.getTermsAndConditions())
                 .createdAt(orderCarrierDto.getCreatedAt())
                 .updatedAt(orderCarrierDto.getUpdatedAt())
                 .build();
@@ -45,6 +46,7 @@ public class OrderCarrierMapper {
                 .committedDeliveryDate(orderCarrier.getCommittedDeliveryDate())
                 .offerReason(orderCarrier.getOfferReason())
                 .offerValidity(orderCarrier.getOfferValidity())
+                .termsAndConditions(orderCarrier.getTermsAndConditions())
                 .createdAt(orderCarrier.getCreatedAt())
                 .updatedAt(orderCarrier.getUpdatedAt())
                 .build();
@@ -62,6 +64,7 @@ public class OrderCarrierMapper {
         orderCarrier.setCommittedDeliveryDate(orderCarrierUpdate.getCommittedDeliveryDate() == null ? orderCarrier.getCommittedDeliveryDate() : orderCarrierUpdate.getCommittedDeliveryDate());
         orderCarrier.setOfferReason(orderCarrierUpdate.getOfferReason() == null ? orderCarrier.getOfferReason() : orderCarrierUpdate.getOfferReason());
         orderCarrier.setOfferValidity(orderCarrierUpdate.getOfferValidity() == null ? orderCarrier.getOfferValidity() : orderCarrierUpdate.getOfferValidity());
+        orderCarrier.setTermsAndConditions(orderCarrierUpdate.getTermsAndConditions() == null ? orderCarrier.getTermsAndConditions() : orderCarrierUpdate.getTermsAndConditions());
         return orderCarrier;
     }
 

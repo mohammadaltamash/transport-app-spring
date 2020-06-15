@@ -291,6 +291,9 @@ public class Order {
     @Transient
     private Double radiusDeliveryDistance;
 
+    @Column(name = "TERMS_AND_CONDITIONS", columnDefinition = "LONGTEXT")
+    private String termsAndConditions;
+
     @Column(name = "CREATED_AT")
     @CreationTimestamp
     private LocalDateTime createdAt;
