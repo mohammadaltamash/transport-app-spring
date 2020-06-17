@@ -157,6 +157,11 @@ public class OrderService {
             User carrier = orderCarrier.getCarrier();
             order.setAssignedToCarrier(carrier);
             order.setAssignedToCarrierName(carrier.getFullName()); // For search
+            order.setCarrierPay(orderCarrier.getCarrierPay());
+            order.setDaysToPay(orderCarrier.getDaysToPay());
+            order.setCommittedPickupDate(orderCarrier.getCommittedPickupDate());
+            order.setCommittedDeliveryDate(orderCarrier.getCommittedDeliveryDate());
+            order.setTermsAndConditions(orderCarrier.getTermsAndConditions());
             orderRepository.save(order);
             orderCarrier.setStatus(OrderStatus.ACCEPTED.getName());
             orderCarrierRepository.save(orderCarrier);

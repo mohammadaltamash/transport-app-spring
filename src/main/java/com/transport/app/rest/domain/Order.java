@@ -191,6 +191,8 @@ public class Order {
 //            , nullable = false
     )
     private Double carrierPay;                                                  // Carrier pay                  required
+    @Column(name = "DAYS_TO_PAY")
+    private String daysToPay;
     @Column(name = "AMOUNT_ON_PICKUP")
     private Double amountOnPickup;                                              // Amount on pickup
     @Column(name = "PAYMENT_ON_PICKUP_METHOD")

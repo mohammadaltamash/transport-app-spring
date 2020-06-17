@@ -110,6 +110,7 @@ public class OrderDto {
     //    Pricing Information
 //    Carrier pay                   required
     private Double carrierPay;
+    private String daysToPay;
     //    Amount on pickup
     private Double amountOnPickup;
     //    Payment on pickup method

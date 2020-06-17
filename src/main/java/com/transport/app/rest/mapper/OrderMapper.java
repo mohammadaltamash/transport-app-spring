@@ -61,6 +61,7 @@ public class OrderMapper {
                 .vehicleInoperable(orderDto.getVehicleInoperable())
                 .dispatchInstructions(orderDto.getDispatchInstructions())
                 .carrierPay(orderDto.getCarrierPay())
+                .daysToPay(orderDto.getDaysToPay())
                 .amountOnPickup(orderDto.getAmountOnPickup())
                 .paymentOnPickupMethod(orderDto.getPaymentOnPickupMethod())
                 .amountOnDelivery(orderDto.getAmountOnDelivery())
@@ -152,6 +153,7 @@ public class OrderMapper {
                 .vehicleInoperable(order.getVehicleInoperable())
                 .dispatchInstructions(order.getDispatchInstructions())
                 .carrierPay(order.getCarrierPay())
+                .daysToPay(order.getDaysToPay())
                 .amountOnPickup(order.getAmountOnPickup())
                 .paymentOnPickupMethod(order.getPaymentOnPickupMethod())
                 .amountOnDelivery(order.getAmountOnDelivery())
@@ -239,6 +241,7 @@ public class OrderMapper {
         order.setVehicleInoperable(orderUpdate.getVehicleInoperable() == null ? order.getVehicleInoperable() : orderUpdate.getVehicleInoperable());
         order.setDispatchInstructions(orderUpdate.getDispatchInstructions() == null ? order.getDispatchInstructions() : orderUpdate.getDispatchInstructions());
         order.setCarrierPay(orderUpdate.getCarrierPay() == null ? order.getCarrierPay() : orderUpdate.getCarrierPay());
+        order.setDaysToPay(orderUpdate.getDaysToPay() == null ? order.getDaysToPay() : orderUpdate.getDaysToPay());
         order.setAmountOnPickup(orderUpdate.getAmountOnPickup() == null ? order.getAmountOnPickup() : orderUpdate.getAmountOnPickup());
         order.setPaymentOnPickupMethod(orderUpdate.getPaymentOnPickupMethod() == null ? order.getPaymentOnPickupMethod() : orderUpdate.getPaymentOnPickupMethod());
         order.setAmountOnDelivery(orderUpdate.getAmountOnDelivery() == null ? order.getAmountOnDelivery() : orderUpdate.getAmountOnDelivery());
