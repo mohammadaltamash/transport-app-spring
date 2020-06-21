@@ -3,8 +3,10 @@ package com.transport.app.rest.service;
 import com.google.maps.errors.ApiException;
 import com.transport.app.rest.config.authenticationfacade.IAuthenticationFacade;
 import com.transport.app.rest.domain.CityZipLatLong;
+import com.transport.app.rest.domain.Company;
 import com.transport.app.rest.domain.Order;
 import com.transport.app.rest.domain.User;
+import com.transport.app.rest.repository.CompanyRepository;
 import com.transport.app.rest.repository.OrderRepository;
 import com.transport.app.rest.repository.UserRepository;
 import de.siegmar.fastcsv.reader.CsvParser;
@@ -91,6 +93,8 @@ public class TestData {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private CompanyRepository companyRepository;
+    @Autowired
     private DistanceMatrixService distanceMatrixService;
 
     @Autowired
@@ -99,7 +103,18 @@ public class TestData {
     ///////////// Mock
     List<User> users = new ArrayList<>();
     public void generateData() {
+
         orderRepository.deleteAll();
+        companyRepository.deleteAll();
+
+        Company company = new Company();
+        company.setCompanyName("ABC & Co.");
+        company.setAddress("Kroger, West Michigan Street, Indianapolis, IN, USA");
+        company.setAddressState("IN");
+        company.setZip("46204");
+        company.setCompanyEmail("company_email@example.com");
+        company.setContactName("Contact Person");
+        companyRepository.save(company);
 //        List<User> users = new ArrayList<>();
         List<Order> orders = new ArrayList<>();
 //        IntStream.range(1, 6).forEach(i -> {
