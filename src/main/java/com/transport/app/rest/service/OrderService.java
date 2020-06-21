@@ -5,13 +5,11 @@ import com.transport.app.rest.Constants;
 import com.transport.app.rest.domain.*;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.DBFieldsMapper;
-import com.transport.app.rest.mapper.OrderCarrierMapper;
 import com.transport.app.rest.mapper.OrderMapper;
 import com.transport.app.rest.repository.OrderCarrierRepository;
 import com.transport.app.rest.repository.OrderRepository;
 import com.transport.app.rest.repository.OrderSpecs;
 import com.transport.app.rest.repository.UserRepository;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -249,12 +247,14 @@ public class OrderService {
         return orders;*/
         Pageable pageable = PageRequest.of(page, pageSize == null ? Constants.PAGE_SIZE : pageSize,
                 Sort.by(Sort.Direction.DESC, "createdAt"));
+        Map fieldValue = new HashMap<>();
+        fieldValue.put("id", searchText);
         if (OrderStatus.contains(statuses)) {
             return orderRepository.findAll(Specification
                     .where(OrderSpecs.withStatuses(statuses))
-                    .and(OrderSpecs.textInAllColumns(searchText)), pageable);
+                    .and(OrderSpecs.textInAllColumns(searchText).or(OrderSpecs.fieldEqualTo(fieldValue))), pageable);
         } else {
-            return orderRepository.findAll(Specification.where(OrderSpecs.textInAllColumns(searchText)), pageable);
+            return orderRepository.findAll(Specification.where(OrderSpecs.textInAllColumns(searchText).or(OrderSpecs.fieldEqualTo(fieldValue))), pageable);
         }
     }
 
