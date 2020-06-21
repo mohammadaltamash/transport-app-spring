@@ -27,7 +27,7 @@ public class PreferencesMapper {
 
     public static Preferences toUpdatedPreferences(Preferences preferences, Preferences preferencesUpdate) {
         preferences.setId(preferencesUpdate.getId() == null ? preferences.getId() : preferencesUpdate.getId());
-        preferences.setTermsAndConditions(preferencesUpdate.getTermsAndConditions() == null ? preferences.getTermsAndConditions() : preferencesUpdate.getTermsAndConditions());
+        preferences.setTermsAndConditions(preferencesUpdate.getTermsAndConditions());
         return preferences;
     }
 }

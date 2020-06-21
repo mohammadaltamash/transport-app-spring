@@ -3,8 +3,12 @@ package com.transport.app.rest.service;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.exception.NotFoundException;
 import com.transport.app.rest.mapper.UserMapper;
+import com.transport.app.rest.repository.OrderSpecs;
 import com.transport.app.rest.repository.UserRepository;
+import com.transport.app.rest.repository.UserSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +33,11 @@ public class UserService {
 
     public User findById(Long orderId) {
         return userRepository.findById(orderId).orElseThrow(() -> new NotFoundException(User.class, orderId));
+    }
+
+    public List<User> findDriversInCompany(String type, String companyName) {
+        return userRepository.findAll(Specification.where(UserSpecs.withType(type))
+                .and(UserSpecs.withCompany(companyName)));
     }
 
     public List<User> findAll() {

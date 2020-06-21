@@ -34,6 +34,11 @@ public class UserController {
         return UserMapper.toUserDtos(userService.findAllByType(type));
     }
 
+    @GetMapping("/get/company/{company}")
+    public List<UserDto> findDriversByCompany(@PathVariable("company") String company) {
+        return UserMapper.toUserDtos(userService.findDriversInCompany("DRIVER", company));
+    }
+
     @GetMapping("/get")
     public List<UserDto> findAll() {
         return UserMapper.toUserDtos(userService.findAll());
