@@ -71,6 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .authorizeRequests()
                 .antMatchers("/register", "/company/create", "/company/get", "/login", "/forgot", "/reset",
+                        "/test", "/order/get",
                         "/ws/**", "/index.html", "/webjars/**", "/js/**"
 //                        "/topic/message", "/message"
                 ).permitAll()
