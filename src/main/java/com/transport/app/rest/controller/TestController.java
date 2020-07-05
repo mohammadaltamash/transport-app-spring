@@ -19,6 +19,11 @@ public class TestController {
         return "Authenticated as " + ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
     }
 
+    @RequestMapping("/test")
+    public String test() {
+        return "This is test";
+    }
+
     ///////////////// Mock
     @PostMapping("/generate")
     public void generateOrders() {
