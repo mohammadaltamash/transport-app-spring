@@ -3,7 +3,6 @@ package com.transport.app.rest.controller;
 import com.transport.app.rest.domain.DatabaseFile;
 import com.transport.app.rest.domain.FileResponse;
 import com.transport.app.rest.service.DatabaseFileService;
-import com.transport.app.rest.service.UserService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -55,5 +54,10 @@ public class DatabaseFileController {
                 .contentType(MediaType.parseMediaType(databaseFile.getFileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + databaseFile.getFileName() + "\"")
                 .body(new ByteArrayResource(databaseFile.getData()));
+    }
+
+    @GetMapping("/files")
+    public List<DatabaseFile> getAllFilesData() {
+        return fileService.getAllFilesData();
     }
 }
