@@ -244,6 +244,11 @@ public class OrderController {
         return PagedOrdersMapper.toPagedOrdersDto(pagedOrders);
     }*/
 
+    @GetMapping("/driver/{email}")
+    public List<OrderDto> getByAssignedToDriver(@PathVariable("email") String email) {
+        return OrderMapper.toOrderDtos(orderService.getByAssignedToDriver(email));
+    }
+
     @DeleteMapping("/{id}")
     public void deleteById(@PathVariable("id") long orderId) {
         orderService.deleteById(orderId);

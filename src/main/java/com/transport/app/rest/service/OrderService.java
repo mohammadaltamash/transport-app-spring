@@ -419,4 +419,9 @@ public class OrderService {
     public List<Order> getTodaysOrders(String field) {
         return orderRepository.findAll(Specification.where(OrderSpecs.currentDateEqualTo(field)));
     }
+
+    public List<Order> getByAssignedToDriver(String email) {
+        User user = userRepository.findByEmail(email);
+        return orderRepository.findByAssignedToDriver(user);
+    }
 }

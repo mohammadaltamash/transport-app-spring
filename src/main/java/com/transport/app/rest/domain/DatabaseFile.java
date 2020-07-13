@@ -1,6 +1,7 @@
 package com.transport.app.rest.domain;
 import lombok.*;
 import org.hibernate.type.descriptor.sql.LobTypeMappings;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.*;
 
@@ -21,9 +22,14 @@ public class DatabaseFile {
     @Lob
     private byte[] data;
 
-    public DatabaseFile(String fileName, String fileType, byte[] data) {
+    Long orderId;
+    String location;
+
+    public DatabaseFile(String fileName, String fileType, byte[] data, Long orderId, String location) {
         this.fileName = fileName;
         this.fileType = fileType;
         this.data = data;
+        this.orderId = orderId;
+        this.location = location;
     }
 }

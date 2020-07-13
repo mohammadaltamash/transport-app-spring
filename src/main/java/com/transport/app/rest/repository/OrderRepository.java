@@ -1,6 +1,7 @@
 package com.transport.app.rest.repository;
 
 import com.transport.app.rest.domain.Order;
+import com.transport.app.rest.domain.User;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderReposi
     Page<Order> findAllByOrderStatusIn(@Param("statuses") List<String> orderStatusList, Pageable pageable);
     @Query("select count(*) from Order o where orderStatus in :statuses")
     int countByOrderStatusIn(@Param("statuses") List<String> orderStatusList);
-    List<Order> findByAssignedToDriverNameContainingIgnoreCase(String driver);
+    List<Order> findByAssignedToDriver(User driver);
     List<Order> findByVehicleMakeContainingIgnoreCase(String vehicleMake);
     List<Order> findByVehicleModelContainingIgnoreCase(String vehicleModel);
 

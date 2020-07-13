@@ -12,7 +12,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,9 +35,12 @@ public class DatabaseFileController {
         this.fileService = fileService;
     }
 
-    @PostMapping("/upload")
-    public FileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        DatabaseFile fileName = fileService.storeFile(file);
+    @PostMapping("/upload/{orderId}/{location}/{timestamp}")
+    public FileResponse uploadFile(@RequestParam("file") MultipartFile file,
+                                   @PathVariable Long orderId,
+                                   @PathVariable String location,
+                                   @PathVariable String timestamp) {
+        DatabaseFile fileName = fileService.storeFile(file, orderId, location, timestamp);
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
                 .path(fileName.getFileName())
@@ -37,11 +48,14 @@ public class DatabaseFileController {
         return new FileResponse(fileName.getFileName(), fileDownloadUri, file.getContentType(), file.getSize());
     }
 
-    @PostMapping("/uploadMultipleFiles")
-    public List<FileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+    @PostMapping("/uploadMultipleFiles/{orderId}/{location}/{timestamp}")
+    public List<FileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files,
+                                                  @PathVariable Long orderId,
+                                                  @PathVariable String location,
+                                                  @PathVariable String timestamp) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file))
+                .map(file -> uploadFile(file, orderId, location, timestamp))
                 .collect(Collectors.toList());
     }
 
@@ -59,5 +73,18 @@ public class DatabaseFileController {
     @GetMapping("/files")
     public List<DatabaseFile> getAllFilesData() {
         return fileService.getAllFilesData();
+    }
+
+    @GetMapping("/files/{type}")
+    public List<String> getAllFileUriWithFileType(@PathVariable String type, HttpServletRequest request) {
+        return fileService.getAllFileUriWithFileType(type,
+                request.getScheme() + "://" + request.getServerName() + ":" + request.getLocalPort() + request.getContextPath() + "/downloadFile/");
+    }
+
+    @GetMapping("/files/{fileType}/{orderId}/{location}")
+    public List<String> getByOrderIdAndLocation(@PathVariable String fileType, @PathVariable Long orderId, @PathVariable String location, HttpServletRequest request) {
+        return fileService.getByOrderIdAndLocation(fileType,
+                request.getScheme() + "://" + request.getServerName() + ":" + request.getLocalPort() + request.getContextPath() + "/downloadFile/",
+                orderId, location);
     }
 }
