@@ -16,6 +16,12 @@ public interface DatabaseFileRepository extends JpaRepository<DatabaseFile, Long
 //    List<DatabaseFile> findAll(Specification<DatabaseFile> spec);
     @Query("SELECT files.id from DatabaseFile files WHERE fileType LIKE %:fileType%")
     List<Long> getAllFileUriWithFileType(@Param("fileType") String fileType);
-    @Query("SELECT files.id from DatabaseFile files WHERE fileType LIKE %:fileType% AND orderId = :orderId AND location = :location")
+    @Query("SELECT files.id from DatabaseFile files WHERE fileType LIKE %:fileType% AND orderId = :orderId AND location = :location AND marking = NULL")
     List<Long> getByOrderIdAndLocation(String fileType, Long orderId, String location);
+    @Query("SELECT files.id from DatabaseFile files WHERE orderId = :orderId AND signedBy = :signedBy")
+    List<Long> getByOrderIdAndSignedBy(Long orderId, String signedBy);
+     @Query("SELECT files.id from DatabaseFile files WHERE orderId = :orderId AND location = :location AND marking = 1")
+    List<Long> getByOrderIdLocationAndMarking(Long orderId, String location);
+
+
 }

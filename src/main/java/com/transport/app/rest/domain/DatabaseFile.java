@@ -24,6 +24,8 @@ public class DatabaseFile {
 
     Long orderId;
     String location;
+    String signedBy;
+    Boolean marking;
 
     public DatabaseFile(String fileName, String fileType, byte[] data, Long orderId, String location) {
         this.fileName = fileName;
@@ -31,5 +33,14 @@ public class DatabaseFile {
         this.data = data;
         this.orderId = orderId;
         this.location = location;
+    }
+
+    public DatabaseFile(String fileName, String fileType, byte[] data, Long orderId, String location, Boolean marking) {
+        this.fileName = fileName;
+        this.fileType = fileType;
+        this.data = data;
+        this.orderId = orderId;
+        this.location = location;
+        this.marking = marking;
     }
 }

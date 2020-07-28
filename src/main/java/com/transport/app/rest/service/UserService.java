@@ -23,7 +23,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User findByToken(String token) {
+    public User findByResetToken(String token) {
         return userRepository.findByResetToken(token);
     }
 

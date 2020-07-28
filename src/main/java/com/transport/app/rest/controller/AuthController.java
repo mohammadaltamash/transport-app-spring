@@ -2,7 +2,6 @@ package com.transport.app.rest.controller;
 
 import com.transport.app.rest.config.JwtToken;
 import com.transport.app.rest.domain.JwtRequest;
-import com.transport.app.rest.domain.JwtResponse;
 import com.transport.app.rest.domain.User;
 import com.transport.app.rest.exception.AlreadyExistsException;
 import com.transport.app.rest.mapper.UserMapper;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -87,14 +85,14 @@ public class AuthController {
         user.setResetToken(RandomStringUtils.randomAlphanumeric(60));
         userService.save(user);
         // Send this via email
-        String resetLink = "http://localhost:8084/convertein/v1/reset?token=" + user.getResetToken();
+        String resetLink = "http://localhost:8080/transportapp/reset?token=" + user.getResetToken();
         System.out.println("Click this link to reset password");
         System.out.println("\n " + resetLink);
     }
 
     @RequestMapping("/reset")
     public String resetPassword(@RequestParam(value = "token") String token) {
-        User user = userService.findByToken(token);
+        User user = userService.findByResetToken(token);
         if (user == null) {
             throw new WebApplicationException("Invalid token!");
         }

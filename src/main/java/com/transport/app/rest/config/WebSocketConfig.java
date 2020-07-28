@@ -25,10 +25,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //        registry.addEndpoint("/ws")
 //                .setAllowedOrigins("http://localhost:4200");
         registry.addEndpoint("/ws")
-//                .setAllowedOrigins("*")
-                .setAllowedOrigins(accessControlAllowOrigin)
-                .withSockJS()
-        ;
+                .setAllowedOrigins("*");
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("*")
+                .withSockJS();
     }
 
 }

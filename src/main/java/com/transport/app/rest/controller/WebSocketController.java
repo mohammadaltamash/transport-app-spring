@@ -15,7 +15,7 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.util.concurrent.ExecutionException;
 
-//@CrossOrigin
+@CrossOrigin
 //        (origins = "*", allowedHeaders = "http://localhost:4200", allowCredentials = "true")
 @Controller
 public class WebSocketController {
@@ -36,6 +36,11 @@ public class WebSocketController {
     @SendTo("/topic/message")
     public void sendMessage(String message){
         this.template.convertAndSend("/topic/message",  message);
+    }
+
+    @GetMapping("/sendmessage/{message}")
+    public void send(@PathVariable("message") String message) {
+        sendMessage(message);
     }
 
     /*@GetMapping("/socketmessage/{message}")
